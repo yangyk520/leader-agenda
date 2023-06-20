@@ -44,7 +44,7 @@
             <div class="range_block">
                 <div class="title flex_between">
                     <div class="title_left">区间维护</div>
-                    <div class="title_right flex_end">
+                    <div @click="addRangeData()" class="title_right flex_end pointer">
                         <SvgIcon icon-class="plus"></SvgIcon>
                         <span>新建</span>
                     </div>
@@ -57,11 +57,11 @@
                         </div>
                         <div class="cell">
                             <span v-if="!item.editable">{{ item.startTime }}</span>
-                            <a-time-picker v-model="item.startTime" v-else @change="onChange" />
+                            <a-time-picker v-model="item.startTime" valueFormat="HH:mm:ss" v-else @change="onChange" />
                         </div>
                         <div class="cell">
                             <span v-if="!item.editable">{{ item.endTime }}</span>
-                            <a-time-picker v-else v-model="endTime" @change="onChange" />
+                            <a-time-picker v-else v-model="item.endTime" valueFormat="HH:mm:ss" @change="onChange" />
                         </div>
                         <div class="cell operate flex_center">
                             <div v-if="!item.editable" @click="editRange(item)">
@@ -70,7 +70,7 @@
                             <div v-else @click="cancelEdit(item)">
                                 <SvgIcon icon-class="guanbi"></SvgIcon>
                             </div>
-                            <div class="delete_icon">
+                            <div @click="delateRangeData(item,index)" class="delete_icon">
                                 <SvgIcon icon-class="delete"></SvgIcon>
                             </div>
                         </div>
@@ -213,6 +213,17 @@ export default {
     destroyed() {},
   methods: {
     moment,
+    addRangeData() {
+        this.form.range_data.push({
+            name: '',
+            startTime: '',
+            endTime: '',
+            editable: true
+        })
+    },
+    delateRangeData(item,index) {
+        this.form.range_data.splice(index,1)
+    },
     onChange(e) {
         console.log(e)
     },
@@ -540,4 +551,19 @@ export default {
         }
     }
 }
+</style>
+<style lang="scss">
+.IControlSetting_app{
+    .ant-checkbox-checked .ant-checkbox-inner{
+        background-color: #0086D9;
+        border-color: #0086D9;
+    }
+    .ant-radio-checked .ant-radio-inner{
+        border-color: #0086D9;
+    }
+    .ant-radio-inner::after{
+        background-color: #0086D9;
+    }
+}
+
 </style>
