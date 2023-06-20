@@ -10,6 +10,13 @@
       "className": "IText",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.icontrolsetting",
+      "comName": "控制中心设置",
+      "className": "IControlSetting",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
