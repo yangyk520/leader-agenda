@@ -9,17 +9,25 @@
    :id="moduleObject.id" 
    :idm-ctrl-id="moduleObject.id"
    class="idm-leader-agenda-outer">
-   <AgendaHeader />
+   <div class="scroll_block">
+    <AgendaHeader />
+    <AgendaTableVertical></AgendaTableVertical>
+   </div>
+   <AgendaFooter></AgendaFooter>
   </div>
 </template>
 
 <script>
 const mock = []
 import AgendaHeader from "../commonComponents/AgendaHeader.vue"
+import AgendaTableVertical from '@/commonComponents/AgendaTableVertical.vue'
+import AgendaFooter from '@/commonComponents/AgendaFooter.vue'
 export default {
   name: 'ILeaderAgenda',
   components:{
-    AgendaHeader
+    AgendaHeader,
+    AgendaTableVertical,
+    AgendaFooter
   },
   data(){
     return {
@@ -297,9 +305,29 @@ export default {
 .idm-leader-agenda-outer {
   position: relative;
   width: 100%;
-  padding: 20px;
+  height: 100%;
   background: #FFFFFF;
+  overflow-y: auto;
   border: 1px solid rgba(230,230,230,1);
   box-shadow: 0px 2px 12px 0px rgba(0,0,0,0.07);
+  .scroll_block{
+    height: 100%;
+    overflow-y: auto;
+    padding: 20px 20px 62px 20px;
+  }
+  
+}
+</style>
+<style lang="scss">
+.scroll_block::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+.scroll_block::-webkit-scrollbar-thumb {
+    background-color: #ccc;
+}
+.scroll_block::-webkit-scrollbar-thumb {
+    min-height: 18px;
+    border-radius: 4px;
 }
 </style>

@@ -194,7 +194,7 @@ export default {
                     label: '会议内容',
                     value: '6'
                 }
-            ],
+            ]
         };
     },
     props: {},
