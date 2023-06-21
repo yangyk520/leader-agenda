@@ -17,6 +17,13 @@
       "className": "IControlSetting",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.ileaderagenda",
+      "comName": "领导日程",
+      "className": "ILeaderAgenda",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
