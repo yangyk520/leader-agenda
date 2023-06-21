@@ -53,7 +53,7 @@
                     <div v-for="(item,index) in form.range_data" :key="index" class="list flex_between">
                         <div class="cell">
                             <span v-if="!item.editable">{{ item.name }}</span>
-                            <a-input v-else v-model="item.name" placeholder="Basic usage" allowClear/>
+                            <a-input v-else v-model="item.name" placeholder="请输入区间名称" allowClear/>
                         </div>
                         <div class="cell">
                             <span v-if="!item.editable">{{ item.startTime }}</span>
@@ -499,7 +499,7 @@ export default {
         .title{
             border-bottom: 1px solid #DDDDDD;
             .title_left{
-                padding: 9px 0;
+                padding: 0px 0 9px 0;
                 font-size: 20px;
                 color: #0073CA;
                 line-height: 28px;
@@ -544,7 +544,7 @@ export default {
                         }
                     }
                     .delete_icon{
-                        margin-left: 6px;
+                        margin-left: 10px;
                     }
                 }
             }
