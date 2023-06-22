@@ -13,6 +13,7 @@
     "ant-design-vue": "^1.7.6",
     "core-js": "^3.6.5",
     "moment": "^2.29.4",
+    "monent": "0.0.2-security",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11"
   },
