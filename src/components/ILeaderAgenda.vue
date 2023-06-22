@@ -11,7 +11,8 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader />
-    <AgendaTableVertical></AgendaTableVertical>
+    <AgendaTableVertical v-if="layoutType === 'vertical'"></AgendaTableVertical>
+    <AgendaTableHorizontal v-else></AgendaTableHorizontal>
    </div>
    <AgendaFooter></AgendaFooter>
   </div>
@@ -21,18 +22,21 @@
 const mock = []
 import AgendaHeader from "../commonComponents/AgendaHeader.vue"
 import AgendaTableVertical from '@/commonComponents/AgendaTableVertical.vue'
+import AgendaTableHorizontal from '@/commonComponents/AgendaTableHorizontal.vue'
 import AgendaFooter from '@/commonComponents/AgendaFooter.vue'
 export default {
   name: 'ILeaderAgenda',
   components:{
     AgendaHeader,
     AgendaTableVertical,
+    AgendaTableHorizontal,
     AgendaFooter
   },
   data(){
     return {
       moduleObject:{},
-      propData:this.$root.propData.compositeAttr||{}
+      propData:this.$root.propData.compositeAttr||{},
+      layoutType: 'horizontal', // horizontal vertical
     }
   },
   props: {
