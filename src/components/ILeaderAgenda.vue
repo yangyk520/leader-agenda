@@ -10,9 +10,9 @@
    :idm-ctrl-id="moduleObject.id"
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
-    <AgendaHeader />
-    <AgendaTableVertical :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" v-if="layoutType === 'vertical'"></AgendaTableVertical>
-    <AgendaTableHorizontal :propData="propData" v-else></AgendaTableHorizontal>
+    <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
+    <AgendaTableVertical :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" v-if="layoutType === 'horizontal'"></AgendaTableVertical>
+    <AgendaTableHorizontal :propData="propData" :moduleObject="moduleObject" v-else></AgendaTableHorizontal>
    </div>
    <AgendaFooter :propData="propData"></AgendaFooter>
   </div>
@@ -50,6 +50,18 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    /**
+     * 更新头部组件参数
+     */
+    updateHeadParams(params){
+      console.log(params,'更新头部组件参数')
+    },
+    /**
+     * 更新设置
+     */
+    updateSetting(){
+      console.log('更新设置')
+    },
     /**
      * 对属性设置进行初始化
      */

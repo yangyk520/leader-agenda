@@ -6,7 +6,7 @@
           {{ header.name }}
         </div>
       </div>
-      <div class="table_body">
+      <div class="table_body scroll_block">
         <div
           v-for="(item, index) in data_list"
           :key="index"
@@ -31,14 +31,30 @@
                   :key="t"
                   class="active_list"
                 >
-                  <div class="row" :style="getStyleData(todo)">
-                    <SvgIcon icon-class="clock"></SvgIcon>
+                  <div class="row flex_start" :style="getStyleData(todo)">
+                    <!-- <SvgIcon icon-class="clock"></SvgIcon> -->
+                    <div class="img_box flex_center">
+                      <img class="clock_img" src="@/assets/clock.png" alt="" />
+                    </div>
                     <span class="time">{{ todo.time }}</span>
                     <span class="name">{{ todo.name }}</span>
                   </div>
                   <div class="row flex_start address_block">
-                    <SvgIcon icon-class="address"></SvgIcon>
+                    <!-- <SvgIcon icon-class="address"></SvgIcon> -->
+                    <div class="img_box flex_center">
+                      <img
+                        class="address_img"
+                        src="@/assets/address.png"
+                        alt=""
+                      />
+                    </div>
                     <span class="address">{{ todo.address }}</span>
+                  </div>
+                  <div v-if="todo.busyStatus" class="row flex_start busy_block">
+                    <div class="img_box flex_center">
+                      <img class="clock_img" src="@/assets/busy.png" alt="" />
+                    </div>
+                    <span class="busy">忙碌</span>
                   </div>
                 </div>
               </div>
@@ -51,12 +67,22 @@
   </div>
 </template>
 <script>
-import SvgIcon from "../icons/SvgIcon.vue";
+// import SvgIcon from "../icons/SvgIcon.vue";
 
 export default {
   name: "AgendaTableVertical",
   components: {
-    SvgIcon,
+    // SvgIcon,
+  },
+  props: ["propData", "moduleObject"],
+  watch: {
+    propData: {
+      handler: function () {
+        this.convertAttrToStyleObject();
+      },
+      immediate: true,
+      deep: true,
+    },
   },
   data() {
     return {
@@ -97,6 +123,7 @@ export default {
               status: 1,
               address:
                 "东区礼合楼202（云鹃路166号） 主持人:宋骏  会议内容:主要是就当前工作进行汇报、分析和研究，讨论解决工作中的重大问题，推动单位工作向正确方向发展等，并且…",
+              busyStatus: 1,
             },
           ],
           3: [
@@ -159,6 +186,70 @@ export default {
   },
   created() {},
   methods: {
+    convertAttrToStyleObject() {
+      var styleObject = {};
+      var styleObjectHeader = {};
+      var styleObjectCell = {};
+      var styleObjectBody = {};
+      var styleObjectBodyRow = {};
+      if (
+        this.propData.stripe &&
+        this.propData.bgColorStripe &&
+        this.propData.bgColorStripe.hex8
+      ) {
+        styleObjectBodyRow["background-color"] =
+          this.propData.bgColorStripe.hex8;
+      }
+      for (const key in this.propData) {
+        if (this.propData.hasOwnProperty.call(this.propData, key)) {
+          const element = this.propData[key];
+          if (!element && element !== false && element != 0) {
+            continue;
+          }
+          switch (key) {
+            case "heightTableHeader":
+              styleObjectHeader["height"] = element;
+              styleObjectHeader["line-height"] = element;
+              styleObjectCell["height"] = element;
+              styleObjectCell["line-height"] = element;
+              break;
+            case "bgColorTableHeader":
+              if (element && element.hex8) {
+                styleObjectHeader["background-color"] = element.hex8;
+              }
+              break;
+            case "maxHeightTableBody":
+              styleObjectBody["max-height"] = element;
+              break;
+            case "heightTable":
+              styleObject["height"] = element;
+              break;
+          }
+        }
+      }
+      window.IDM.setStyleToPageHead(
+        this.moduleObject.id + " .AgendaTableVertical_app .table",
+        styleObject
+      );
+      window.IDM.setStyleToPageHead(
+        this.moduleObject.id + " .AgendaTableVertical_app .table .table_header",
+        styleObjectHeader
+      );
+      window.IDM.setStyleToPageHead(
+        this.moduleObject.id +
+          " .AgendaTableVertical_app .table .table_header .cell",
+        styleObjectCell
+      );
+      window.IDM.setStyleToPageHead(
+        this.moduleObject.id + " .AgendaTableVertical_app .table .table_body",
+        styleObjectBody
+      );
+      window.IDM.setStyleToPageHead(
+        this.moduleObject.id +
+          " .AgendaTableVertical_app .table .table_body .row:nth-child(2n)",
+        styleObjectBodyRow
+      );
+    },
     getStyleData(item) {
       var styleObject = {};
       switch (item.status) {
@@ -184,12 +275,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .AgendaTableHorizontal_app {
+  border: 1px solid rgba(230, 230, 230, 1);
   .table {
     .table_header {
       height: 48px;
       text-align: center;
       background: #f9fcfe;
-      border: 1px solid rgba(230, 230, 230, 1);
+      border-bottom: 1px solid rgba(230, 230, 230, 1);
       .cell {
         height: 48px;
         line-height: 48px;
@@ -212,11 +304,13 @@ export default {
       }
     }
     .table_body {
+      overflow: auto;
       & > .row {
         border-bottom: 1px solid rgba(230, 230, 230, 1);
-        border-left: 1px solid rgba(230, 230, 230, 1);
-        border-right: 1px solid rgba(230, 230, 230, 1);
         align-items: stretch;
+        &:last-child {
+          border-bottom: none;
+        }
         .cell {
           width: 100%;
           // height: 100%;
@@ -241,7 +335,8 @@ export default {
           }
           .time,
           .name,
-          .address {
+          .address,
+          .busy {
             font-size: 16px;
             line-height: 22px;
             font-weight: 400;
@@ -266,14 +361,31 @@ export default {
               }
               .address_block {
                 align-items: flex-start;
-                .svg-icon {
+                .address_img {
                   flex-shrink: 0;
                   position: relative;
                   top: 3px;
                 }
               }
+              .busy_block {
+                margin-top: 1px;
+              }
               .time {
                 margin-right: 10px;
+              }
+              .img_box {
+                width: 16px;
+                height: 16px;
+                margin-right: 5px;
+                flex-shrink: 0;
+                .clock_img {
+                  width: 16px;
+                  height: 16px;
+                }
+                .address_img {
+                  width: 14px;
+                  height: 16px;
+                }
               }
             }
           }

@@ -63,13 +63,17 @@
                 :src="IDM.url.getWebPath(item.photoPath)"
               />
               <div v-else class="avatar-empty">
-                <span>{{ leader.userName.slice(leader.userName.length - 2) }}</span>
+                <span>{{
+                  leader.userName.slice(leader.userName.length - 2)
+                }}</span>
               </div>
             </div>
             <span>{{ leader.userName }}</span>
           </div>
           <div class="leader-item">
-            <div class="leader-item-add"><svg-icon icon-class="add" /></div>
+            <div class="leader-item-add" @click="handleLeaderAdd">
+              <svg-icon icon-class="add" />
+            </div>
           </div>
         </div>
       </div>
@@ -77,7 +81,9 @@
         <span class="operation-btn primary">新增</span>
         <span class="operation-btn">发布</span>
         <span class="operation-btn">导出</span>
-        <span class="operation-setting"><svg-icon icon-class="setting" /></span>
+        <span class="operation-setting" @click="handleSetting"
+          ><svg-icon icon-class="setting"
+        /></span>
       </div>
     </div>
   </div>
@@ -144,27 +150,106 @@ export default {
   },
   created() {
     this.initTime(moment());
+    this.sendHeadParams();
   },
   methods: {
     /**
+     * 设置按钮
+     */
+    handleSetting() {
+      //组件内调用
+      IDM.broadcast.openControlSetPanel({
+        //如果要想打开IDM内置的控制中心，则此处url必须为空。
+        url: "",
+        param: {
+          marketModuleId: this.moduleObject.comId,
+          pageId: IDM.broadcast.pageModule.id,
+          packageid: this.moduleObject.packageid,
+        },
+        showTop: true,
+        success: function (res) {},
+        yes: function (res) {
+          //确定后控制中心的表单数据保存了，可以再次调用获取方法获取已经保存的个性化组件属性
+        },
+        reset: function (res) {
+          //重置后可重新获取到初始值
+        },
+        other: function (res) {
+          //关闭或其他按钮触发回调方法
+          this.$emit("updateSetting");
+        },
+      });
+    },
+    /**
+     * 向父组件发送参数
+     */
+    sendHeadParams() {
+      const params = {
+        timeViewType: this.timeViewType,
+        searchVal: this.searchVal,
+        onlyView: this.onlyView,
+        leaders: "",
+      };
+      if (this.timeViewType === "day") {
+        params.dates = this.curDate;
+      } else {
+        params.dates = this.weekList.map((item) => item.date).join(",");
+      }
+      params.leaders = this.leaderList.map((item) => item.userId).join(",");
+      this.$emit("updateHeadParams", params);
+    },
+    /**
+     * 新增领导
+     */
+    handleLeaderAdd() {
+      var opts = {
+        codeType: "action",
+        title: "选择用户",
+        multiple: true,
+        type: "codeselect",
+        async: true,
+        codeValue: "userinfo/usernoselect?type=allUser",
+        callback: (text, ids, dataList) => {
+          //点击确认后事件
+          console.log(text, ids, dataList);
+          this.sendHeadParams();
+        },
+      };
+      top.openCodeWindow = window;
+      top.openCodeOpts = opts;
+      top.openCodeIndex = top.layer.open({
+        type: 2,
+        area: ["890px", "646px"],
+        fixed: false,
+        title: "",
+        content: IDM.url.getContextWebUrl("ctrl/code/select/view"),
+      });
+    },
+    /**
      * 搜索
      */
-    hanldeSearch() {},
+    hanldeSearch() {
+      this.sendHeadParams();
+    },
     /**
      * 重置
      */
     hanldeReset() {
       this.searchVal = "";
+      this.sendHeadParams();
     },
     /**
      * 只看复选框切换
      */
-    handleChange() {},
+    handleChange() {
+      this.sendHeadParams();
+    },
     /**
      * 时间视图切换
      */
     timeViewToggle(type) {
       this.timeViewType = type;
+      this.sendHeadParams();
     },
     /**
      * 初始化时间数据
@@ -173,7 +258,6 @@ export default {
       // 天数据
       this.curDate = today.format("YYYY-MM-DD");
       this.curMonthAndDay = today.format("MM月DD日");
-      console.log(this.curDate);
       this.curWeek = "周" + this.weekCn[today.isoWeekday() - 1];
       this.curYearAndMonth = today.format("YYYY年MM月");
       // 周数据
@@ -210,6 +294,7 @@ export default {
           );
         }
       }
+      this.sendHeadParams();
     },
   },
 };
@@ -347,7 +432,7 @@ export default {
             .avatar-empty {
               width: 100%;
               height: 100%;
-              background: #0086D9;
+              background: #0086d9;
               text-align: center;
               color: #fff;
               font-size: 12px;
@@ -355,7 +440,7 @@ export default {
             }
           }
           .leader-item-add {
-            border: 1px solid rgba(204,204,204,1);
+            border: 1px solid rgba(204, 204, 204, 1);
             border-radius: 2px;
             width: 28px;
             height: 28px;
@@ -370,7 +455,6 @@ export default {
             text-align: center;
           }
         }
-        
       }
     }
 
