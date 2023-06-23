@@ -19,7 +19,115 @@
           "type": "group",
           "text": "基本属性",
           "desc": "提供设置组件能达到展示效果的基本属性设置信息",
-          "children": []
+          "children": [
+            {
+              "type": "radio",
+              "styleType": "radio",
+              "layoutType": "inline",
+              "text": "斑马线",
+              "desc":"是否显示斑马线",
+              "bindKey": "stripe",
+              "default": true,
+              "dictionary": [
+                  {
+                      "label": "是",
+                      "value": true
+                  },
+                  {
+                      "label": "否",
+                      "value": false
+                  }
+              ]
+            },
+            {
+              "type": "colorPicker",
+              "layoutType": "block",
+              "text": "斑马线颜色",
+              "bindKey": "bgColorStripe",
+              "placeholder": "请选择颜色",
+              "default": {}
+            }
+          ]
+      },
+      {
+        "type": "group",
+        "text": "表格样式设置",
+        "children":[
+          {
+            "type": "group",
+            "text": "表头样式设置",
+            "children":[
+              {
+                "type": "input",
+                "layoutType": "inline",
+                "text": "高度",
+                "desc": "表头高度",
+                "bindKey": "heightTableHeader",
+                "default": ""
+              },
+              {
+                "type": "colorPicker",
+                "layoutType": "inline",
+                "text": "背景色",
+                "bindKey": "bgColorTableHeader",
+                "placeholder": "请选择颜色",
+                "default": {}
+              }
+            ]
+          },
+          {
+            "type": "group",
+            "text": "表体样式设置",
+            "children":[
+              {
+                "type": "input",
+                "layoutType": "inline",
+                "text": "表体高度",
+                "desc": "表体最大高度设置，超出时会出现滚动条",
+                "bindKey": "maxHeightTableBody",
+                "default": ""
+              }
+            ]
+          },
+          {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "表格高度",
+            "desc": "表格表头和表体的整体高度",
+            "bindKey": "heightTable",
+            "default": ""
+          }
+        ]
+      },
+      {
+        "type": "group",
+        "text": "底部标注样式设置",
+        "children":[
+          {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "高度",
+            "desc": "表格表头和表体的整体高度",
+            "bindKey": "heightFooter",
+            "default": ""
+          },
+          {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "左间距",
+            "desc": "元素相对于父元素的左间距",
+            "bindKey": "leftFooter",
+            "default": ""
+          },
+          {
+            "type": "input",
+            "layoutType": "inline",
+            "text": "右间距",
+            "desc": "元素相对于父元素的右间距",
+            "bindKey": "rightFooter",
+            "default": ""
+          }
+        ]
       },
       {
           "type": "group",

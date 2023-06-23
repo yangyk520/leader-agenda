@@ -11,10 +11,10 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader />
-    <AgendaTableVertical v-if="layoutType === 'vertical'"></AgendaTableVertical>
-    <AgendaTableHorizontal v-else></AgendaTableHorizontal>
+    <AgendaTableVertical :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" v-if="layoutType === 'vertical'"></AgendaTableVertical>
+    <AgendaTableHorizontal :propData="propData" v-else></AgendaTableHorizontal>
    </div>
-   <AgendaFooter></AgendaFooter>
+   <AgendaFooter :propData="propData"></AgendaFooter>
   </div>
 </template>
 
@@ -36,7 +36,9 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{},
-      layoutType: 'horizontal', // horizontal vertical
+      layoutType: 'vertical', // horizontal vertical
+      form_data: {},
+      setting_data: {}
     }
   },
   props: {
