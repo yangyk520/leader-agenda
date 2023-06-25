@@ -11,8 +11,8 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
-    <AgendaTableVertical :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" v-if="layoutType === 'horizontal'"></AgendaTableVertical>
-    <AgendaTableHorizontal :propData="propData" :moduleObject="moduleObject" v-else></AgendaTableHorizontal>
+    <AgendaTableVertical v-if="setting_data.layoutType == 'vertical'" :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
+    <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
    </div>
    <AgendaFooter :propData="propData"></AgendaFooter>
   </div>
@@ -36,9 +36,12 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{},
-      layoutType: 'vertical', // horizontal vertical
       form_data: {},
-      setting_data: {}
+      setting_data: {
+        layoutType: 'vertical',// horizontal vertical
+      },
+      header_list: [],
+      data_list: [],
     }
   },
   props: {
@@ -55,6 +58,8 @@ export default {
      */
     updateHeadParams(params){
       console.log(params,'更新头部组件参数')
+      this.form_data = params;
+      this.initData()
     },
     /**
      * 更新设置
@@ -210,30 +215,37 @@ export default {
      * 加载动态数据
      */
     initData(){
-      if (!this.moduleObject.env || this.moduleObject.env == "develop") {
-        setTimeout(() => {
-          // this.dealList(mock);
-        }, 500);
-      } else if (this.moduleObject.env === "production") {
-        let dataSource =
-          this.propData.dataSource && this.propData.dataSource[0];
-        if (!dataSource) {
-          return;
-        }
-        IDM.datasource.request(
-          dataSource.id,
-          {
-            moduleObject: this.moduleObject,
-            param: {},
-          },
-          (res) => {
-            console.log(res, "接口返回结果");
-          },
-          (res) => {
-            console.log(res, "请求失败");
-          }
-        );
+      if ( this.form_data.timeViewType == 'day' ) {
+        this.getDayInitData()
+      } else if ( this.form_data.timeViewType == "week" ) {
+        this.getWeekInitData()
       }
+    },
+    getDayInitData() {
+      IDM.http.get('/ctrl/leaderScheduleApi/getDaySchedule',{
+        date: this.form_data.dates
+      }).then((res) => {
+        if ( res.data.code == '200' ) {
+          this.header_list = res.data.data.header;
+          this.data_list = res.data.data.data;
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    getWeekInitData() {
+      let days_arr = this.form_data.dates.split(',');
+      let startDate = days_arr[0];
+      let endDate = days_arr[days_arr.length - 1];
+      IDM.http.get('/ctrl/leaderScheduleApi/getWeekSchedule',{
+        startDate: startDate,
+        endDate: endDate
+      }).then((res) => {
+        this.header_list = res.data.data.header;
+        this.data_list = res.data.data.data;
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     /**
      * 通用的获取表达式匹配后的结果
