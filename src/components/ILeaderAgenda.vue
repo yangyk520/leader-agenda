@@ -11,8 +11,13 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" :isPreview="isPreview" />
-    <AgendaTableVertical v-if="setting_data.layoutType == 'vertical'" :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
-    <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
+    <template v-if="setting_data.viewModel == 1">
+      <AgendaTableVertical v-if="setting_data.viewType == 1" :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
+      <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
+    </template>
+    <template v-else>
+
+    </template>
    </div>
    <AgendaFooter :propData="propData"></AgendaFooter>
   </div>
@@ -50,11 +55,23 @@ export default {
   },
   created() {
     this.moduleObject = this.$root.moduleObject;
+    this.getSettingData()
     this.initAttrToModule();
   },
   mounted() {},
   destroyed() {},
   methods:{
+    getSettingData() {
+      IDM.http.get('/ctrl/leaderScheduleApi/getViewConfigByPC',{
+
+      }).then((res) => {
+          if ( res.data.code == '200' ) {
+              this.setting_data = res.data.data || {};
+          }
+      }).catch((err) => {
+          console.log(err)
+      })
+    },
     /**
      * 更新头部组件参数
      */

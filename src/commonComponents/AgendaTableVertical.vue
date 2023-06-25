@@ -8,7 +8,7 @@
                 <div v-for="(item,index) in data_list" :key="index" class="row flex_between">
                     <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''">
                         <div v-if="item1.id == '0'" class="user_info">
-                            <div class="img_box">
+                            <div v-if="setting_data.leaderImageShow != 1" class="img_box">
                                 <img :src="getUserPhoto(item)" alt="">
                             </div>
                             <div class="name">{{ item.userName }}</div>
@@ -17,20 +17,20 @@
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div v-for="(item2,index2) in item.data[item1.id].data" :key="index2" class="active_list">
                                     <div class="row flex_start" :style="getStyleData(item2)">
-                                        <div class="img_box flex_center">
+                                        <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
                                             <img class="clock_img" src="@/assets/clock.png" alt="">
                                         </div>
-                                        <span class="time">{{ item2.time }}</span>
-                                        <span class="name">{{ item2.name }}</span>
+                                        <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
+                                        <span v-if="getShowStatus('1')" class="name">{{ item2.content }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
-                                        <div class="img_box flex_center">
+                                        <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
                                             <img class="address_img" src="@/assets/address.png" alt="">
                                         </div>
                                         <span class="address">
-                                            <span>{{ item2.place }}</span>
-                                            <span>参会人员：{{ item2.participants }}</span>
-                                            <span>会议内容：{{ item2.content }}</span>
+                                            <span v-if="getShowStatus('2')">{{ item2.place }}</span>
+                                            <span v-if="getShowStatus('4')">参会人员：{{ item2.participants }}</span>
+                                            <span v-if="getShowStatus('6')">会议内容：{{ item2.content }}</span>
                                         </span>
                                     </div>
                                     <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
@@ -42,7 +42,7 @@
                                 </div>
                             </div>
                             <div v-else class="empty">
-                                单位内办公
+                                {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? '' : '单位内办公' }}
                             </div>
                         </div>
                     </div>
@@ -59,7 +59,7 @@ export default {
     components: {
         // SvgIcon,
     },
-    props: [ 'propData','moduleObject','header_list','data_list' ],
+    props: [ 'propData','moduleObject','header_list','data_list','setting_data' ],
     watch: {
         propData: {
             handler: function() {
@@ -215,6 +215,17 @@ export default {
 
     },
     methods: {
+        getShowStatus(data) {
+            if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
+                if ( data == '6' && this.setting_data.busyDetailShow == 1 ) {
+                    return false
+                } else {
+                    return true
+                }   
+            } else {
+                return false
+            }
+        },
         getUserPhoto(item) {
             if ( item.photo ) {
                 return IDM.url.getWebPath(item.photo)

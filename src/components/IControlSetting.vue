@@ -22,7 +22,7 @@
                             纵向时间，横向领导
                         </a-radio>
                         <a-radio :value="1">
-                            纵向时间、横向领导
+                            纵向领导、横向时间
                         </a-radio>
                     </a-radio-group>
                 </div>
@@ -260,6 +260,11 @@ export default {
             })
         },
         save() {
+            if ( (!this.form.dateArea) || !this.form.dateArea.length ) {
+                IDM.message.warning('请填写区间维护数据')
+                return
+            }
+            
             let form = JSON.parse(JSON.stringify(this.form))
             form.viewColumn = form.viewColumnArr.join(',');
             form.dateArea && form.dateArea.forEach(item => {
