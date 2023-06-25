@@ -10,7 +10,7 @@
    :idm-ctrl-id="moduleObject.id"
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
-    <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
+    <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" :isPreview="isPreview" />
     <AgendaTableVertical v-if="setting_data.layoutType == 'vertical'" :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
     <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
    </div>
@@ -42,6 +42,8 @@ export default {
       },
       header_list: [],
       data_list: [],
+      // 查看/编辑 模式
+      isPreview: true
     }
   },
   props: {
@@ -114,7 +116,10 @@ export default {
     /**
      * 加载基本属性到组件中
      */
-    initBaseAttrToModule() {},
+    initBaseAttrToModule() {
+      const isPreview = IDM.url.queryString("isPreview");
+      this.isPreview = isPreview === '' || Boolean(isPreview);
+    },
     /**
      * 提供父级组件调用的刷新prop数据组件
      */

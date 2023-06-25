@@ -55,31 +55,35 @@
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
-        <div class="leader-container">
-          <div class="leader-item" v-for="(leader, l) in leaderList" :key="l">
+        <div class="leader-container" v-if="onlyView">
+          <div
+            class="leader-item"
+            :class="{ hidePhoto: !leaderImageShow, checked: leader.checked }"
+            v-for="(leader, l) in leaderList"
+            :key="l"
+            @click="handleLeaderClick(leader)"
+          >
             <div class="leader-item-photh">
               <img
-                v-if="leader.photoPath"
-                :src="IDM.url.getWebPath(item.photoPath)"
+                v-if="leader.photo"
+                :src="IDM.url.getWebPath(leader.photo)"
               />
               <div v-else class="avatar-empty">
-                <span>{{
-                  leader.userName.slice(leader.userName.length - 2)
-                }}</span>
+                <span>{{ leader.name.slice(leader.name.length - 2) }}</span>
               </div>
+              <span class="leader-checked" v-show="leader.checked"
+                ><svg-icon icon-class="checked"
+              /></span>
             </div>
-            <span>{{ leader.userName }}</span>
-          </div>
-          <div class="leader-item">
-            <div class="leader-item-add" @click="handleLeaderAdd">
-              <svg-icon icon-class="add" />
-            </div>
+            <span>{{ leader.name }}</span>
           </div>
         </div>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary">新增</span>
-        <span class="operation-btn">发布</span>
+        <span class="operation-btn primary" @click="handleAdd">新增</span>
+        <span class="operation-btn" @click="handlePublic" v-if="!isPreview"
+          >发布</span
+        >
         <span class="operation-btn">导出</span>
         <span class="operation-setting" @click="handleSetting"
           ><svg-icon icon-class="setting"
@@ -92,6 +96,16 @@
 import moment from "moment";
 export default {
   name: "AgendaHeader",
+  props: {
+    isPreview: {
+      type: Boolean,
+      default: true,
+    },
+    leaderImageShow: {
+      type: Boolean,
+      default: true,
+    },
+  },
   data() {
     return {
       // 时间视图
@@ -117,42 +131,95 @@ export default {
       // 搜索项
       searchVal: "",
       // 只看复选框
-      onlyView: true,
+      onlyView: false,
       // 领导列表
-      leaderList: [
-        {
-          userName: "张三",
-          userId: "101",
-          phothPath: "",
-        },
-        {
-          userName: "李四",
-          userId: "102",
-          phothPath: "",
-        },
-        {
-          userName: "王五",
-          userId: "103",
-          phothPath: "",
-        },
-        {
-          userName: "赵六",
-          userId: "104",
-          phothPath: "",
-        },
-        {
-          userName: "钱七七",
-          userId: "105",
-          phothPath: "",
-        },
-      ],
+      leaderList: [],
     };
   },
   created() {
+    this.getLeaderList();
     this.initTime(moment());
     this.sendHeadParams();
   },
   methods: {
+    /**
+     * 领导选中
+     */
+    handleLeaderClick(item) {
+      item.checked = !item.checked;
+      this.sendHeadParams();
+    },
+    /**
+     * 新增
+     */
+    handleAdd() {
+      IDM.layer.open({
+        type: 2,
+        area: ["1200px", "90%"],
+        content: IDM.url.getWebPath('ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0'),
+        success: function (layero, index) {
+          top.close = function () {
+            IDM.layer.close(index);
+            this.sendHeadParams();
+          };
+        },
+        end: function () {
+          this.sendHeadParams();
+        },
+      });
+    },
+    /**
+     * 发布
+     */
+    handlePublic() {
+      IDM.http
+        .get("/ctrl/ldrc/unit/publicRc", {
+          moduleid: "190409114616sUfJd7eIi2v4MBzdMc5",
+          sdate:
+            this.timeViewType === "day" ? this.curDate : this.weekList[0].date,
+          edate:
+            this.timeViewType === "day"
+              ? this.curDate
+              : this.weekList[this.weekList.length - 1].date,
+        })
+        .done((d) => {
+          if (d.data && d.data.flag) {
+            IDM.message.success("发布成功");
+            this.sendHeadParams();
+          } else {
+            IDM.message.warning("发布失败");
+          }
+        })
+        .error((response) => {
+          console.log("请求失败", response);
+          IDM.message.warning("发布失败");
+        })
+        .always((res) => {});
+    },
+    /**
+     * 请求领导列表
+     */
+    getLeaderList() {
+      IDM.http
+        .get("/ctrl/leaderScheduleApi/getLeaderUserInfoForMobile")
+        .done((d) => {
+          console.log("领导请求成功", d);
+          if (d.code == "200" && d.data) {
+            // d.data = d.data.slice(0,15)
+            this.leaderList = d.data.map((item) => {
+              return {
+                ...item,
+                checked: false,
+              };
+            });
+          }
+        })
+        .error((response) => {
+          console.log("领导请求失败", response);
+          this.leaderList = [];
+        })
+        .always((res) => {});
+    },
     /**
      * 设置按钮
      */
@@ -195,7 +262,16 @@ export default {
       } else {
         params.dates = this.weekList.map((item) => item.date).join(",");
       }
-      params.leaders = this.leaderList.map((item) => item.userId).join(",");
+
+      if (this.onlyView) {
+        const leaders = [];
+        this.leaderList.forEach((item) => {
+          if (item.checked) leaders.push(item.id);
+        });
+        params.leaders = leaders.join(",");
+      } else {
+        params.leaders = this.leaderList.map((item) => item.id).join(",");
+      }
       this.$emit("updateHeadParams", params);
     },
     /**
@@ -417,17 +493,55 @@ export default {
           flex-direction: column;
           align-items: center;
           width: 52px;
+          &.checked {
+            .leader-item-photh {
+              position: relative;
+
+              .leader-checked {
+                position: absolute;
+                top: -10px;
+                right: -10px;
+                color: #0080ff;
+                font-size: 12px;
+              }
+              img {
+                border: #0080ff 1px solid;
+                border-radius: 4px;
+              }
+            }
+          }
+          &.hidePhoto {
+            width: auto;
+            .leader-item-photh {
+              display: none;
+            }
+            span {
+              padding: 2px 12px;
+              background-color: #eee;
+              border-radius: 2px;
+              margin-right: 8px;
+              border: 1px solid transparent;
+            }
+
+            &.checked {
+              span {
+                border: 1px solid rgba(0, 134, 217, 1);
+                color: #0080ff;
+              }
+            }
+          }
           .leader-item-photh {
             width: 28px;
             height: 28px;
-            overflow: hidden;
             border-radius: 4px;
             cursor: pointer;
             margin-bottom: 4px;
+
             img {
               width: 100%;
               height: 100%;
               vertical-align: baseline;
+              border: transparent 1px solid;
             }
             .avatar-empty {
               width: 100%;
@@ -437,18 +551,10 @@ export default {
               color: #fff;
               font-size: 12px;
               line-height: 28px;
+              border-radius: 4px;
             }
           }
-          .leader-item-add {
-            border: 1px solid rgba(204, 204, 204, 1);
-            border-radius: 2px;
-            width: 28px;
-            height: 28px;
-            text-align: center;
-            line-height: 26px;
-            color: #999;
-            cursor: pointer;
-          }
+
           span {
             display: inline-block;
             white-space: nowrap;
