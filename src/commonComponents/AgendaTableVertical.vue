@@ -15,7 +15,7 @@
                         </div>
                         <div v-else class="active_block">
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
-                                <div v-for="(item2,index2) in item.data[item1.id].data" :key="index2" class="active_list">
+                                <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
                                     <div class="row flex_start" :style="getStyleData(item2)">
                                         <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
                                             <img class="clock_img" src="@/assets/clock.png" alt="">
@@ -59,7 +59,7 @@ export default {
     components: {
         // SvgIcon,
     },
-    props: [ 'propData','moduleObject','header_list','data_list','setting_data' ],
+    props: [ 'propData','moduleObject','header_list','data_list','setting_data','isPreview' ],
     watch: {
         propData: {
             handler: function() {
@@ -212,9 +212,41 @@ export default {
         }
     },
     created() {
-
+        console.log('isPreview',this.isPreview)
     },
     methods: {
+        getActiveList(data) {
+            if ( !this.isPreview ) {
+                return data
+            }
+            let result = [];
+            data.forEach(item => {
+                if ( item.state != 0 ) {
+                    result.push(item)
+                }
+            });
+            return result
+        },
+        editActive(item) {
+            if ( this.isPreview ) {
+                return
+            }
+            let that = this;
+            IDM.layer.open({
+                type: 2,
+                area: ["1200px", "90%"],
+                content: IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0&pk=${item.agendaId}`),
+                success: function (layero, index) {
+                    top.close = function () {
+                        IDM.layer.close(index);
+                        that.$emit('updateTableData')
+                    };
+                }
+                // end: function () {
+                //     that.$emit('updateTableData')
+                // },
+            });
+        },
         getShowStatus(data) {
             if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
                 if ( data == '6' && this.setting_data.busyDetailShow == 1 ) {
@@ -275,20 +307,24 @@ export default {
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .AgendaTableVertical_app .table .table_body', styleObjectBody);
             window.IDM.setStyleToPageHead(this.moduleObject.id + ' .AgendaTableVertical_app .table .table_body .row:nth-child(2n)', styleObjectBodyRow);
         },
+        getStyleDataCancel(item) {
+            var styleObject = {};
+            if ( item.state == 3 ) {
+                styleObject['text-decoration'] = 'line-through';
+            }
+            return styleObject
+        },
         getStyleData(item) {
             var styleObject = {};
-            switch (item.status) {
+            switch (item.state) {
                 case 1:
                     styleObject['color'] = '#0086D9';
                     break;
                 case 2:
                     styleObject['color'] = '#FFA500';
                     break
-                case 3:
+                case 0:
                     styleObject['color'] = '#E30000';
-                    break
-                case 4:
-                    styleObject['text-decoration'] = 'line-through';
                     break
                 default:
                     break;
@@ -308,9 +344,12 @@ export default {
             background: #F9FCFE;
             border-bottom: 1px solid rgba(230,230,230,1);
             .cell{
+                width: 100%;
                 height: 48px;
                 line-height: 48px;
                 flex-grow: 2;
+                flex-shrink: 1;
+                box-sizing: border-box;
                 font-size: 16px;
                 color: #333333;
                 letter-spacing: 0;
@@ -322,6 +361,7 @@ export default {
                 &:nth-child(1){
                     width: 152px;
                     flex-grow: 0;
+                    flex-shrink: 0;
                 }
             }
         }
@@ -410,7 +450,7 @@ export default {
                                 }
                             }
                             .time,.name{
-                                color: #0086D9;
+                                // color: #0086D9;
                             }
                         }
                     }

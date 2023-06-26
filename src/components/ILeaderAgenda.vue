@@ -12,14 +12,14 @@
    <div class="scroll_block">
     <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" :isPreview="isPreview" />
     <template v-if="setting_data.viewModel == 1">
-      <AgendaTableVertical v-if="setting_data.viewType == 1" :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
+      <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
       <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
     </template>
     <template v-else>
 
     </template>
    </div>
-   <AgendaFooter :propData="propData"></AgendaFooter>
+   <AgendaFooter :isPreview="isPreview" :propData="propData"></AgendaFooter>
   </div>
 </template>
 
@@ -61,6 +61,9 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    updateTableData() {
+      this.initData()
+    },
     getSettingData() {
       IDM.http.get('/ctrl/leaderScheduleApi/getViewConfigByPC',{
 
@@ -244,7 +247,10 @@ export default {
     },
     getDayInitData() {
       IDM.http.get('/ctrl/leaderScheduleApi/getDaySchedule',{
-        date: this.form_data.dates
+        date: this.form_data.dates,
+        content: this.form_data.searchVal,
+        userIds: this.form_data.leaders,
+        isPreview: this.isPreview
       }).then((res) => {
         if ( res.data.code == '200' ) {
           this.header_list = res.data.data.header;
@@ -260,7 +266,8 @@ export default {
       let endDate = days_arr[days_arr.length - 1];
       IDM.http.get('/ctrl/leaderScheduleApi/getWeekSchedule',{
         startDate: startDate,
-        endDate: endDate
+        endDate: endDate,
+        
       }).then((res) => {
         this.header_list = res.data.data.header;
         this.data_list = res.data.data.data;
