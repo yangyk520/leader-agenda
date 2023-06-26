@@ -177,11 +177,10 @@ export default {
      */
     handlePublic() {
       IDM.http
-        .get("/ctrl/ldrc/unit/publicRc", {
-          moduleid: "190409114616sUfJd7eIi2v4MBzdMc5",
-          sdate:
+        .get("/ctrl/leaderScheduleApi/batchPush", {
+          startDate:
             this.timeViewType === "day" ? this.curDate : this.weekList[0].date,
-          edate:
+          endDate:
             this.timeViewType === "day"
               ? this.curDate
               : this.weekList[this.weekList.length - 1].date,
