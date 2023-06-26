@@ -16,7 +16,7 @@
                         <div v-else class="active_block">
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                    <div class="row flex_start" :style="getStyleData(item2)">
+                                    <div class="row flex_start time_name_row" :style="getStyleData(item2)">
                                         <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
                                             <img class="clock_img" src="@/assets/clock.png" alt="">
                                         </div>
@@ -30,25 +30,24 @@
                                         </div>
                                         <span class="address">
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
-                                            <!-- <span v-if="getShowStatus('4')">参会人员：{{ item2.participants }}</span>
-                                            <span v-if="getShowStatus('6')">会议内容：{{ item2.content }}</span> -->
                                         </span>
-                                    </div>
-                                    <div v-if="getShowStatus('4')" class="row flex_start">
-                                        <div class="img_box flex_center">
-                                            <img class="address_img" src="@/assets/address.png" alt="">
-                                        </div>
-                                        <span class=""> {{ item2.participants }} </span>
                                     </div>
                                     <div v-if="getShowStatus('6')" class="row flex_start">
                                         <div class="img_box flex_center">
-                                            <img class="address_img" src="@/assets/address.png" alt="">
+                                            <img class="" src="@/assets/content.png" alt="">
                                         </div>
-                                        <span class=""> {{ item2.content }} </span>
+                                        <span class="address"> {{ item2.content }} </span>
                                     </div>
+                                    <div v-if="getShowStatus('4')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="" src="@/assets/participants.png" alt="">
+                                        </div>
+                                        <span class="address"> {{ item2.participants }} </span>
+                                    </div>
+                                    
                                     <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
                                         <div class="img_box flex_center">
-                                            <img class="clock_img" src="@/assets/busy.png" alt="">
+                                            <img class="" src="@/assets/busy.png" alt="">
                                         </div>
                                         <span class="busy">忙碌</span>
                                     </div>
@@ -427,9 +426,11 @@ export default {
                                 padding-bottom: 0;
                                 border-bottom: none;
                             }
-                            .svg-icon{
-                                font-size: 14px;
-                                margin-right: 5px;
+                            .time_name_row{
+                                 .svg-icon{
+                                    font-size: 14px;
+                                    margin-right: 5px;
+                                }
                             }
                             .address_block{
                                 align-items: flex-start;
@@ -443,11 +444,11 @@ export default {
                                 margin-top: 1px;
                             }
                             .time{
-                                margin-right: 10px;
+                                margin-right: 20px;
                             }
                             .img_box{
-                                width: 16px;
-                                height: 16px;
+                                width: 20px;
+                                height: 20px;
                                 margin-right: 5px;
                                 flex-shrink: 0;
                                 .clock_img{
@@ -457,6 +458,9 @@ export default {
                                 .address_img{
                                     width: 14px;
                                     height: 16px;
+                                }
+                                img{
+                                    width: 16px;
                                 }
                             }
                             .time,.name,.address,.busy{
@@ -472,9 +476,6 @@ export default {
                                         margin-left: 0;
                                     }
                                 }
-                            }
-                            .time,.name{
-                                // color: #0086D9;
                             }
                         }
                     }
