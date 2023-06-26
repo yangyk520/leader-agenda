@@ -1,6 +1,6 @@
 <template>
     <div class="AgendaFooter_app flex_center">
-        <div v-for="(item,index) in status_list" :key="index" class="status_list flex_start">
+        <div v-for="(item,index) in getStatusList" :key="index" class="status_list flex_start">
             <SvgIcon v-if="item.icon" :icon-class="item.icon"></SvgIcon>
             <span v-else class="circle" :style="getStyleData(item)"> </span>
             <span>{{ item.name }}</span>
@@ -14,6 +14,17 @@ export default {
     name: 'AgendaFooter',
     components: {
         SvgIcon,
+    },
+    props: [ 'isPreview' ],
+    computed: {
+        getStatusList: function() {
+            if ( !this.isPreview ) {
+                return this.status_list
+            }
+            return this.status_list.filter((item,index) => {
+                return index != 2
+            })
+        }
     },
     data() {
         return {
