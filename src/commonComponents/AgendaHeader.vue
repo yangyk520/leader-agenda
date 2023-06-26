@@ -51,7 +51,7 @@
         <span class="operation-btn primary" @click="hanldeSearch">检索</span>
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
-      <div class="operation-leader">
+      <div class="operation-leader" v-if="viewModel == 1 || timeViewType == 'day'">
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
@@ -105,6 +105,10 @@ export default {
       type: Boolean,
       default: true,
     },
+    viewModel:{
+      type: Number,
+      default:1
+    }
   },
   data() {
     return {
