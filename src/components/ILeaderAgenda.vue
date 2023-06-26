@@ -16,10 +16,10 @@
       <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableHorizontal>
     </template>
     <template v-else>
-      <AgendaTableList></AgendaTableList>
+      <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table"></AgendaTableList>
     </template>
    </div>
-   <AgendaFooter :isPreview="isPreview" :propData="propData"></AgendaFooter>
+   <AgendaFooter v-if="setting_data.viewModel == 1 || form_data.timeViewType == 'day'" :isPreview="isPreview" :propData="propData"></AgendaFooter>
   </div>
 </template>
 
@@ -49,6 +49,8 @@ export default {
       },
       header_list: [],
       data_list: [],
+      header_list_table: [],
+      data_list_table: [],
       // 查看/编辑 模式
       isPreview: true
     }
@@ -283,7 +285,20 @@ export default {
       })
     },
     getWeekInitDataTableList() {
-
+      let days_arr = this.form_data.dates.split(',');
+      let startDate = days_arr[0];
+      let endDate = days_arr[days_arr.length - 1];
+      IDM.http.get('/ctrl/leaderScheduleApi/getWeekScheduleInList',{
+        startDate: startDate,
+        endDate: endDate,
+        userIds: this.form_data.leaders,
+        content: this.form_data.searchVal
+      }).then((res) => {
+        this.header_list_table = res.data.data.header;
+        this.data_list_table = res.data.data.data;
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     /**
      * 通用的获取表达式匹配后的结果

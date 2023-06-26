@@ -7,11 +7,13 @@ import 'ant-design-vue/lib/radio/style/css';
 import 'ant-design-vue/lib/input/style/css';
 import 'ant-design-vue/lib/checkbox/style/css';
 import 'ant-design-vue/lib/time-picker/style/css';
-import { Radio,Checkbox,TimePicker } from 'ant-design-vue'
+import 'ant-design-vue/lib/empty/style/css';
+import { Radio,Checkbox,TimePicker,Empty } from 'ant-design-vue'
 
 /* v1.1.3+ registration methods */
 Vue.use(Base)
 Vue.use(Radio)
 Vue.use(Checkbox)
 Vue.use(TimePicker)
+Vue.use(Empty)
 
