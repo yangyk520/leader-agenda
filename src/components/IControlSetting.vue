@@ -130,6 +130,19 @@
                     </a-radio-group>
                 </div>
             </div>
+            <div class="row flex_start">
+                <div class="label">参与人员显示：</div>
+                <div class="content">
+                    <a-radio-group v-model="form.participantDisplay" @change="e => onChange(e,'participantDisplayText')">
+                        <a-radio value="1">
+                            人员名称
+                        </a-radio>
+                        <a-radio value="2">
+                            部门名称
+                        </a-radio>
+                    </a-radio-group>
+                </div>
+            </div>
         </div>
         <div class="button_block flex_end">
             <div @click="cancel()" class="button_list pointer">关闭</div>
@@ -552,7 +565,7 @@ export default {
                 margin-top: 0;
             }
             .label{
-                width: 80px;
+                width: 90px;
                 margin-right: 19px;
                 flex-shrink: 0;
                 white-space: nowrap;
