@@ -21,6 +21,7 @@
                                             <img class="clock_img" src="@/assets/clock.png" alt="">
                                         </div>
                                         <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
+                                        <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
                                         <span v-if="getShowStatus('1')" class="name">{{ item2.content }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
@@ -29,9 +30,21 @@
                                         </div>
                                         <span class="address">
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
-                                            <span v-if="getShowStatus('4')">参会人员：{{ item2.participants }}</span>
-                                            <span v-if="getShowStatus('6')">会议内容：{{ item2.content }}</span>
+                                            <!-- <span v-if="getShowStatus('4')">参会人员：{{ item2.participants }}</span>
+                                            <span v-if="getShowStatus('6')">会议内容：{{ item2.content }}</span> -->
                                         </span>
+                                    </div>
+                                    <div v-if="getShowStatus('4')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="address_img" src="@/assets/address.png" alt="">
+                                        </div>
+                                        <span class=""> {{ item2.participants }} </span>
+                                    </div>
+                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="address_img" src="@/assets/address.png" alt="">
+                                        </div>
+                                        <span class=""> {{ item2.content }} </span>
                                     </div>
                                     <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
                                         <div class="img_box flex_center">
@@ -57,7 +70,7 @@ import SvgIcon from '../icons/SvgIcon.vue';
 export default {
     name: 'AgendaTableVertical',
     components: {
-        // SvgIcon,
+        SvgIcon,
     },
     props: [ 'propData','moduleObject','header_list','data_list','setting_data','isPreview' ],
     watch: {
