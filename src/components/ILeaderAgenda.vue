@@ -11,7 +11,7 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" :isPreview="isPreview" />
-    <template v-if="setting_data.viewModel == 1">
+    <template v-if="setting_data.viewModel == 1 || form_data.timeViewType == 'day'">
       <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
       <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
     </template>
@@ -244,7 +244,11 @@ export default {
       if ( this.form_data.timeViewType == 'day' ) {
         this.getDayInitData()
       } else if ( this.form_data.timeViewType == "week" ) {
-        this.getWeekInitData()
+        if ( this.setting_data.viewModel == 1 ) {
+          this.getWeekInitData()
+        } else {
+          this.getWeekInitDataTableList()
+        }
       }
     },
     getDayInitData() {
@@ -277,6 +281,9 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    getWeekInitDataTableList() {
+
     },
     /**
      * 通用的获取表达式匹配后的结果
