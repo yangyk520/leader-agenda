@@ -13,7 +13,7 @@
     <AgendaHeader @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" :isPreview="isPreview" />
     <template v-if="setting_data.viewModel == 1 || form_data.timeViewType == 'day'">
       <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
-      <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
+      <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableHorizontal>
     </template>
     <template v-else>
       <AgendaTableList></AgendaTableList>
