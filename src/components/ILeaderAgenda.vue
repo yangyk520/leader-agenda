@@ -16,7 +16,7 @@
       <AgendaTableHorizontal v-else :header_list="header_list" :data_list="data_list" :propData="propData" :moduleObject="moduleObject"></AgendaTableHorizontal>
     </template>
     <template v-else>
-
+      <AgendaTableList></AgendaTableList>
     </template>
    </div>
    <AgendaFooter :isPreview="isPreview" :propData="propData"></AgendaFooter>
@@ -29,13 +29,15 @@ import AgendaHeader from "../commonComponents/AgendaHeader.vue"
 import AgendaTableVertical from '@/commonComponents/AgendaTableVertical.vue'
 import AgendaTableHorizontal from '@/commonComponents/AgendaTableHorizontal.vue'
 import AgendaFooter from '@/commonComponents/AgendaFooter.vue'
+import AgendaTableList from "@/commonComponents/AgendaTableList.vue"
 export default {
   name: 'ILeaderAgenda',
   components:{
     AgendaHeader,
     AgendaTableVertical,
     AgendaTableHorizontal,
-    AgendaFooter
+    AgendaFooter,
+    AgendaTableList
   },
   data(){
     return {
@@ -267,7 +269,8 @@ export default {
       IDM.http.get('/ctrl/leaderScheduleApi/getWeekSchedule',{
         startDate: startDate,
         endDate: endDate,
-        
+        userIds: this.form_data.leaders,
+        content: this.form_data.searchVal
       }).then((res) => {
         this.header_list = res.data.data.header;
         this.data_list = res.data.data.data;

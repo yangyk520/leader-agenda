@@ -2,11 +2,11 @@
     <div class="AgendaTableVertical_app">
         <div class="table">
             <div class="table_header flex_between">
-                <div v-for="(item,index) in header_list" :key="index" class="cell">{{ item.name }}</div>
+                <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,1)">{{ item.name }}</div>
             </div>
             <div class="table_body scroll_block">
                 <div v-for="(item,index) in data_list" :key="index" class="row flex_between">
-                    <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''">
+                    <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
                         <div v-if="item1.id == '0'" class="user_info">
                             <div v-if="setting_data.leaderImageShow != 1" class="img_box">
                                 <img :src="getUserPhoto(item)" alt="">
@@ -215,6 +215,17 @@ export default {
         console.log('isPreview',this.isPreview)
     },
     methods: {
+        getDomBg(item,is_header) {
+            var styleObject = {};
+            if ( item.week == '周六' || item.week == '周日' ) {
+                styleObject['background-color'] = '#FFFCF2';
+            }
+            if ( is_header ) {
+                styleObject['border-bottom'] = '1px solid rgb(230, 230, 230)';
+
+            }
+            return styleObject
+        },
         getActiveList(data) {
             if ( !this.isPreview ) {
                 return data
