@@ -118,7 +118,7 @@ export default {
      */
     initBaseAttrToModule() {
       const isPreview = IDM.url.queryString("isPreview");
-      this.isPreview = isPreview === '' || Boolean(isPreview);
+      this.isPreview = isPreview === '' || isPreview  == 1;
     },
     /**
      * 提供父级组件调用的刷新prop数据组件
