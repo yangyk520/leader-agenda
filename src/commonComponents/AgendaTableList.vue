@@ -126,6 +126,11 @@ export default {
                     flex-grow: 0;
                     flex-shrink: 0;
                 }
+                &:nth-child(3){
+                    width: 130px;
+                    flex-grow: 0;
+                    flex-shrink: 0;
+                }
             }
         }
         .table_body{
@@ -180,7 +185,15 @@ export default {
                                     flex-shrink: 1;
                                     box-sizing: border-box;
                                     padding: 0 12px;
+                                    white-space: nowrap;
+                                    overflow: hidden;
+                                    text-overflow: ellipsis;
                                     border-right: 1px solid rgba(230,230,230,1);
+                                    &:nth-child(1){
+                                        width: 130px;
+                                        flex-grow: 0;
+                                        flex-shrink: 0;
+                                    }
                                     &:last-child{
                                         border-right: none;
                                     }
