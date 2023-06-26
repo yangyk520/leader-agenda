@@ -134,8 +134,7 @@ export default {
      * 加载基本属性到组件中
      */
     initBaseAttrToModule() {
-      const isPreview = IDM.url.queryString("isPreview");
-      this.isPreview = isPreview === '' || isPreview  == 1;
+      this.isPreview = IDM.url.queryString("isPreview") == 1;
     },
     /**
      * 提供父级组件调用的刷新prop数据组件
