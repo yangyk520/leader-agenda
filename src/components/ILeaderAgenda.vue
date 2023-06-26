@@ -73,7 +73,9 @@ export default {
 
       }).then((res) => {
           if ( res.data.code == '200' ) {
-              this.setting_data = res.data.data || {};
+            this.setting_data = res.data.data || {};
+            this.setting_data.viewType = 2;
+            this.setting_data.viewModel = 1;
           }
       }).catch((err) => {
           console.log(err)

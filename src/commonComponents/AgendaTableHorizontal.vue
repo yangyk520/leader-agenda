@@ -6,7 +6,7 @@
             </div>
             <div class="table_body scroll_block">
                 <div v-for="(item,index) in data_list" :key="index" class="row flex_between">
-                    <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
+                    <div v-for="(item1,index1) in header_list" :key="index1" class="cell scroll_block" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
                         <div v-if="item1.id == '0'" class="user_info">
                             <div v-if="setting_data.leaderImageShow != 1" class="img_box">
                                 <img :src="getUserPhoto(item)" alt="">
@@ -16,12 +16,13 @@
                         <div v-else class="active_block">
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                    <div class="row flex_start" :style="getStyleData(item2)">
+                                    <div class="row flex_start time_name_row" :style="getStyleData(item2)">
                                         <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
                                             <img class="clock_img" src="@/assets/clock.png" alt="">
                                         </div>
                                         <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
-                                        <span v-if="getShowStatus('1')" class="name">{{ item2.content }}</span>
+                                        <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
+                                        <span v-if="getShowStatus('1')" class="name">{{ item2.bt }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
                                         <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
@@ -29,13 +30,30 @@
                                         </div>
                                         <span class="address">
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
-                                            <span v-if="getShowStatus('4')">参会人员：{{ item2.participants }}</span>
-                                            <span v-if="getShowStatus('6')">会议内容：{{ item2.content }}</span>
                                         </span>
                                     </div>
+                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="" src="@/assets/host.png" alt="">
+                                        </div>
+                                        <span class="address"> {{ item2.host }} </span>
+                                    </div>
+                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="" src="@/assets/content.png" alt="">
+                                        </div>
+                                        <span class="address"> {{ item2.content }} </span>
+                                    </div>
+                                    <div v-if="getShowStatus('4')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="" src="@/assets/participants.png" alt="">
+                                        </div>
+                                        <span class="address"> {{ item2.participants }} </span>
+                                    </div>
+                                    
                                     <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
                                         <div class="img_box flex_center">
-                                            <img class="clock_img" src="@/assets/busy.png" alt="">
+                                            <img class="" src="@/assets/busy.png" alt="">
                                         </div>
                                         <span class="busy">忙碌</span>
                                     </div>
@@ -57,7 +75,7 @@ import SvgIcon from '../icons/SvgIcon.vue';
 export default {
     name: 'AgendaTableVertical',
     components: {
-        // SvgIcon,
+        SvgIcon,
     },
     props: [ 'propData','moduleObject','header_list','data_list','setting_data','isPreview' ],
     watch: {
@@ -239,14 +257,14 @@ export default {
             return result
         },
         editActive(item) {
-            if ( this.isPreview ) {
+            if ( this.isPreview || !item.clickUrl ) {
                 return
             }
             let that = this;
             IDM.layer.open({
                 type: 2,
                 area: ["1200px", "90%"],
-                content: IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0&pk=${item.agendaId}`),
+                content: IDM.url.getWebPath(item.clickUrl),
                 success: function (layero, index) {
                     top.close = function () {
                         IDM.layer.close(index);
@@ -358,7 +376,7 @@ export default {
             text-align: center;
             background: #F9FCFE;
             .cell{
-              min-height: 200px;
+                min-height: 200px;
                 width: 100%;
                 flex-grow: 2;
                 flex-shrink: 1;
@@ -402,83 +420,88 @@ export default {
                   border-right: none;
                 }
                 .cell{
-                   width: 100%;
+                    width: 100%;
+                    // height: 200px;
                     box-sizing: border-box;
                     padding: 12px 12px 16px 12px;
                     border-bottom: 1px solid rgba(230,230,230,1);
+                    flex-grow: 2;
+                    flex-shrink: 1;
+                    overflow: auto;
                     &:last-child{
                       border-bottom: none;
                     }
                     &:nth-child(1){
-                        // width: 152px;
                         height: 64px;
                         flex-grow: 0;
                         flex-shrink: 0;
                         padding: 12px;
                         text-align: center;
-                        
+                        overflow: hidden;
                     }
                     
                     .active_block{
-                        .active_list{
-                            margin-bottom: 16px;
-                            padding-bottom: 16px;
-                            border-bottom: 1px dotted #979797;
-                            &:last-child{
-                                margin-bottom: 0;
-                                padding-bottom: 0;
-                                border-bottom: none;
-                            }
-                            .svg-icon{
-                                font-size: 14px;
-                                margin-right: 5px;
-                            }
-                            .address_block{
-                                align-items: flex-start;
-                                .address_img{
-                                    flex-shrink: 0;
-                                    position: relative;
-                                    top: 3px;
-                                }
-                            }
-                            .busy_block{
-                                margin-top: 1px;
-                            }
-                            .time{
-                                margin-right: 10px;
-                            }
-                            .img_box{
-                                width: 16px;
-                                height: 16px;
-                                margin-right: 5px;
-                                flex-shrink: 0;
-                                .clock_img{
-                                    width: 16px;
-                                    height: 16px;
-                                }
-                                .address_img{
-                                    width: 14px;
-                                    height: 16px;
-                                }
-                            }
-                            .time,.name,.address,.busy{
-                                font-size: 16px;
-                                line-height: 22px;
-                                font-weight: 400;
-                                word-wrap: break-word;
-                            }
-                            .address{
-                                span{
-                                    margin-left: 30px;
-                                    &:nth-child(1){
-                                        margin-left: 0;
-                                    }
-                                }
-                            }
-                            .time,.name{
-                                // color: #0086D9;
-                            }
-                        }
+                      .active_list{
+                          margin-bottom: 16px;
+                          padding-bottom: 16px;
+                          border-bottom: 1px dotted #979797;
+                          &:last-child{
+                              margin-bottom: 0;
+                              padding-bottom: 0;
+                              border-bottom: none;
+                          }
+                          .time_name_row{
+                                .svg-icon{
+                                  font-size: 14px;
+                                  margin-right: 5px;
+                              }
+                          }
+                          .address_block{
+                              align-items: flex-start;
+                              .address_img{
+                                  flex-shrink: 0;
+                                  position: relative;
+                                  top: 3px;
+                              }
+                          }
+                          .busy_block{
+                              margin-top: 1px;
+                          }
+                          .time{
+                              margin-right: 20px;
+                          }
+                          .img_box{
+                              width: 20px;
+                              height: 20px;
+                              margin-right: 5px;
+                              flex-shrink: 0;
+                              .clock_img{
+                                  width: 16px;
+                                  height: 16px;
+                              }
+                              .address_img{
+                                  width: 14px;
+                                  height: 16px;
+                              }
+                              img{
+                                  width: 16px;
+                              }
+                          }
+                          .time,.name,.address,.busy{
+                              font-size: 16px;
+                              line-height: 22px;
+                              font-weight: 400;
+                              word-wrap: break-word;
+                          }
+                          .address{
+                              span{
+                                  margin-left: 30px;
+                                  &:nth-child(1){
+                                      margin-left: 0;
+                                  }
+                              }
+                          }
+                      }
                     }
                     .user_info{
                       display: flex;
