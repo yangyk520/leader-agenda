@@ -22,7 +22,7 @@
                                         </div>
                                         <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
                                         <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
-                                        <span v-if="getShowStatus('1')" class="name">{{ item2.content }}</span>
+                                        <span v-if="getShowStatus('1')" class="name">{{ item2.bt }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
                                         <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
@@ -31,6 +31,12 @@
                                         <span class="address">
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
                                         </span>
+                                    </div>
+                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                        <div class="img_box flex_center">
+                                            <img class="" src="@/assets/host.png" alt="">
+                                        </div>
+                                        <span class="address"> {{ item2.host }} </span>
                                     </div>
                                     <div v-if="getShowStatus('6')" class="row flex_start">
                                         <div class="img_box flex_center">
@@ -251,14 +257,14 @@ export default {
             return result
         },
         editActive(item) {
-            if ( this.isPreview ) {
+            if ( this.isPreview || !item.clickUrl ) {
                 return
             }
             let that = this;
             IDM.layer.open({
                 type: 2,
                 area: ["1200px", "90%"],
-                content: IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0&pk=${item.agendaId}`),
+                content: IDM.url.getWebPath(item.clickUrl),
                 success: function (layero, index) {
                     top.close = function () {
                         IDM.layer.close(index);
