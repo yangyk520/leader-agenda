@@ -157,13 +157,13 @@ export default {
         type: 2,
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath('ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0'),
-        success: function (layero, index) {
-          top.close = function () {
+        success: (layero, index) => {
+          top.close = () => {
             IDM.layer.close(index);
             this.sendHeadParams();
           };
         },
-        end: function () {
+        end: () => {
           this.sendHeadParams();
         },
       });
