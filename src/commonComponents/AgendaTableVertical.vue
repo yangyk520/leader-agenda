@@ -32,7 +32,7 @@
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
                                         </span>
                                     </div>
-                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                    <div v-if="getShowStatus('3')" class="row flex_start">
                                         <div class="img_box flex_center">
                                             <img class="" src="@/assets/host.png" alt="">
                                         </div>
