@@ -561,6 +561,7 @@ export default {
               height: 100%;
               vertical-align: baseline;
               border: transparent 1px solid;
+              object-fit: cover;
             }
             .avatar-empty {
               width: 100%;
