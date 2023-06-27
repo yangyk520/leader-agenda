@@ -51,7 +51,10 @@
         <span class="operation-btn primary" @click="hanldeSearch">检索</span>
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
-      <div class="operation-leader" v-if="viewModel == 1 || timeViewType == 'day'">
+      <div
+        class="operation-leader"
+        v-if="viewModel == 1 || timeViewType == 'day'"
+      >
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
@@ -105,16 +108,16 @@ export default {
       type: Boolean,
       default: true,
     },
-    viewModel:{
+    viewModel: {
       type: Number,
-      default:1
+      default: 1,
     },
-    moduleObject:{
+    moduleObject: {
       type: Object,
-      default(){
-        return {}
-      }
-    }
+      default() {
+        return {};
+      },
+    },
   },
   data() {
     return {
@@ -166,7 +169,9 @@ export default {
       IDM.layer.open({
         type: 2,
         area: ["1200px", "90%"],
-        content: IDM.url.getWebPath('ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0'),
+        content: IDM.url.getWebPath(
+          "ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0"
+        ),
         success: (layero, index) => {
           top.close = () => {
             IDM.layer.close(index);
@@ -234,27 +239,30 @@ export default {
      */
     handleSetting() {
       //组件内调用
-      IDM.broadcast.openControlSetPanel({
+      const controlSetPanelId = IDM.broadcast.openControlSetPanel({
         //如果要想打开IDM内置的控制中心，则此处url必须为空。
-        url: IDM.url.getContextWebUrl("p1000/idm/index.html#/preview/230625182026UjkhYa6n1x36dkUpPIw"),
+        url: IDM.url.getContextWebUrl(
+          "p1000/idm/index.html#/preview/230625182026UjkhYa6n1x36dkUpPIw"
+        ),
         param: {
-          marketModuleId:this.moduleObject.comId,
+          marketModuleId: this.moduleObject.comId,
           pageId: IDM.broadcast.pageModule.id,
-          packageid:this.moduleObject.packageid
+          packageid: this.moduleObject.packageid,
         },
         showTop: true,
-        success: function (res) {},
-        yes: function (res) {
-          //确定后控制中心的表单数据保存了，可以再次调用获取方法获取已经保存的个性化组件属性
-        },
-        reset: function (res) {
-          //重置后可重新获取到初始值
-        },
-        other: function (res) {
-          //关闭或其他按钮触发回调方法
+        success: (res) =>  {},
+        yes: (res) => {},
+        reset: (res) =>  {},
+        other: (res) =>{
+          console.log("执行other")
           this.$emit("updateSetting");
         },
       });
+      // top.closeAgendaSettingPanel = () => {
+      //   console.log("执行closeAgendaSettingPanel");
+      //   this.$emit("updateSetting");
+      //   IDM.broadcast.closeControlSetPanel(controlSetPanelId);
+      // };
     },
     /**
      * 向父组件发送参数
