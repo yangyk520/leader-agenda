@@ -333,6 +333,7 @@ export default {
           const row = {
             id: time.id,
             name: time.name,
+            week: time.week,
             data:{}
           }
            list.forEach(inner=>{

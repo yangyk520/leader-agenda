@@ -33,10 +33,10 @@
       <tbody>
         <tr v-for="(time, ti) in data_list" :key="ti">
           <template v-for="(header, hi) in header_list">
-            <td v-if="header.userId == 0" class="td-time" :key="hi">
+            <td v-if="header.userId == 0" class="td-time" :key="hi" :style="getDomBg(time,1)">
               <span>{{ time.name }}</span>
             </td>
-            <td v-else :key="hi" class="active_block">
+            <td v-else :key="hi" class="active_block" :style="getDomBg(time)">
               <div
                 v-if="
                   time.data &&
