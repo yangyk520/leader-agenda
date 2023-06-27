@@ -20,9 +20,9 @@
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="clock"></SvgIcon>
                                         </div>
-                                        <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
-                                        <div v-if="getShowStatus('1',item2)" class="flex_start">
-                                            <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
+                                        <div>
+                                            <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
+                                            <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
                                             <span class="name">{{ item2.bt }}</span>
                                         </div>
                                     </div>
