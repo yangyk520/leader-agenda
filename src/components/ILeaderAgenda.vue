@@ -13,7 +13,7 @@
     <AgendaHeader :moduleObject="moduleObject" :isPreview="isPreview" :viewModel="setting_data.viewModel"  @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
     <template v-if="setting_data.viewModel == 1">
       <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
-      <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableHorizontal>
+      <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list_horizontal" :data_list="data_list_horizontal"></AgendaTableHorizontal>
     </template>
     <template v-else>
       <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table"></AgendaTableList>
@@ -51,6 +51,8 @@ export default {
       data_list: [],
       header_list_table: [],
       data_list_table: [],
+      header_list_horizontal: [],
+      data_list_horizontal: [],
       // 查看/编辑 模式
       isPreview: true
     }
@@ -265,6 +267,8 @@ export default {
         if ( res.data.code == '200' ) {
           this.header_list = res.data.data.header;
           this.data_list = res.data.data.data;
+
+          this.formatHorizontalData(res.data.data.header,res.data.data.data)
         }
       }).catch((err) => {
         console.log(err)
@@ -282,6 +286,8 @@ export default {
       }).then((res) => {
         this.header_list = res.data.data.header;
         this.data_list = res.data.data.data;
+
+        this.formatHorizontalData(res.data.data.header,res.data.data.data)
       }).catch((err) => {
         console.log(err)
       })
@@ -301,6 +307,41 @@ export default {
       }).catch((err) => {
         console.log(err)
       })
+    },
+    /**
+     * 格式化水平表格数据
+     */
+    formatHorizontalData(header,list){
+      this.header_list_horizontal = [
+        {
+          userId: 0,
+          userName:'时间'
+        }
+      ];
+      
+      list.forEach(item=>{
+        this.header_list_horizontal.push({
+          userId: item.userId,
+          userName: item.userName,
+          photo: item.photo
+        })
+      });
+
+      this.data_list_horizontal = [];
+      header.forEach((time,index) => {
+        if(index>0){
+          const row = {
+            id: time.id,
+            name: time.name,
+            data:{}
+          }
+           list.forEach(inner=>{
+            row.data[inner.userId] = inner.data[time.id]
+          });
+          this.data_list_horizontal.push(row)
+        }
+      })
+      console.log(this.data_list_horizontal,789)
     },
     /**
      * 通用的获取表达式匹配后的结果
