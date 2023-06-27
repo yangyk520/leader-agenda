@@ -310,12 +310,11 @@ export default {
             })
         },
         delateRangeData(item,index) {
-            this.form.range_data.splice(index,1)
+            this.form.dateArea.splice(index,1)
         },
         
         editRange(item) {
             this.$set(item,'editable',true)
-            console.log(item)
         },
         cancelEdit(item) {
             if ( !item.showName ) {
