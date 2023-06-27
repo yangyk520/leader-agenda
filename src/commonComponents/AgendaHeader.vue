@@ -233,6 +233,7 @@ export default {
      * 设置按钮
      */
     handleSetting() {
+      let that = this;
       //组件内调用
       IDM.broadcast.openControlSetPanel({
         //如果要想打开IDM内置的控制中心，则此处url必须为空。
@@ -252,7 +253,7 @@ export default {
         },
         other: function (res) {
           //关闭或其他按钮触发回调方法
-          this.$emit("updateSetting");
+          that.$emit("updateSetting");
         },
       });
     },
