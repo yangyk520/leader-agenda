@@ -68,12 +68,15 @@ export default {
     updateTableData() {
       this.initData()
     },
-    getSettingData() {
+    getSettingData(is_update_table_data) {
       IDM.http.get('/ctrl/leaderScheduleApi/getViewConfigByPC',{
 
       }).then((res) => {
           if ( res.data.code == '200' ) {
             this.setting_data = res.data.data || {};
+            if ( is_update_table_data ) {
+              this.initData()
+            }
           }
       }).catch((err) => {
           console.log(err)
@@ -92,6 +95,7 @@ export default {
      */
     updateSetting(){
       console.log('更新设置')
+      this.getSettingData(1)
     },
     /**
      * 对属性设置进行初始化
