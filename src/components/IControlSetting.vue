@@ -310,16 +310,26 @@ export default {
             })
         },
         delateRangeData(item,index) {
-            this.form.range_data.splice(index,1)
+            this.form.dateArea.splice(index,1)
         },
         
         editRange(item) {
             this.$set(item,'editable',true)
-            console.log(item)
         },
         cancelEdit(item) {
+            if ( !item.showName ) {
+                IDM.message.warning('请输入区间名称')
+                return
+            }
+            if ( !item.beginTime ) {
+                IDM.message.warning('请选择区间开始时间')
+                return
+            }
+            if ( !item.endTime ) {
+                IDM.message.warning('请选择区间结束时间')
+                return
+            }
             item.editable = false;
-
         },
         /**
          * 提供父级组件调用的刷新prop数据组件
@@ -633,6 +643,8 @@ export default {
                     border-top: 1px solid #E6E6E6;
                 }
                 .cell{
+                    width: 100%;
+                    flex-shrink: 1;
                     padding: 0 5px;
                 }
                 .operate{

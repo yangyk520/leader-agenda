@@ -16,42 +16,44 @@
                         <div v-else class="active_block">
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                    <div class="row flex_start time_name_row" :style="getStyleData(item2)">
-                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                    <div v-if="getShowStatus('0',item2) || getShowStatus('1')" class="row flex_start time_name_row" :style="getStyleData(item2)">
+                                        <div class="svg_box flex_center">
                                             <SvgIcon icon-class="clock"></SvgIcon>
                                         </div>
-                                        <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
-                                        <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
-                                        <span v-if="getShowStatus('1')" class="name">{{ item2.bt }}</span>
+                                        <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
+                                        <div v-if="getShowStatus('1',item2)" class="flex_start">
+                                            <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
+                                            <span class="name">{{ item2.bt }}</span>
+                                        </div>
                                     </div>
-                                    <div class="row flex_start address_block">
-                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                    <div v-if="getShowStatus('2',item2)" class="row flex_start address_block">
+                                        <div class="svg_box flex_center">
                                             <SvgIcon icon-class="address"></SvgIcon>
                                         </div>
                                         <span class="address">
-                                            <span v-if="getShowStatus('2')">{{ item2.place }}</span>
+                                            <span >{{ item2.place }}</span>
                                         </span>
                                     </div>
-                                    <div v-if="getShowStatus('3')" class="row flex_start">
+                                    <div v-if="getShowStatus('3',item2)" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="host"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.host }} </span>
                                     </div>
-                                    <div v-if="getShowStatus('6')" class="row flex_start">
+                                    <div v-if="getShowStatus('6',item2)" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="content"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.content }} </span>
                                     </div>
-                                    <div v-if="getShowStatus('4')" class="row flex_start">
+                                    <div v-if="getShowStatus('4',item2)" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="participants"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.participants }} </span>
                                     </div>
                                     
-                                    <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
+                                    <div v-if="item2.isBusy == '1' && setting_data.busyDetailShow == 1" class="row flex_start busy_block">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="busy"></SvgIcon>
                                         </div>
@@ -276,9 +278,9 @@ export default {
                 // },
             });
         },
-        getShowStatus(data) {
+        getShowStatus(data,item) {
             if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
-                if ( data == '6' && this.setting_data.busyDetailShow == 1 ) {
+                if ( data != '0' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
                     return false
                 } else {
                     return true
@@ -437,6 +439,9 @@ export default {
                                     font-size: 14px;
                                     margin-right: 5px;
                                 }
+                            }
+                            &>.row{
+                                align-items: flex-start;
                             }
                             .address_block{
                                 align-items: flex-start;

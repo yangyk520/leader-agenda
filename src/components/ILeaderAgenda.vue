@@ -19,7 +19,7 @@
       <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table"></AgendaTableList>
     </template>
    </div>
-   <AgendaFooter v-if="setting_data.viewModel == 1" :isPreview="isPreview" :propData="propData"></AgendaFooter>
+   <AgendaFooter v-if="setting_data.viewModel == 1 && setting_data.iconDescShow === 0" :isPreview="isPreview" :propData="propData"></AgendaFooter>
   </div>
 </template>
 
