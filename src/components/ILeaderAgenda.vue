@@ -393,8 +393,8 @@ export default {
   height: 100%;
   background: #FFFFFF;
   overflow-y: auto;
-  border: 1px solid rgba(230,230,230,1);
-  box-shadow: 0px 2px 12px 0px rgba(0,0,0,0.07);
+  // border: 1px solid rgba(230,230,230,1);
+  // box-shadow: 0px 2px 12px 0px rgba(0,0,0,0.07);
   .scroll_block{
     height: 100%;
     overflow-y: auto;
