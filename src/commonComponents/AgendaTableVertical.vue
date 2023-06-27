@@ -438,6 +438,9 @@ export default {
                                     margin-right: 5px;
                                 }
                             }
+                            &>.row{
+                                align-items: flex-start;
+                            }
                             .address_block{
                                 align-items: flex-start;
                                 .address_img{
