@@ -238,6 +238,7 @@ export default {
      * 设置按钮
      */
     handleSetting() {
+      let that = this;
       //组件内调用
       const controlSetPanelId = IDM.broadcast.openControlSetPanel({
         //如果要想打开IDM内置的控制中心，则此处url必须为空。

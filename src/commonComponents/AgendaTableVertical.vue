@@ -17,43 +17,43 @@
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
                                     <div class="row flex_start time_name_row" :style="getStyleData(item2)">
-                                        <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
-                                            <img class="clock_img" src="@/assets/clock.png" alt="">
+                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                            <SvgIcon icon-class="clock"></SvgIcon>
                                         </div>
                                         <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
                                         <SvgIcon v-if="item2.hasAnnex" icon-class="file"></SvgIcon>
                                         <span v-if="getShowStatus('1')" class="name">{{ item2.bt }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
-                                        <div v-if="!setting_data.iconDescShow" class="img_box flex_center">
-                                            <img class="address_img" src="@/assets/address.png" alt="">
+                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                            <SvgIcon icon-class="address"></SvgIcon>
                                         </div>
                                         <span class="address">
                                             <span v-if="getShowStatus('2')">{{ item2.place }}</span>
                                         </span>
                                     </div>
                                     <div v-if="getShowStatus('3')" class="row flex_start">
-                                        <div class="img_box flex_center">
-                                            <img class="" src="@/assets/host.png" alt="">
+                                        <div class="svg_box flex_center">
+                                            <SvgIcon icon-class="host"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.host }} </span>
                                     </div>
                                     <div v-if="getShowStatus('6')" class="row flex_start">
-                                        <div class="img_box flex_center">
-                                            <img class="" src="@/assets/content.png" alt="">
+                                        <div class="svg_box flex_center">
+                                            <SvgIcon icon-class="content"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.content }} </span>
                                     </div>
                                     <div v-if="getShowStatus('4')" class="row flex_start">
-                                        <div class="img_box flex_center">
-                                            <img class="" src="@/assets/participants.png" alt="">
+                                        <div class="svg_box flex_center">
+                                            <SvgIcon icon-class="participants"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.participants }} </span>
                                     </div>
                                     
                                     <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
-                                        <div class="img_box flex_center">
-                                            <img class="" src="@/assets/busy.png" alt="">
+                                        <div class="svg_box flex_center">
+                                            <SvgIcon icon-class="busy"></SvgIcon>
                                         </div>
                                         <span class="busy">忙碌</span>
                                     </div>
@@ -452,21 +452,14 @@ export default {
                             .time{
                                 margin-right: 20px;
                             }
-                            .img_box{
+                            .svg_box{
                                 width: 20px;
                                 height: 20px;
                                 margin-right: 5px;
                                 flex-shrink: 0;
-                                .clock_img{
-                                    width: 16px;
-                                    height: 16px;
-                                }
-                                .address_img{
-                                    width: 14px;
-                                    height: 16px;
-                                }
-                                img{
-                                    width: 16px;
+                                .svg-icon{
+                                    font-size: 16px;
+                                    margin: 0;
                                 }
                             }
                             .time,.name,.address,.busy{

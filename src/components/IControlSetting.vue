@@ -523,7 +523,7 @@ export default {
 .IControlSetting_app{
     height: 100%;
     position: relative;
-    padding: 0 20px;
+    padding: 0 20px 72px 20px;
     font-family: PingFangSC-Regular;
     .button_block{
         height: 52px;
@@ -533,6 +533,8 @@ export default {
         bottom: 0;
         padding-right: 24px;
         box-shadow: 0 0px 10px rgb(0 0 0 / 10%);
+        background-color: white;
+        z-index: 10000;
         .button_list{
             width: 88px;
             height: 38px;
