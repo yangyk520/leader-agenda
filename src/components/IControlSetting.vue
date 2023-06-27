@@ -644,6 +644,8 @@ export default {
                     border-top: 1px solid #E6E6E6;
                 }
                 .cell{
+                    width: 100%;
+                    flex-shrink: 1;
                     padding: 0 5px;
                 }
                 .operate{
