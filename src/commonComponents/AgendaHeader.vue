@@ -198,7 +198,7 @@ export default {
               : this.weekList[this.weekList.length - 1].date,
         })
         .done((d) => {
-          if (d.data && d.data.flag) {
+          if (d.code == '200') {
             IDM.message.success("发布成功");
             this.sendHeadParams();
           } else {
