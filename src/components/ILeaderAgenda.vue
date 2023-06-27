@@ -59,7 +59,7 @@ export default {
   },
   created() {
     this.moduleObject = this.$root.moduleObject;
-    this.getSettingData()
+    // this.getSettingData(1)
     this.initAttrToModule();
   },
   mounted() {},
@@ -88,7 +88,7 @@ export default {
     updateHeadParams(params){
       console.log(params,'更新头部组件参数')
       this.form_data = params;
-      this.initData()
+      this.getSettingData(1)
     },
     /**
      * 更新设置
