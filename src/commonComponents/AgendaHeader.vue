@@ -53,7 +53,7 @@
       </div>
       <div
         class="operation-leader"
-        v-if="viewModel == 1 || timeViewType == 'day'"
+        v-if="viewModel == 1"
       >
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
@@ -168,6 +168,7 @@ export default {
     handleAdd() {
       IDM.layer.open({
         type: 2,
+        title:['单位领导活动', 'font-size:18px;'],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(
           "ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0"
