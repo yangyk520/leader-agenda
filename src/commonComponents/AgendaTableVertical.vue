@@ -257,7 +257,7 @@ export default {
             return result
         },
         editActive(item) {
-            if ( this.isPreview || !item.clickUrl ) {
+            if ( !item.clickUrl ) {
                 return
             }
             let that = this;
