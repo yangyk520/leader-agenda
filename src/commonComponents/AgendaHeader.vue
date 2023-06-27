@@ -108,6 +108,12 @@ export default {
     viewModel:{
       type: Number,
       default:1
+    },
+    moduleObject:{
+      type: Object,
+      default(){
+        return {}
+      }
     }
   },
   data() {
@@ -230,11 +236,11 @@ export default {
       //组件内调用
       IDM.broadcast.openControlSetPanel({
         //如果要想打开IDM内置的控制中心，则此处url必须为空。
-        url: "",
+        url: IDM.url.getContextWebUrl("p1000/idm/index.html#/preview/230625182026UjkhYa6n1x36dkUpPIw"),
         param: {
-          marketModuleId: this.moduleObject.comId,
+          marketModuleId:this.moduleObject.comId,
           pageId: IDM.broadcast.pageModule.id,
-          packageid: this.moduleObject.packageid,
+          packageid:this.moduleObject.packageid
         },
         showTop: true,
         success: function (res) {},
