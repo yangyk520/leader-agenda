@@ -367,10 +367,13 @@ export default {
 </script>
 <style lang="scss" scoped>
 .AgendaTableVertical_app{
+    height: calc(100% - 108px);
     .table{
+        height: 100%;
         border: 1px solid rgba(230,230,230,1);
         .table_header{
             height: 48px;
+            padding-right: 8px;
             text-align: center;
             background: #F9FCFE;
             border-bottom: 1px solid rgba(230,230,230,1);
@@ -397,7 +400,7 @@ export default {
             }
         }
         .table_body{
-            // max-height: 300px;
+            height: calc(100% - 48px);
             overflow: auto;
             &>.row{
                 border-bottom: 1px solid rgba(230,230,230,1);
