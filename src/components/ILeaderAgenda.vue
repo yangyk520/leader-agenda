@@ -11,7 +11,7 @@
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
     <AgendaHeader :moduleObject="moduleObject" :isPreview="isPreview" :viewModel="setting_data.viewModel"  @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
-    <template v-if="setting_data.viewModel == 1 || form_data.timeViewType == 'day'">
+    <template v-if="setting_data.viewModel == 1">
       <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
       <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableHorizontal>
     </template>
@@ -19,7 +19,7 @@
       <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table"></AgendaTableList>
     </template>
    </div>
-   <AgendaFooter v-if="setting_data.viewModel == 1 || form_data.timeViewType == 'day'" :isPreview="isPreview" :propData="propData"></AgendaFooter>
+   <AgendaFooter v-if="setting_data.viewModel == 1" :isPreview="isPreview" :propData="propData"></AgendaFooter>
   </div>
 </template>
 
@@ -218,8 +218,6 @@ export default {
         }
       }
       window.IDM.setStyleToPageHead(this.moduleObject.id,styleObject);
-      
-      this.initData();
     },
     /**
      * 通用的url参数对象
@@ -247,14 +245,14 @@ export default {
      * 加载动态数据
      */
     initData(){
-      if ( this.form_data.timeViewType == 'day' ) {
-        this.getDayInitData()
-      } else if ( this.form_data.timeViewType == "week" ) {
-        if ( this.setting_data.viewModel == 1 ) {
-          this.getWeekInitData()
+      if ( this.setting_data.viewModel == 1 ) {
+        if ( this.form_data.timeViewType == 'day' ) {
+          this.getDayInitData()
         } else {
-          this.getWeekInitDataTableList()
+          this.getWeekInitData()
         }
+      } else {
+        this.getWeekInitDataTableList()
       }
     },
     getDayInitData() {

@@ -23,7 +23,7 @@
                                 <template v-if="data_list_table[item1.id].data && data_list_table[item1.id].data.length">
                                     <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
                                         <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
-                                        <div class="cell">{{ item2.content }}</div>
+                                        <div class="cell">{{ item2.bt }}</div>
                                         <div class="cell">{{ item2.participants }}</div>
                                         <div class="cell">{{ item2.place }}</div>
                                     </div>
