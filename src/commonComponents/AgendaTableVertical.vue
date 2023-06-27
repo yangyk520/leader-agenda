@@ -17,7 +17,7 @@
                             <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                 <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
                                     <div class="row flex_start time_name_row" :style="getStyleData(item2)">
-                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                        <div class="svg_box flex_center">
                                             <SvgIcon icon-class="clock"></SvgIcon>
                                         </div>
                                         <span v-if="getShowStatus('0')" class="time">{{ item2.time }}</span>
@@ -25,7 +25,7 @@
                                         <span v-if="getShowStatus('1')" class="name">{{ item2.bt }}</span>
                                     </div>
                                     <div class="row flex_start address_block">
-                                        <div v-if="!setting_data.iconDescShow" class="svg_box flex_center">
+                                        <div class="svg_box flex_center">
                                             <SvgIcon icon-class="address"></SvgIcon>
                                         </div>
                                         <span class="address">
