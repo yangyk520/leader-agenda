@@ -367,7 +367,7 @@ export default {
 </script>
 <style lang="scss" scoped>
 .AgendaTableVertical_app{
-    height: calc(100% - 108px);
+    height: calc(100% - 128px);
     .table{
         height: 100%;
         border: 1px solid rgba(230,230,230,1);

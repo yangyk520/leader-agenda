@@ -353,7 +353,7 @@ export default {
 <style lang="scss" scoped>
 .agenda-table-horizontal {
   width: 100%;
-  height: calc(100% - 108px);
+  height: calc(100% - 128px);
   overflow: auto;
   border: 1px solid #ddd;
   position: relative;
