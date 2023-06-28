@@ -439,6 +439,8 @@ export default {
         margin-right: 12px;
         overflow: hidden;
         img {
+          width: 100%;
+          height: 100%;
           object-fit: cover;
         }
       }

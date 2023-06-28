@@ -172,7 +172,10 @@ export default {
             if ( item.photo ) {
                 return IDM.url.getWebPath(item.photo)
             } else {
-                return IDM.url.getModuleAssetsWebPath(require('../assets/default_avatar.png'),this.moduleObject) 
+                return IDM.url.getModuleAssetsWebPath(
+                    require(`../assets/default_${item.sex?'gril':'boy'}.png`),
+                    this.moduleObject
+                );
             }
         },
         convertAttrToStyleObject() {
@@ -382,6 +385,8 @@ export default {
                             overflow: hidden;
                             margin-bottom: 16px;
                             img{
+                                width: 100%;
+                                height: 100%;
                                 object-fit: cover;
                             }
                         }
