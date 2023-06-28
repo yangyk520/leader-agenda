@@ -323,7 +323,8 @@ export default {
         this.header_list_horizontal.push({
           userId: item.userId,
           userName: item.userName,
-          photo: item.photo
+          photo: item.photo,
+          sex: item.sex
         })
       });
 
