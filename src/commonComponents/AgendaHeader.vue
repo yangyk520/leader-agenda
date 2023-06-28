@@ -337,6 +337,9 @@ export default {
      * 只看复选框切换
      */
     handleChange() {
+      this.leaderList.forEach(item=>{
+        item.checked = false
+      })
       this.sendHeadParams();
     },
     /**
