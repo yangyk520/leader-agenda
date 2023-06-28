@@ -360,6 +360,7 @@ export default {
                                 line-height: 22px;
                                 font-weight: 400;
                                 word-wrap: break-word;
+                                word-break: break-all;
                             }
                             .address{
                                 span{
