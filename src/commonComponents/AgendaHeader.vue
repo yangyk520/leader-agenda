@@ -51,29 +51,23 @@
         <span class="operation-btn primary" @click="hanldeSearch">检索</span>
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
-      <div
-        class="operation-leader"
-        v-if="viewModel == 1"
-      >
+      <div class="operation-leader" v-if="viewModel == 1">
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
         <div class="leader-container" v-if="onlyView">
           <div
             class="leader-item"
-            :class="{ hidePhoto: leaderImageShow==1, checked: leader.checked }"
+            :class="{
+              hidePhoto: leaderImageShow == 1,
+              checked: leader.checked,
+            }"
             v-for="(leader, l) in leaderList"
             :key="l"
             @click="handleLeaderClick(leader)"
           >
             <div class="leader-item-photh">
-              <img
-                v-if="leader.photo"
-                :src="IDM.url.getWebPath(leader.photo)"
-              />
-              <div v-else class="avatar-empty">
-                <span>{{ leader.name.slice(leader.name.length - 2) }}</span>
-              </div>
+              <img :src="getUserPhoto(leader)" />
               <span class="leader-checked" v-show="leader.checked"
                 ><svg-icon icon-class="checked"
               /></span>
@@ -83,7 +77,9 @@
         </div>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview">新增</span>
+        <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview"
+          >新增</span
+        >
         <span class="operation-btn" @click="handlePublic" v-if="!isPreview"
           >发布</span
         >
@@ -155,6 +151,16 @@ export default {
     this.sendHeadParams();
   },
   methods: {
+    getUserPhoto(item) {
+      if (item.photo) {
+        return IDM.url.getWebPath(item.photo);
+      } else {
+        return IDM.url.getModuleAssetsWebPath(
+          require(`../assets/default_${item.sex?'gril':'boy'}.png`),
+          this.moduleObject
+        );
+      }
+    },
     /**
      * 领导选中
      */
@@ -168,7 +174,7 @@ export default {
     handleAdd() {
       IDM.layer.open({
         type: 2,
-        title:['单位领导活动', 'font-size:18px;'],
+        title: ["单位领导活动", "font-size:18px;"],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(
           "ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0"
@@ -198,7 +204,7 @@ export default {
               : this.weekList[this.weekList.length - 1].date,
         })
         .done((d) => {
-          if (d.code == '200') {
+          if (d.code == "200") {
             IDM.message.success("发布成功");
             this.sendHeadParams();
           } else {
@@ -252,11 +258,11 @@ export default {
           packageid: this.moduleObject.packageid,
         },
         showTop: true,
-        success: (res) =>  {},
+        success: (res) => {},
         yes: (res) => {},
-        reset: (res) =>  {},
-        other: (res) =>{
-          console.log("执行other")
+        reset: (res) => {},
+        other: (res) => {
+          console.log("执行other");
           this.$emit("updateSetting");
         },
       });
@@ -337,9 +343,9 @@ export default {
      * 只看复选框切换
      */
     handleChange() {
-      this.leaderList.forEach(item=>{
-        item.checked = false
-      })
+      this.leaderList.forEach((item) => {
+        item.checked = false;
+      });
       this.sendHeadParams();
     },
     /**

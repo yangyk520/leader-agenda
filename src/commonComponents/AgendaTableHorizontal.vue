@@ -7,7 +7,7 @@
     >
       <colgroup>
         <col
-          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '300'}`"
+          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '307'}`"
           v-for="(item, index) in header_list"
           :key="index"
         />
@@ -189,7 +189,7 @@ export default {
         );
         if (lastThEle) {
           const width = lastThEle.offsetWidth;
-          this.thAuto = width > 300;
+          this.thAuto = width > 307;
         }
       });
     },
@@ -222,6 +222,7 @@ export default {
       let that = this;
       IDM.layer.open({
         type: 2,
+        title: ["单位领导活动", "font-size:18px;"],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(item.clickUrl),
         success: function (layero, index) {
@@ -255,7 +256,7 @@ export default {
         return IDM.url.getWebPath(item.photo);
       } else {
         return IDM.url.getModuleAssetsWebPath(
-          require("../assets/default_avatar.png"),
+          require(`../assets/default_${item.sex?'gril':'boy'}.png`),
           this.moduleObject
         );
       }
