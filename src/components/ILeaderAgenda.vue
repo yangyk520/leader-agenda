@@ -10,7 +10,7 @@
    :idm-ctrl-id="moduleObject.id"
    class="idm-leader-agenda-outer">
    <div class="scroll_block">
-    <AgendaHeader :moduleObject="moduleObject" :isPreview="isPreview" :viewModel="setting_data.viewModel"  @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
+    <AgendaHeader :moduleObject="moduleObject" :isPreview="isPreview" :viewModel="setting_data.viewModel" :leaderImageShow="setting_data.leaderImageShow"  @updateHeadParams="updateHeadParams" @updateSetting="updateSetting" />
     <template v-if="setting_data.viewModel == 1">
       <AgendaTableVertical v-if="setting_data.viewType == 1" @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list" :data_list="data_list"></AgendaTableVertical>
       <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list_horizontal" :data_list="data_list_horizontal"></AgendaTableHorizontal>

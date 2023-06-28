@@ -61,7 +61,7 @@
         <div class="leader-container" v-if="onlyView">
           <div
             class="leader-item"
-            :class="{ hidePhoto: !leaderImageShow, checked: leader.checked }"
+            :class="{ hidePhoto: leaderImageShow==1, checked: leader.checked }"
             v-for="(leader, l) in leaderList"
             :key="l"
             @click="handleLeaderClick(leader)"
@@ -105,8 +105,8 @@ export default {
       default: true,
     },
     leaderImageShow: {
-      type: Boolean,
-      default: true,
+      type: Number,
+      default: 2,
     },
     viewModel: {
       type: Number,
