@@ -15,7 +15,8 @@
     "moment": "^2.29.4",
     "monent": "0.0.2-security",
     "sass-loader": "^8.0.2",
-    "vue": "^2.6.11"
+    "vue": "^2.6.11",
+    "vuescroll": "^4.17.3"
   },
   "devDependencies": {
     "@idm-modules/cli-generate": "^1.0.33",

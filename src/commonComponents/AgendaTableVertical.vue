@@ -4,70 +4,75 @@
             <div class="table_header flex_between">
                 <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,1)">{{ item.name }}</div>
             </div>
-            <div class="table_body scroll_block">
-                <div v-for="(item,index) in data_list" :key="index" class="row flex_between">
-                    <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
-                        <div v-if="item1.id == '0'" class="user_info">
-                            <div v-if="setting_data.leaderImageShow != 1" class="img_box">
-                                <img :src="getUserPhoto(item)" alt="">
-                            </div>
-                            <div class="name">{{ item.userName }}</div>
-                        </div>
-                        <div v-else class="active_block">
-                            <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
-                                <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                    <div v-if="getShowStatus('0',item2) || getShowStatus('1')" class="row flex_start time_name_row" :style="getStyleData(item2)">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="clock"></SvgIcon>
-                                        </div>
-                                        <div>
-                                            <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
-                                            <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
-                                            <span class="name">{{ item2.bt }}</span>
+                <div class="table_body">
+                    <vue-scroll :ops="scrollOps">
+
+                        <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
+                            <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
+                                <div v-if="item1.id == '0'" class="user_info">
+                                    <div v-if="setting_data.leaderImageShow != 1" class="img_box">
+                                        <img :src="getUserPhoto(item)" alt="">
+                                    </div>
+                                    <div class="name">{{ item.userName }}</div>
+                                </div>
+                                <div v-else class="active_block">
+                                    <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
+                                        <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
+                                            <div v-if="getShowStatus('0',item2) || getShowStatus('1')" class="row flex_start time_name_row" :style="getStyleData(item2)">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="clock"></SvgIcon>
+                                                </div>
+                                                <div>
+                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
+                                                    <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
+                                                    <span v-if="getShowStatus('1',item2)" class="name">{{ item2.bt }}</span>
+                                                </div>
+                                            </div>
+                                            <div v-if="getShowStatus('2',item2) && item2.place" class="row flex_start address_block">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="address"></SvgIcon>
+                                                </div>
+                                                <span class="address">
+                                                    <span >{{ item2.place }}</span>
+                                                </span>
+                                            </div>
+                                            <div v-if="getShowStatus('3',item2) && item2.host" class="row flex_start">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="host"></SvgIcon>
+                                                </div>
+                                                <span class="address"> {{ item2.host }} </span>
+                                            </div>
+                                            <div v-if="getShowStatus('6',item2) && item2.content" class="row flex_start">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="content"></SvgIcon>
+                                                </div>
+                                                <span class="address"> {{ item2.content }} </span>
+                                            </div>
+                                            <div v-if="getShowStatus('4',item2) && item2.participants" class="row flex_start">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="participants"></SvgIcon>
+                                                </div>
+                                                <span class="address"> {{ item2.participants }} </span>
+                                            </div>
+                                            
+                                            <div v-if="item2.isBusy == '1' && setting_data.busyDetailShow == 1" class="row flex_start busy_block">
+                                                <div class="svg_box flex_center">
+                                                    <SvgIcon icon-class="busy"></SvgIcon>
+                                                </div>
+                                                <span class="busy">忙碌</span>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div v-if="getShowStatus('2',item2) && item2.place" class="row flex_start address_block">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="address"></SvgIcon>
-                                        </div>
-                                        <span class="address">
-                                            <span >{{ item2.place }}</span>
-                                        </span>
-                                    </div>
-                                    <div v-if="getShowStatus('3',item2) && item2.host" class="row flex_start">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="host"></SvgIcon>
-                                        </div>
-                                        <span class="address"> {{ item2.host }} </span>
-                                    </div>
-                                    <div v-if="getShowStatus('6',item2) && item2.content" class="row flex_start">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="content"></SvgIcon>
-                                        </div>
-                                        <span class="address"> {{ item2.content }} </span>
-                                    </div>
-                                    <div v-if="getShowStatus('4',item2) && item2.participants" class="row flex_start">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="participants"></SvgIcon>
-                                        </div>
-                                        <span class="address"> {{ item2.participants }} </span>
-                                    </div>
-                                    
-                                    <div v-if="item2.isBusy == '1' && setting_data.busyDetailShow == 1" class="row flex_start busy_block">
-                                        <div class="svg_box flex_center">
-                                            <SvgIcon icon-class="busy"></SvgIcon>
-                                        </div>
-                                        <span class="busy">忙碌</span>
+                                    <div v-else class="empty">
+                                        {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? '' : '单位内办公' }}
                                     </div>
                                 </div>
                             </div>
-                            <div v-else class="empty">
-                                {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? '' : '单位内办公' }}
-                            </div>
                         </div>
-                    </div>
+                    </vue-scroll>
+
                 </div>
-            </div>
+            
         </div>
     </div>
 </template>
@@ -91,144 +96,17 @@ export default {
     },
     data() {
         return {
-            // header_list: [
-            //     {
-            //         id: '0',
-            //         name: '领导'
-            //     },
-            //     {
-            //         id: 2,
-            //         name: '上午'
-            //     },
-            //     {
-            //         id: 3,
-            //         name: '下午'
-            //     }
-            // ],
-            // data_list: [
-            //     {
-            //         userName: '路飞',
-            //         photo: '',
-            //         data: {
-            //             '2': {
-            //                 data: [
-            //                     {
-            //                         time: '8:30',
-            //                         name: '党组会',
-            //                         status: 1,
-            //                         place: '东区礼合楼202（云鹃路166号） 主持人:宋骏  会议内容:主要是就当前工作进行汇报、分析和研究，讨论解决工作中的重大问题，推动单位工作向正确方向发展等，并且…',
-            //                         isBusy: 1,
-            //                         participants: '周东升,余慧强',
-            //                         content: '测试内容'
-            //                     }
-            //                 ]
-            //             } ,
-            //             '3': {
-            //                 data: [
-            //                     {
-            //                         time: '13:30',
-            //                         name: '经济工作监督座谈会',
-            //                         status: 2,
-            //                         address: '东区礼合楼202'
-            //                     },
-            //                     {
-            //                         time: '15:30',
-            //                         name: '2023年“一网通办”工作推进专题会',
-            //                         status: 3,
-            //                         address: '东区礼合楼201（云鹃路169号）'
-            //                     }
-            //                 ]
-            //             } 
-            //         }
-                    
-            //     },
-            //     {
-            //         userName: '宋俊',
-            //         photo: '',
-            //         data: {
-            //             '2': {
-            //                 data: [ ]
-            //             } ,
-            //             '3': {
-            //                 data: [
-            //                     {
-            //                         time: '13:30',
-            //                         name: '经济工作监督座谈会',
-            //                         place: '东区礼合楼202'
-            //                     },
-            //                     {
-            //                         time: '15:30',
-            //                         name: '2023年“一网通办”工作推进专题会',
-            //                         place: '东区礼合楼201（云鹃路169号）'
-            //                     },
-            //                     {
-            //                         time: '15:30',
-            //                         name: '2023年“一网通办”工作推进专题会',
-            //                         place: '东区礼合楼201（云鹃路169号）'
-            //                     }
-            //                 ]
-            //             } 
-            //         }
-            //     },
-            //     {
-            //         userName: '徐华磊',
-            //         photo: '',
-            //         data: {
-            //             '2': {
-            //                 data: [
-            //                     {
-            //                         time: '8:30',
-            //                         name: '党组会',
-            //                         place: '东区礼合楼202（云鹃路166号） 主持人:宋骏  会议内容:主要是就当前工作进行汇报、分析和研究，讨论解决工作中的重大问题，推动单位工作向正确方向发展等，并且…'
-            //                     }
-            //                 ]
-            //             } ,
-            //             '3': {
-            //                 data: [
-            //                     {
-            //                         time: '13:30',
-            //                         name: '经济工作监督座谈会',
-            //                         place: '东区礼合楼202'
-            //                     },
-            //                     {
-            //                         time: '15:30',
-            //                         name: '2023年“一网通办”工作推进专题会',
-            //                         place: '东区礼合楼201（云鹃路169号）'
-            //                     }
-            //                 ]
-            //             } 
-            //         }
-            //     },
-            //     {
-            //         userName: '王磊',
-            //         photo: '',
-            //         data: {
-            //             '2': {
-            //                 data: [
-            //                     {
-            //                         time: '8:30',
-            //                         name: '党组会',
-            //                         place: '东区礼合楼202（云鹃路166号） 主持人:宋骏  会议内容:主要是就当前工作进行汇报、分析和研究，讨论解决工作中的重大问题，推动单位工作向正确方向发展等，并且…'
-            //                     }
-            //                 ]
-            //             } ,
-            //             '3': {
-            //                 data: [
-            //                     {
-            //                         time: '13:30',
-            //                         name: '经济工作监督座谈会',
-            //                         place: '东区礼合楼202'
-            //                     },
-            //                     {
-            //                         time: '15:30',
-            //                         name: '2023年“一网通办”工作推进专题会',
-            //                         place: '东区礼合楼201（云鹃路169号）'
-            //                     }
-            //                 ]
-            //             } 
-            //         }
-            //     },
-            // ]
+            scrollOps: {
+                scrollPanel: {
+                scrollingX: false
+                },
+                bar: {
+                    background: '#ccc'
+                },
+                vuescroll: {
+                wheelScrollDuration: 100
+                }
+            },
         }
     },
     created() {
@@ -369,15 +247,16 @@ export default {
 <style lang="scss" scoped>
 .AgendaTableVertical_app{
     height: calc(100% - 128px);
+    // box-shadow: 0px 1px 1px 0px rgba(188,188,188,0.5);
     .table{
         height: 100%;
-        border: 1px solid rgba(230,230,230,1);
+        // border: 1px solid rgba(230,230,230,1);
         .table_header{
             height: 48px;
             padding-right: 8px;
             text-align: center;
             background: #F9FCFE;
-            border-bottom: 1px solid rgba(230,230,230,1);
+            border: 1px solid rgba(230,230,230,1);
             .cell{
                 width: 100%;
                 height: 48px;
@@ -402,12 +281,14 @@ export default {
         }
         .table_body{
             height: calc(100% - 48px);
-            overflow: auto;
-            &>.row{
-                border-bottom: 1px solid rgba(230,230,230,1);
+            .table_body_row{
+                padding-right: 8px;
                 align-items: stretch;
+                border-bottom: 1px solid rgba(230,230,230,1);
+                border-left: 1px solid rgba(230,230,230,1);
+                border-right: 1px solid rgba(230,230,230,1);
                 &:last-child{
-                    border-bottom: none;
+                    // border-bottom: none;
                 }
                 .cell{
                     width: 100%;

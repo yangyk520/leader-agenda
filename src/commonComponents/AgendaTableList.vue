@@ -6,39 +6,43 @@
                     {{ item.name }}
                 </div>
             </div>
-            <div v-if="header_list_table && header_list_table.length" class="table_body scroll_block">
-                <div v-for="(item,index) in header_list_table" :key="index" class="row flex_between">
-                    <div class="table_body_header flex_center">
-                        <div>
-                            <div>{{ item.name }}</div>
-                            <div>{{ item.week }}</div>
-                        </div>
-                    </div>
-                    <div class="table_body_main">
-                        <div v-for="(item1,index1) in item.subHeader" :key="index1" class="flex_between row">
-                            <div class="table_body_header_sub flex_center">
-                                <span>{{ item1.name }}</span>
+                <div v-if="header_list_table && header_list_table.length"  class="table_body">
+                    <vue-scroll  :ops="scrollOps">
+
+                        <div v-for="(item,index) in header_list_table" :key="index" class="row table_body_row flex_between">
+                            <div class="table_body_header flex_center">
+                                <div>
+                                    <div>{{ item.name }}</div>
+                                    <div>{{ item.week }}</div>
+                                </div>
                             </div>
-                            <div class="table_body_main_sub">
-                                <template v-if="data_list_table[item1.id].data && data_list_table[item1.id].data.length">
-                                    <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
-                                        <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
-                                        <div class="cell">{{ item2.bt }}</div>
-                                        <div class="cell">{{ item2.participants }}</div>
-                                        <div class="cell">{{ item2.place }}</div>
+                            <div class="table_body_main">
+                                <div v-for="(item1,index1) in item.subHeader" :key="index1" class="flex_between row">
+                                    <div class="table_body_header_sub flex_center">
+                                        <span>{{ item1.name }}</span>
                                     </div>
-                                </template>
-                                <template v-else>
-                                    <div class="flex_between row">
-                                        <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
+                                    <div class="table_body_main_sub">
+                                        <template v-if="data_list_table[item1.id].data && data_list_table[item1.id].data.length">
+                                            <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
+                                                <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
+                                                <div class="cell">{{ item2.bt }}</div>
+                                                <div class="cell">{{ item2.participants }}</div>
+                                                <div class="cell">{{ item2.place }}</div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="flex_between row">
+                                                <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
+                                            </div>
+                                        </template>
                                     </div>
-                                </template>
+                                </div>
                             </div>
                         </div>
-                    </div>
+                    </vue-scroll>
+
                 </div>
-               
-            </div>
+            
             <div class="empty_blcok" v-else>
                 <a-empty description="暂无数据" />
             </div>
@@ -81,7 +85,17 @@ export default {
                     name: '地点'
                 }
             ],
-
+            scrollOps: {
+                scrollPanel: {
+                scrollingX: false
+                },
+                bar: {
+                    background: '#ccc'
+                },
+                vuescroll: {
+                wheelScrollDuration: 100
+                }
+            },
         }
     },
     created() {
@@ -101,7 +115,6 @@ export default {
         .table_header{
             height: 38px;
             text-align: center;
-            padding-right: 8px;
             background: #F9FCFE;
             border: 1px solid rgba(230,230,230,1);
             .cell{
@@ -137,20 +150,17 @@ export default {
             }
         }
         .table_body{
-            max-height: calc(100% - 38px);
-            overflow: auto;
+            height: calc(100% - 38px);
+            // overflow: auto;
             font-size: 16px;
             color: #333333;
             font-weight: 400;
-            border-bottom: 1px solid rgba(230,230,230,1);
-            &>.row{
+            // border-bottom: 1px solid rgba(230,230,230,1);
+            .table_body_row{
                 align-items: stretch;
                 border-bottom: 1px solid rgba(230,230,230,1);
                 border-left: 1px solid rgba(230,230,230,1);
                 border-right: 1px solid rgba(230,230,230,1);
-                &:last-child{
-                    border-bottom: none;
-                }
                 .table_body_header{
                     width: 118px;
                     text-align: center;
