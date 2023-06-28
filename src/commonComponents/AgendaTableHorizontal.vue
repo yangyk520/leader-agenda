@@ -189,7 +189,7 @@ export default {
         );
         if (lastThEle) {
           const width = lastThEle.offsetWidth;
-          this.thAuto = width > 200;
+          this.thAuto = width > 300;
         }
       });
     },
