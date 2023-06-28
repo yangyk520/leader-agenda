@@ -83,7 +83,7 @@
         </div>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd">新增</span>
+        <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview">新增</span>
         <span class="operation-btn" @click="handlePublic" v-if="!isPreview"
           >发布</span
         >
