@@ -2,7 +2,6 @@
   <div class="agenda-table-horizontal">
     <table
       class="agenda-table-horizontal-main"
-      border="1"
       cellspacing="0"
       ref="table"
     >
@@ -381,12 +380,15 @@ export default {
     height: 100%;
     border-collapse: collapse;
     table-layout: fixed;
-    border: 1px solid rgba(230, 230, 230, 1);
     text-align: center;
     th,
     td {
       padding: 0;
       margin: 0;
+      border: none;
+      outline-color: rgba(230, 230, 230, 1);
+      outline-style: solid;
+      outline-width: 1px;
     }
     thead th {
       height: 64px;
