@@ -6,7 +6,7 @@
                     {{ item.name }}
                 </div>
             </div>
-            <div v-if="header_list_table && header_list_table.length" class="table_body">
+            <div v-if="header_list_table && header_list_table.length" class="table_body scroll_block">
                 <div v-for="(item,index) in header_list_table" :key="index" class="row flex_between">
                     <div class="table_body_header flex_center">
                         <div>
@@ -94,13 +94,16 @@ export default {
 </script>
 <style lang="scss" scoped>
 .AgendaTableList_app{
+    height: calc(100% - 128px);
     .table{
-        border: 1px solid rgba(230,230,230,1);
+        height: 100%;
+        // border: 1px solid rgba(230,230,230,1);
         .table_header{
             height: 38px;
             text-align: center;
+            padding-right: 8px;
             background: #F9FCFE;
-            border-bottom: 1px solid rgba(230,230,230,1);
+            border: 1px solid rgba(230,230,230,1);
             .cell{
                 width: 100%;
                 height: 38px;
@@ -134,12 +137,17 @@ export default {
             }
         }
         .table_body{
+            max-height: calc(100% - 38px);
+            overflow: auto;
             font-size: 16px;
             color: #333333;
             font-weight: 400;
+            border-bottom: 1px solid rgba(230,230,230,1);
             &>.row{
                 align-items: stretch;
                 border-bottom: 1px solid rgba(230,230,230,1);
+                border-left: 1px solid rgba(230,230,230,1);
+                border-right: 1px solid rgba(230,230,230,1);
                 &:last-child{
                     border-bottom: none;
                 }

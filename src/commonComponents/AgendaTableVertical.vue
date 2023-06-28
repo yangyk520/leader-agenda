@@ -26,7 +26,7 @@
                                             <span class="name">{{ item2.bt }}</span>
                                         </div>
                                     </div>
-                                    <div v-if="getShowStatus('2',item2)" class="row flex_start address_block">
+                                    <div v-if="getShowStatus('2',item2) && item2.place" class="row flex_start address_block">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="address"></SvgIcon>
                                         </div>
@@ -34,19 +34,19 @@
                                             <span >{{ item2.place }}</span>
                                         </span>
                                     </div>
-                                    <div v-if="getShowStatus('3',item2)" class="row flex_start">
+                                    <div v-if="getShowStatus('3',item2) && item2.host" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="host"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.host }} </span>
                                     </div>
-                                    <div v-if="getShowStatus('6',item2)" class="row flex_start">
+                                    <div v-if="getShowStatus('6',item2) && item2.content" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="content"></SvgIcon>
                                         </div>
                                         <span class="address"> {{ item2.content }} </span>
                                     </div>
-                                    <div v-if="getShowStatus('4',item2)" class="row flex_start">
+                                    <div v-if="getShowStatus('4',item2) && item2.participants" class="row flex_start">
                                         <div class="svg_box flex_center">
                                             <SvgIcon icon-class="participants"></SvgIcon>
                                         </div>
@@ -264,6 +264,7 @@ export default {
             }
             let that = this;
             IDM.layer.open({
+                title: '单位领导活动',
                 type: 2,
                 area: ["1200px", "90%"],
                 content: IDM.url.getWebPath(item.clickUrl),

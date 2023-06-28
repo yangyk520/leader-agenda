@@ -14,7 +14,7 @@
                     </a-radio-group>
                 </div>
             </div>
-            <div class="row flex_start">
+            <div v-if="form.viewModel != 2" class="row flex_start">
                 <div class="label">显示方式：</div>
                 <div class="content">
                     <a-radio-group v-model="form.viewType" @change="e => onChange(e,'viewTypeText')">
@@ -27,7 +27,7 @@
                     </a-radio-group>
                 </div>
             </div>
-            <div class="row flex_start">
+            <div v-if="form.viewModel != 2" class="row flex_start">
                 <div class="label">领导头像：</div>
                 <div class="content">
                     <a-radio-group v-model="form.leaderImageShow" @change="e => onChange(e,'leaderImageShowText')">
