@@ -33,7 +33,12 @@
       <tbody>
         <tr v-for="(time, ti) in data_list" :key="ti">
           <template v-for="(header, hi) in header_list">
-            <td v-if="header.userId == 0" class="td-time" :key="hi" :style="getDomBg(time,1)">
+            <td
+              v-if="header.userId == 0"
+              class="td-time"
+              :key="hi"
+              :style="getDomBg(time, 1)"
+            >
               <span>{{ time.name }}</span>
             </td>
             <td v-else :key="hi" class="active_block" :style="getDomBg(time)">
@@ -56,63 +61,60 @@
                   :style="getStyleDataCancel(todo)"
                 >
                   <div
+                    v-if="getShowStatus('0', todo) || getShowStatus('1')"
                     class="row flex_start time_name_row"
                     :style="getStyleData(todo)"
                   >
-                    <div
-                      v-if="!setting_data.iconDescShow"
-                      class="img_box flex_center"
-                    >
-                      <img class="clock_img" src="@/assets/clock.png" alt="" />
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="clock"></SvgIcon>
                     </div>
-                    <span v-if="getShowStatus('0')" class="time">{{
-                      todo.time
-                    }}</span>
-                    <SvgIcon v-if="todo.hasAnnex" icon-class="file"></SvgIcon>
-                    <span v-if="getShowStatus('1')" class="name">{{
-                      todo.bt
-                    }}</span>
+                    <span v-if="getShowStatus('0', todo)" class="time">{{
+                        todo.time
+                      }}</span>
+                      <SvgIcon
+                        v-if="todo.hasAnnex && getShowStatus('1', todo)"
+                        icon-class="file"
+                      ></SvgIcon>
+                      <span class="name">{{ todo.bt }}</span>
                   </div>
-                  <div class="row flex_start address_block">
-                    <div
-                      v-if="!setting_data.iconDescShow"
-                      class="img_box flex_center"
-                    >
-                      <img
-                        class="address_img"
-                        src="@/assets/address.png"
-                        alt=""
-                      />
+                  <div
+                    v-if="getShowStatus('2', todo)"
+                    class="row flex_start address_block"
+                  >
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="address"></SvgIcon>
                     </div>
                     <span class="address">
-                      <span v-if="getShowStatus('2')">{{ todo.place }}</span>
+                      <span>{{ todo.place }}</span>
                     </span>
                   </div>
-                  <div v-if="getShowStatus('6')" class="row flex_start">
-                    <div class="img_box flex_center">
-                      <img class="" src="@/assets/host.png" alt="" />
+                  <div v-if="getShowStatus('3', todo)" class="row flex_start">
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="host"></SvgIcon>
                     </div>
                     <span class="address"> {{ todo.host }} </span>
                   </div>
-                  <div v-if="getShowStatus('6')" class="row flex_start">
-                    <div class="img_box flex_center">
-                      <img class="" src="@/assets/content.png" alt="" />
+                  <div v-if="getShowStatus('6', todo)" class="row flex_start">
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="content"></SvgIcon>
                     </div>
                     <span class="address"> {{ todo.content }} </span>
                   </div>
-                  <div v-if="getShowStatus('4')" class="row flex_start">
-                    <div class="img_box flex_center">
-                      <img class="" src="@/assets/participants.png" alt="" />
+                  <div v-if="getShowStatus('4', todo)" class="row flex_start">
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="participants"></SvgIcon>
                     </div>
                     <span class="address"> {{ todo.participants }} </span>
                   </div>
 
                   <div
-                    v-if="todo.isBusy == '1'"
+                    v-if="
+                      todo.isBusy == '1' && setting_data.busyDetailShow == 1
+                    "
                     class="row flex_start busy_block"
                   >
-                    <div class="img_box flex_center">
-                      <img class="" src="@/assets/busy.png" alt="" />
+                    <div class="svg_box flex_center">
+                      <SvgIcon icon-class="busy"></SvgIcon>
                     </div>
                     <span class="busy">忙碌</span>
                   </div>
@@ -186,7 +188,7 @@ export default {
         const lastThEle = this.$refs.table.querySelector(
           "thead tr th:last-child"
         );
-        if(lastThEle){
+        if (lastThEle) {
           const width = lastThEle.offsetWidth;
           this.thAuto = width > 200;
         }
@@ -449,6 +451,8 @@ export default {
           border-bottom: none;
         }
         .time_name_row {
+          display: block;
+          text-align: left;
           .svg-icon {
             font-size: 14px;
             margin-right: 5px;
@@ -473,6 +477,7 @@ export default {
           height: 20px;
           margin-right: 5px;
           flex-shrink: 0;
+          display: inline-block;
           .clock_img {
             width: 16px;
             height: 16px;
@@ -483,6 +488,7 @@ export default {
           }
           img {
             width: 16px;
+            vertical-align: text-bottom;
           }
         }
         .time,
@@ -502,112 +508,19 @@ export default {
             }
           }
         }
+        .row {
+          display: block;
+          text-align: left;
+          & > div {
+            display: inline-block;
+          }
+        }
       }
-    }
-  }
-
-  .table {
-    display: flex;
-    border: 1px solid rgba(230, 230, 230, 1);
-    .table_header {
-      display: flex;
-      flex-direction: column;
-      width: 152px;
-      flex-shrink: 0;
-      text-align: center;
-      background: #f9fcfe;
-      .cell {
-        min-height: 200px;
-        width: 100%;
-        flex-grow: 2;
-        flex-shrink: 1;
-        box-sizing: border-box;
+      .empty {
         font-size: 16px;
-        color: #333333;
-        letter-spacing: 0;
-        font-weight: 500;
-        border-right: 1px solid rgba(230, 230, 230, 1);
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        border-bottom: 1px solid rgb(230, 230, 230);
-        &:last-child {
-          border-bottom: none;
-        }
-        &:nth-child(1) {
-          min-height: auto;
-          height: 64px;
-          flex-grow: 0;
-          flex-shrink: 0;
-        }
-      }
-    }
-    .table_body {
-      display: flex;
-      width: 100%;
-      overflow: auto;
-      & > .row {
-        min-width: 240px;
-        width: 100%;
-        // height: 100%;
-        flex-grow: 2;
-        flex-shrink: 1;
-        display: flex;
-        flex-direction: column;
-        border-right: 1px solid rgba(230, 230, 230, 1);
-        border-bottom: 1px solid rgba(230, 230, 230, 1);
-        align-items: stretch;
-        &:last-child {
-          border-right: none;
-        }
-        .cell {
-          width: 100%;
-          height: 200px;
-          box-sizing: border-box;
-          padding: 12px 12px 16px 12px;
-          border-bottom: 1px solid rgba(230, 230, 230, 1);
-          flex-grow: 2;
-          flex-shrink: 1;
-          overflow: auto;
-          &:last-child {
-            border-bottom: none;
-          }
-          &:nth-child(1) {
-            height: 64px;
-            flex-grow: 0;
-            flex-shrink: 0;
-            padding: 12px;
-            text-align: center;
-            overflow: hidden;
-          }
-
-          .user_info {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            .name {
-              font-size: 20px;
-              color: #333333;
-              text-align: center;
-              font-weight: 500;
-            }
-            .img_box {
-              width: 40px;
-              height: 40px;
-              border-radius: 4px;
-              margin-right: 12px;
-              overflow: hidden;
-              img {
-                object-fit: cover;
-              }
-            }
-          }
-          .empty {
-            font-size: 16px;
-            color: #0086d9;
-            font-weight: 400;
-          }
-        }
+        color: #0086d9;
+        font-weight: 400;
+        text-align: left;
       }
     }
   }
