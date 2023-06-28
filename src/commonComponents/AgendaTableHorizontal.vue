@@ -7,7 +7,7 @@
     >
       <colgroup>
         <col
-          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '200'}`"
+          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '300'}`"
           v-for="(item, index) in header_list"
           :key="index"
         />
@@ -103,7 +103,7 @@
                     <div class="svg_box flex_center">
                       <SvgIcon icon-class="participants"></SvgIcon>
                     </div>
-                    <span class="address"> {{ todo.participants }} </span>
+                    <span class="address">{{ todo.participants }}</span>
                   </div>
 
                   <div
@@ -420,6 +420,7 @@ export default {
     .th-user {
       // width: 200px;
     }
+    
     .user_info {
       display: flex;
       justify-content: center;
@@ -455,10 +456,6 @@ export default {
         .time_name_row {
           display: block;
           text-align: left;
-          .svg-icon {
-            font-size: 14px;
-            margin-right: 5px;
-          }
         }
         .address_block {
           align-items: flex-start;
@@ -516,6 +513,12 @@ export default {
           & > div {
             display: inline-block;
           }
+        }
+        .svg_box {
+          font-size: 16px;
+          width: 16px;
+          height: 16px;
+          margin-right: 6px;
         }
       }
       .empty {
