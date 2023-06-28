@@ -253,13 +253,13 @@ export default {
     // box-shadow: 0px 1px 1px 0px rgba(188,188,188,0.5);
     .table{
         height: 100%;
-        // border: 1px solid rgba(230,230,230,1);
+        border: 1px solid rgba(230,230,230,1);
         .table_header{
             height: 48px;
             padding-right: 8px;
             text-align: center;
             background: #F9FCFE;
-            border: 1px solid rgba(230,230,230,1);
+            border-bottom: 1px solid rgba(230,230,230,1);
             .cell{
                 width: 100%;
                 height: 48px;
@@ -288,8 +288,8 @@ export default {
                 padding-right: 8px;
                 align-items: stretch;
                 border-bottom: 1px solid rgba(230,230,230,1);
-                border-left: 1px solid rgba(230,230,230,1);
-                border-right: 1px solid rgba(230,230,230,1);
+                // border-left: 1px solid rgba(230,230,230,1);
+                // border-right: 1px solid rgba(230,230,230,1);
                 &:last-child{
                     // border-bottom: none;
                 }

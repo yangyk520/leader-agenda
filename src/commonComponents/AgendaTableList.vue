@@ -111,12 +111,12 @@ export default {
     height: calc(100% - 128px);
     .table{
         height: 100%;
-        // border: 1px solid rgba(230,230,230,1);
+        border: 1px solid rgba(230,230,230,1);
         .table_header{
             height: 38px;
             text-align: center;
             background: #F9FCFE;
-            border: 1px solid rgba(230,230,230,1);
+            border-bottom: 1px solid rgba(230,230,230,1);
             .cell{
                 width: 100%;
                 height: 38px;
@@ -151,16 +151,12 @@ export default {
         }
         .table_body{
             height: calc(100% - 38px);
-            // overflow: auto;
             font-size: 16px;
             color: #333333;
             font-weight: 400;
-            // border-bottom: 1px solid rgba(230,230,230,1);
             .table_body_row{
                 align-items: stretch;
                 border-bottom: 1px solid rgba(230,230,230,1);
-                border-left: 1px solid rgba(230,230,230,1);
-                border-right: 1px solid rgba(230,230,230,1);
                 .table_body_header{
                     width: 118px;
                     text-align: center;
