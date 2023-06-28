@@ -513,6 +513,7 @@ export default {
         .row {
           display: block;
           text-align: left;
+          word-break: break-all;
           & > div {
             display: inline-block;
           }
