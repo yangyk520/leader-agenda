@@ -23,7 +23,7 @@
                                                     <SvgIcon icon-class="clock"></SvgIcon>
                                                 </div>
                                                 <div>
-                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ item2.time }}</span>
+                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} - ${item2.endTime}`  }}</span>
                                                     <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
                                                     <span v-if="getShowStatus('1',item2)" class="name">{{ item2.bt }}</span>
                                                 </div>
@@ -250,7 +250,6 @@ export default {
 <style lang="scss" scoped>
 .AgendaTableVertical_app{
     height: calc(100% - 128px);
-    // box-shadow: 0px 1px 1px 0px rgba(188,188,188,0.5);
     .table{
         height: 100%;
         border: 1px solid rgba(230,230,230,1);
@@ -288,11 +287,6 @@ export default {
                 padding-right: 8px;
                 align-items: stretch;
                 border-bottom: 1px solid rgba(230,230,230,1);
-                // border-left: 1px solid rgba(230,230,230,1);
-                // border-right: 1px solid rgba(230,230,230,1);
-                &:last-child{
-                    // border-bottom: none;
-                }
                 .cell{
                     width: 100%;
                     // height: 100%;
