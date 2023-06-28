@@ -23,7 +23,7 @@
                                                     <SvgIcon icon-class="clock"></SvgIcon>
                                                 </div>
                                                 <div>
-                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} - ${item2.endTime}`  }}</span>
+                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} ${ item2.endTime ? '-' : '' } ${item2.endTime ? item2.endTime : ''}`  }}</span>
                                                     <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
                                                     <span v-if="getShowStatus('1',item2)" class="name">{{ item2.bt }}</span>
                                                 </div>
