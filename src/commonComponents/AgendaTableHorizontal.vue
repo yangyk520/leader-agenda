@@ -447,6 +447,7 @@ export default {
     }
     .active_block {
       padding: 10px;
+      vertical-align: text-top;
       .active_list {
         margin-bottom: 16px;
         padding-bottom: 16px;
