@@ -156,7 +156,7 @@ export default {
         return IDM.url.getWebPath(item.photo);
       } else {
         return IDM.url.getModuleAssetsWebPath(
-          require(`../assets/default_${item.sex ? "gril" : "boy"}.png`),
+          require(`../assets/default_${item.sex ? "girl" : "boy"}.png`),
           this.moduleObject
         );
       }
