@@ -83,7 +83,7 @@
         <span class="operation-btn" @click="handlePublic" v-if="!isPreview"
           >发布</span
         >
-        <span class="operation-btn">导出</span>
+        <span class="operation-btn" @click="handleExport">导出</span>
         <span class="operation-setting" @click="handleSetting"
           ><svg-icon icon-class="setting"
         /></span>
@@ -156,7 +156,7 @@ export default {
         return IDM.url.getWebPath(item.photo);
       } else {
         return IDM.url.getModuleAssetsWebPath(
-          require(`../assets/default_${item.sex?'gril':'boy'}.png`),
+          require(`../assets/default_${item.sex ? "gril" : "boy"}.png`),
           this.moduleObject
         );
       }
@@ -167,6 +167,38 @@ export default {
     handleLeaderClick(item) {
       item.checked = !item.checked;
       this.sendHeadParams();
+    },
+    /**
+     * 导出
+     */
+    handleExport() {
+      const params = {
+        startDate:
+          this.timeViewType === "day" ? this.curDate : this.weekList[0].date,
+        endDate:
+          this.timeViewType === "day"
+            ? this.curDate
+            : this.weekList[this.weekList.length - 1].date,
+        content: this.searchVal
+      };
+      if (this.onlyView) {
+        const leaders = [];
+        this.leaderList.forEach((item) => {
+          if (item.checked) leaders.push(item.id);
+        });
+        params.leaders = leaders.join(",");
+      } else {
+        params.leaders = this.leaderList.map((item) => item.id).join(",");
+      }
+      const url = `ctrl/leader/listExport?startDate=${params.startDate}&endDate=${params.endDate}&userIds=${params.leaders}&content=${params.content}`;
+      
+      const a = document.createElement("a");
+      a.style.display = "none";
+      a.setAttribute("target", "_blank");
+      a.href = IDM.url.getWebPath(url);
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
     },
     /**
      * 新增
