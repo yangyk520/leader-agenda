@@ -16,7 +16,7 @@
       <AgendaTableHorizontal v-else @updateTableData="updateTableData" :propData="propData" :isPreview="isPreview" :moduleObject="moduleObject" :form_data="form_data" :setting_data="setting_data" :header_list="header_list_horizontal" :data_list="data_list_horizontal"></AgendaTableHorizontal>
     </template>
     <template v-else>
-      <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table"></AgendaTableList>
+      <AgendaTableList :data_list_table="data_list_table" :header_list_table="header_list_table" :setting_data="setting_data"></AgendaTableList>
     </template>
    </div>
    <AgendaFooter v-if="setting_data.viewModel == 1 && setting_data.iconDescShow === 0" :isPreview="isPreview" :propData="propData"></AgendaFooter>

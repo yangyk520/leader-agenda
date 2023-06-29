@@ -78,9 +78,10 @@
 </template>
 <script>
 import SvgIcon from '../icons/SvgIcon.vue';
-
+import mixins from '@/mixins/index.js'
 export default {
     name: 'AgendaTableVertical',
+    mixins: [mixins],
     components: {
         SvgIcon,
     },
@@ -96,17 +97,7 @@ export default {
     },
     data() {
         return {
-            scrollOps: {
-                scrollPanel: {
-                scrollingX: false
-                },
-                bar: {
-                    background: '#ccc'
-                },
-                vuescroll: {
-                wheelScrollDuration: 100
-                }
-            },
+            
         }
     },
     created() {
