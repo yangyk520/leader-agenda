@@ -151,10 +151,10 @@ export default {
                         IDM.layer.close(index);
                         that.$emit('updateTableData')
                     };
-                }
-                // end: function () {
-                //     that.$emit('updateTableData')
-                // },
+                },
+                end: function () {
+                    that.$emit('updateTableData')
+                },
             });
         },
         getShowStatus(data,item) {
