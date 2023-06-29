@@ -25,10 +25,18 @@
                                     <div class="table_body_main_sub">
                                         <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length">
                                             <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
-                                                <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
-                                                <div class="cell">{{ item2.bt }}</div>
-                                                <div class="cell">{{ item2.participants }}</div>
-                                                <div class="cell">{{ item2.place }}</div>
+                                                <div class="cell">
+                                                    <span>{{  `${item2.time} - ${item2.endTime}` }}</span>
+                                                </div>
+                                                <div class="cell">
+                                                    <span :style="getStyleData(item2)" :title="item2.bt">{{ item2.bt }}</span>
+                                                </div>
+                                                <div class="cell">
+                                                    <span :title="item2.participants">{{ item2.participants }}</span>
+                                                </div>
+                                                <div class="cell">
+                                                    <span :title="item2.place">{{ item2.place }}</span>
+                                                </div>
                                             </div>
                                         </template>
                                         <template v-else>
@@ -109,7 +117,7 @@ export default {
                 },
                 {
                     id: 4,
-                    name: '标题'
+                    name: '日程名称'
                 },
                 {
                     id: 5,
@@ -126,7 +134,26 @@ export default {
 
     },
     methods: {
-        
+        getStyleData(item) {
+            var styleObject = {};
+            switch (item.state) {
+                case 1:
+                    styleObject['color'] = '#0086D9';
+                    break;
+                case 2:
+                    styleObject['color'] = '#FFA500';
+                    break
+                case 0:
+                    styleObject['color'] = '#E30000';
+                    break
+                case 3:
+                    styleObject['text-decoration'] = 'line-through';
+                    break
+                default:
+                    break;
+            }
+            return styleObject
+        }
     }
 }
 </script>
