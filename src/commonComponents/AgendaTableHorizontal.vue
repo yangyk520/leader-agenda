@@ -38,7 +38,8 @@
               :key="hi"
               :style="getDomBg(time, 1)"
             >
-              <span>{{ time.name }}</span>
+              <div>{{ time.name }}</div>
+              <div v-if="time.week">({{ time.week }})</div>
             </td>
             <td v-else :key="hi" class="active_block" :style="getDomBg(time)">
               <div
