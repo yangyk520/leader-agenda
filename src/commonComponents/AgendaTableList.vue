@@ -5,6 +5,12 @@
                 <div v-for="(item,index) in header_data" :key="index" class="cell">
                     {{ item.name }}
                 </div>
+                <div v-for="(item,index) in getColumnList" :key="index" class="cell"> {{ item.name }} </div>
+                <!-- <div class="cell"> 日程名称 </div>
+                <div class="cell"> 主持人 </div>
+                <div class="cell"> 参与人员 </div>
+                <div class="cell"> 地点 </div>
+                <div class="cell"> 会议内容 </div> -->
             </div>
             <div v-if="makeHeaderData && makeHeaderData.length"  class="table_body">
                 <vue-scroll  :ops="scrollOps">
@@ -25,23 +31,30 @@
                                     <div class="table_body_main_sub">
                                         <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length">
                                             <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
-                                                <div class="cell">
+                                                <div v-if="getColumnShowStatus('0')" class="cell">
                                                     <span>{{  `${item2.time} - ${item2.endTime}` }}</span>
                                                 </div>
-                                                <div class="cell">
-                                                    <span :style="getStyleData(item2)" :title="item2.bt">{{ item2.bt }}</span>
+                                                <div v-if="getColumnShowStatus('1')" class="cell">
+                                                    <span v-if="!getBusyStatus(item2)" :style="getStyleData(item2)" :title="item2.bt">{{ item2.bt }}</span>
+                                                    <span v-else>忙碌</span>
                                                 </div>
-                                                <div class="cell">
-                                                    <span :title="item2.participants">{{ item2.participants }}</span>
+                                                <div v-if="getColumnShowStatus('3')" class="cell">
+                                                    <span v-if="!getBusyStatus(item2)" :title="item2.host">{{ item2.host }}</span>
                                                 </div>
-                                                <div class="cell">
-                                                    <span :title="item2.place">{{ item2.place }}</span>
+                                                <div v-if="getColumnShowStatus('4')" class="cell">
+                                                    <span v-if="!getBusyStatus(item2)" :title="item2.participants">{{ item2.participants }}</span>
+                                                </div>
+                                                <div v-if="getColumnShowStatus('2')" class="cell">
+                                                    <span v-if="!getBusyStatus(item2)" :title="item2.place">{{ item2.place }}</span>
+                                                </div>
+                                                <div v-if="getColumnShowStatus('6')" class="cell">
+                                                    <span v-if="!getBusyStatus(item2)" :title="item2.content">{{ item2.content }}</span>
                                                 </div>
                                             </div>
                                         </template>
                                         <template v-else>
                                             <div class="flex_between row">
-                                                <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
+                                                <div v-for="(item2,index2) in makeHeaderData.length" :key="index2" class="cell"></div>
                                             </div>
                                         </template>
                                     </div>
@@ -54,7 +67,7 @@
                                     </div>
                                     <div class="table_body_main_sub">
                                         <div class="flex_between row">
-                                            <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
+                                            <div v-for="(item2,index2) in makeHeaderData.length" :key="index2" class="cell"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -98,6 +111,15 @@ export default {
             } else {
                 return this.header_list_table
             }
+        },
+        getColumnList: function() {
+            let column_list = [];
+            this.column_list.forEach((item) => {
+                if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(item.id) ) {
+                    column_list.push(item)
+                }
+            })
+            return column_list
         }
     },
     data() {
@@ -110,30 +132,56 @@ export default {
                 {
                     id: 2,
                     name: ''
-                },
+                }
+                
+            ],
+            column_list: [
                 {
-                    id: 3,
+                    id: '0',
                     name: '时间'
                 },
                 {
-                    id: 4,
+                    id: '1',
                     name: '日程名称'
                 },
                 {
-                    id: 5,
+                    id: '3',
+                    name: '主持人'
+                },
+                {
+                    id: '4',
                     name: '参与人员'
                 },
                 {
-                    id: 6,
+                    id: '2',
                     name: '地点'
+                },
+                {
+                    id: '6',
+                    name: '会议内容'
                 }
-            ],
+            ]
         }
     },
     created() {
 
     },
     methods: {
+        getBusyStatus(item) {
+            // 返回true，日程名称显示忙碌状，其他为空
+            if ( item.isBusy == '1' && this.setting_data && this.setting_data.busyDetailShow == 1 ) {
+                return true
+            } else {
+                return false
+            }
+        },
+        getColumnShowStatus(data) {
+            if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
+                return true
+            } else {
+                return false
+            }
+        },
         getStyleData(item) {
             var styleObject = {};
             switch (item.state) {
