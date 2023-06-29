@@ -4,7 +4,7 @@
             <div class="table_header flex_between">
                 <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,1)">
                     {{ item.name }}
-                    <span v-if="item.id != '0'">（{{ item.week }}）</span>
+                    <span v-if="item.id != '0' && item.week && form_data && form_data.timeViewType == 'week'">（{{ item.week }}）</span>
                 </div>
             </div>
                 <div class="table_body">
@@ -88,7 +88,7 @@ export default {
     components: {
         SvgIcon,
     },
-    props: [ 'propData','moduleObject','header_list','data_list','setting_data','isPreview' ],
+    props: [ 'propData','moduleObject','header_list','data_list','setting_data','isPreview','form_data' ],
     watch: {
         propData: {
             handler: function() {
