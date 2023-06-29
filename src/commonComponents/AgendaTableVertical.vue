@@ -23,7 +23,7 @@
                                                     <SvgIcon icon-class="clock"></SvgIcon>
                                                 </div>
                                                 <div>
-                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} ${ item2.endTime ? '-' : '' } ${item2.endTime ? item2.endTime : ''}`  }}</span>
+                                                    <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} ${ item2.endTime && getShowStatus('-1',item2) ? '-' : '' } ${item2.endTime && getShowStatus('-1',item2) ? item2.endTime : ''}`  }}</span>
                                                     <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
                                                     <span v-if="getShowStatus('1',item2)" class="name">{{ item2.bt }}</span>
                                                 </div>
@@ -158,6 +158,10 @@ export default {
             });
         },
         getShowStatus(data,item) {
+            // data为-1表示结束时间
+            if ( data == '-1' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
+                return true
+            }
             if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
                 if ( data != '0' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
                     return false
