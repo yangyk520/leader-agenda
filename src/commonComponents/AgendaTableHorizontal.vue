@@ -255,10 +255,11 @@ export default {
       if (item.photo) {
         return IDM.url.getWebPath(item.photo);
       } else {
-        return IDM.url.getModuleAssetsWebPath(
-          require(`../assets/default_${item.sex?'gril':'boy'}.png`),
-          this.moduleObject
-        );
+        if ( item.sex ) {
+            return IDM.url.getModuleAssetsWebPath( require(`../assets/default_girl.png`), this.moduleObject );
+        } else {
+            return IDM.url.getModuleAssetsWebPath( require(`../assets/default_boy.png`), this.moduleObject );
+        }
       }
     },
     convertAttrToStyleObject() {
