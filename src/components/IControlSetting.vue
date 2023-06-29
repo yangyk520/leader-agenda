@@ -56,12 +56,12 @@
                             <a-input v-else v-model="item.showName" placeholder="请输入区间名称" allowClear/>
                         </div>
                         <div class="cell">
-                            <span v-if="!item.editable">{{ item.beginTime }}</span>
+                            <span v-if="index != 0 || !item.editable">{{ item.beginTime }}</span>
                             <a-time-picker v-model="item.beginTime" valueFormat="HH:mm" format="HH:mm" v-else />
                         </div>
                         <div class="cell">
                             <span v-if="!item.editable">{{ item.endTime }}</span>
-                            <a-time-picker v-else v-model="item.endTime" valueFormat="HH:mm" format="HH:mm" />
+                            <a-time-picker @change="e => changeEndTime(e,index)" v-else v-model="item.endTime" valueFormat="HH:mm" format="HH:mm" />
                         </div>
                         <div class="cell operate flex_center">
                             <div v-if="!item.editable" @click="editRange(item)">
@@ -172,12 +172,12 @@ export default {
                 dateArea: [
                     {
                         name: '上午',
-                        startTime: '',
+                        beginTime: '',
                         endTime: ''
                     },
                     {
                         name: '下午',
-                        startTime: '',
+                        beginTime: '',
                         endTime: ''
                     }
                 ]
@@ -223,6 +223,11 @@ export default {
     destroyed() {},
     methods: {
         moment,
+        changeEndTime(e,index) {
+            if ( this.form.dateArea[index + 1] ) {
+                this.form.dateArea[index + 1].beginTime = e;
+            }
+        },
         cancel() {
             let that = this;
             if(this.moduleObject.env=="develop"){
@@ -304,12 +309,19 @@ export default {
         addRangeData() {
             this.form.dateArea.push({
                 name: '',
-                beginTime: '',
+                beginTime: this.form.dateArea.length && this.form.dateArea[this.form.dateArea.length - 1].endTime ? this.form.dateArea[this.form.dateArea.length - 1].endTime : '',
                 endTime: '',
                 editable: true
             })
         },
         delateRangeData(item,index) {
+            if ( this.form.dateArea.length == 1 ) {
+                IDM.message.warning('区间数据不可为空！')
+                return
+            }
+            if ( this.form.dateArea[index - 1] && this.form.dateArea[index + 1] && this.form.dateArea[index - 1].endTime ) {
+                this.form.dateArea[index + 1].beginTime = this.form.dateArea[index - 1].endTime
+            }
             this.form.dateArea.splice(index,1)
         },
         
