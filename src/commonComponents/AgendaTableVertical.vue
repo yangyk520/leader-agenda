@@ -2,7 +2,10 @@
     <div class="AgendaTableVertical_app">
         <div class="table">
             <div class="table_header flex_between">
-                <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,1)">{{ item.name }}</div>
+                <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,1)">
+                    {{ item.name }}
+                    <span v-if="item.id != '0'">（{{ item.week }}）</span>
+                </div>
             </div>
                 <div class="table_body">
                     <vue-scroll :ops="scrollOps">
