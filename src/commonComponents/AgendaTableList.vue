@@ -17,26 +17,41 @@
                             </div>
                         </div>
                         <div class="table_body_main">
-                            <div v-for="(item1,index1) in item.subHeader" :key="index1" class="flex_between row">
-                                <div class="table_body_header_sub flex_center">
-                                    <span>{{ item1.name }}</span>
+                            <template v-if="item.subHeader && item.subHeader.length">
+                                <div v-for="(item1,index1) in item.subHeader" :key="index1" class="flex_between row">
+                                    <div class="table_body_header_sub flex_center">
+                                        <span>{{ item1.name }}</span>
+                                    </div>
+                                    <div class="table_body_main_sub">
+                                        <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length">
+                                            <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
+                                                <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
+                                                <div class="cell">{{ item2.bt }}</div>
+                                                <div class="cell">{{ item2.participants }}</div>
+                                                <div class="cell">{{ item2.place }}</div>
+                                            </div>
+                                        </template>
+                                        <template v-else>
+                                            <div class="flex_between row">
+                                                <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
+                                            </div>
+                                        </template>
+                                    </div>
                                 </div>
-                                <div class="table_body_main_sub">
-                                    <template v-if="data_list_table[item1.id].data && data_list_table[item1.id].data.length">
-                                        <div v-for="(item2,index2) in data_list_table[item1.id].data" :key="index2" class="flex_between row">
-                                            <div class="cell">{{  `${item2.time} - ${item2.endTime}` }}</div>
-                                            <div class="cell">{{ item2.bt }}</div>
-                                            <div class="cell">{{ item2.participants }}</div>
-                                            <div class="cell">{{ item2.place }}</div>
-                                        </div>
-                                    </template>
-                                    <template v-else>
+                            </template>
+                            <template v-else>
+                                <div class="flex_between row empty_block_row">
+                                    <div class="table_body_header_sub flex_center">
+                                        <span>{{  }}</span>
+                                    </div>
+                                    <div class="table_body_main_sub">
                                         <div class="flex_between row">
                                             <div v-for="(item2,index2) in 4" :key="index2" class="cell"></div>
                                         </div>
-                                    </template>
+                                    </div>
                                 </div>
-                            </div>
+
+                            </template>
                         </div>
                     </div>
                 </vue-scroll>
@@ -68,7 +83,7 @@ export default {
                         }
                     })
                     if ( is_empty ) {
-                        item.subHeader = [{}]
+                        item.subHeader = []
                     }
                 });
                 return header_list_table
@@ -224,7 +239,18 @@ export default {
                             }
                         }
                     }
+                    .empty_block_row{
+                        height: 100%;
+                        .table_body_main_sub{
+                            &>.row{
+                                height: 100%;
+                                .cell{
+                                    height: 100% !important;
+                                }
+                            }
+                        }
                         
+                    }  
                     
                 }
             }
