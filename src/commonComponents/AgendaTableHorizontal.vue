@@ -7,7 +7,7 @@
     >
       <colgroup>
         <col
-          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '307'}`"
+          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '308'}`"
           v-for="(item, index) in header_list"
           :key="index"
         />
@@ -189,7 +189,7 @@ export default {
         );
         if (lastThEle) {
           const width = lastThEle.offsetWidth;
-          this.thAuto = width > 307;
+          this.thAuto = width > 308;
         }
       });
     },
