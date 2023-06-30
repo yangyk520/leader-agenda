@@ -80,9 +80,17 @@
         <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview"
           >新增</span
         >
-        <span class="operation-btn" @click="handlePublic" v-if="!isPreview"
-          >发布</span
+        <a-popconfirm
+          placement="left"
+          ok-text="是"
+          cancel-text="否"
+          @confirm="handlePublic"
+          v-if="!isPreview"
         >
+          <template slot="title">确认发布？</template>
+          <span class="operation-btn">发布</span>
+        </a-popconfirm>
+
         <span class="operation-btn" @click="handleExport">导出</span>
         <span class="operation-setting" @click="handleSetting"
           ><svg-icon icon-class="setting"
@@ -179,7 +187,7 @@ export default {
           this.timeViewType === "day"
             ? this.curDate
             : this.weekList[this.weekList.length - 1].date,
-        content: this.searchVal
+        content: this.searchVal,
       };
       if (this.onlyView) {
         const leaders = [];
@@ -191,7 +199,7 @@ export default {
         params.leaders = this.leaderList.map((item) => item.id).join(",");
       }
       const url = `ctrl/leader/listExport?startDate=${params.startDate}&endDate=${params.endDate}&userIds=${params.leaders}&content=${params.content}`;
-      
+
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "_blank");
