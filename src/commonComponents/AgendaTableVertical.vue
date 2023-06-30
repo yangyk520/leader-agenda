@@ -21,7 +21,7 @@
                                 <div v-else class="active_block">
                                     <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
                                         <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                            <div v-if="getShowStatus('0',item2) || getShowStatus('1')" class="row flex_start time_name_row" :style="getStyleData(item2)">
+                                            <div v-if="getShowStatus('0',item2) || getShowStatus('1',item2)" class="row flex_start time_name_row" :style="getStyleData(item2)">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="clock"></SvgIcon>
                                                 </div>

@@ -19,6 +19,9 @@ export default {
             if ( !item.clickUrl ) {
                 return
             }
+            if ( this.setting_data && this.setting_data.busyDetailShow == 1 && item.isBusy == '1' && (!this.setting_data.hasPermission) ) {
+                return
+            }
             let that = this;
             IDM.layer.open({
                 title: ["单位领导活动", "font-size:18px;"],
