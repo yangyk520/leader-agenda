@@ -42,7 +42,8 @@
                                                     <span v-if="!getBusyStatus(item2)" :title="item2.host">{{ item2.host }}</span>
                                                 </div>
                                                 <div v-if="getColumnShowStatus('4')" class="cell">
-                                                    <span v-if="!getBusyStatus(item2)" :title="item2.participants">{{ item2.participants }}</span>
+                                                    <span v-if="!getBusyStatus(item2)" :title="item2.participants"> {{ item2.participants }} </span>
+                                                    <span v-else :title="item2.leader">{{ item2.leader }}</span>
                                                 </div>
                                                 <div v-if="getColumnShowStatus('2')" class="cell">
                                                     <span v-if="!getBusyStatus(item2)" :title="item2.place">{{ item2.place }}</span>
@@ -54,7 +55,7 @@
                                         </template>
                                         <template v-else>
                                             <div class="flex_between row">
-                                                <div v-for="(item2,index2) in makeHeaderData.length" :key="index2" class="cell"></div>
+                                                <div v-for="(item2,index2) in getColumnList.length" :key="index2" class="cell"> </div>
                                             </div>
                                         </template>
                                     </div>
@@ -67,7 +68,7 @@
                                     </div>
                                     <div class="table_body_main_sub">
                                         <div class="flex_between row">
-                                            <div v-for="(item2,index2) in makeHeaderData.length" :key="index2" class="cell"></div>
+                                            <div v-for="(item2,index2) in getColumnList.length" :key="index2" class="cell"> </div>
                                         </div>
                                     </div>
                                 </div>
