@@ -122,7 +122,7 @@ export default {
     // 默认类型 日/周
     scheduleType: {
       type: Number,
-      default: 1,
+      default: 0,
     },
     moduleObject: {
       type: Object,
@@ -165,7 +165,6 @@ export default {
   watch: {
     scheduleType: {
       handler: function (newVal) {
-        console.log(newVal,1111111111)
         if(!this.defaultTimeViewType){
           this.defaultTimeViewType = newVal == '1' ? 'day' : 'week';
           this.timeViewType = this.defaultTimeViewType;
