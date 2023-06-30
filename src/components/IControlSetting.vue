@@ -27,6 +27,19 @@
                     </a-radio-group>
                 </div>
             </div>
+            <div class="row flex_start">
+                <div class="label">默认类型：</div>
+                <div class="content">
+                    <a-radio-group v-model="form.scheduleType" @change="e => onChange(e,'scheduleTypeText')">
+                        <a-radio :value="1">
+                            日
+                        </a-radio>
+                        <a-radio :value="2">
+                            周
+                        </a-radio>
+                    </a-radio-group>
+                </div>
+            </div>
             <div v-if="form.viewModel != 2" class="row flex_start">
                 <div class="label">领导头像：</div>
                 <div class="content">
