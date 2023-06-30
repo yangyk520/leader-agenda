@@ -104,15 +104,23 @@ import moment from "moment";
 export default {
   name: "AgendaHeader",
   props: {
+    // 预览状态
     isPreview: {
       type: Boolean,
       default: true,
     },
+    // 是否展示领导头像
     leaderImageShow: {
       type: Number,
       default: 2,
     },
+    // 显示模式 视图/列表
     viewModel: {
+      type: Number,
+      default: 1,
+    },
+    // 默认类型 日/周
+    scheduleType: {
       type: Number,
       default: 1,
     },
@@ -125,6 +133,7 @@ export default {
   },
   data() {
     return {
+      defaultTimeViewType:"",
       // 时间视图
       timeViewType: "day",
       // 今天
@@ -153,10 +162,22 @@ export default {
       leaderList: [],
     };
   },
+  watch: {
+    scheduleType: {
+      handler: function (newVal) {
+        console.log(newVal,1111111111)
+        if(!this.defaultTimeViewType){
+          this.defaultTimeViewType = newVal == '1' ? 'day' : 'week';
+          this.timeViewType = this.defaultTimeViewType;
+          this.sendHeadParams();
+        }
+      },
+      deep: true,
+    },
+  },
   created() {
     this.getLeaderList();
     this.initTime(moment());
-    this.sendHeadParams();
   },
   methods: {
     getUserPhoto(item) {
@@ -264,9 +285,7 @@ export default {
       IDM.http
         .get("/ctrl/leaderScheduleApi/getLeaderUserInfoForMobile")
         .done((d) => {
-          console.log("领导请求成功", d);
           if (d.code == "200" && d.data) {
-            // d.data = d.data.slice(0,15)
             this.leaderList = d.data.map((item) => {
               return {
                 ...item,
