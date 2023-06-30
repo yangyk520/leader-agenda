@@ -35,7 +35,10 @@
                                                     <span>{{  `${item2.time} - ${item2.endTime}` }}</span>
                                                 </div>
                                                 <div v-if="getColumnShowStatus('1')" class="cell">
-                                                    <span v-if="!getBusyStatus(item2)" :style="getStyleData(item2)" :title="item2.bt">{{ item2.bt }}</span>
+                                                    <span @click="editActive(item2)" v-if="!getBusyStatus(item2)" :style="getStyleData(item2)">
+                                                        <SvgIcon v-if="item2.hasAnnex && !getBusyStatus(item2)" icon-class="file" :style="{marginRight: '7px'}"></SvgIcon>
+                                                        <span :title="item2.bt">{{ item2.bt }}</span>
+                                                    </span>
                                                     <span v-else>忙碌</span>
                                                 </div>
                                                 <div v-if="getColumnShowStatus('3')" class="cell">
@@ -88,6 +91,7 @@
 </template>
 <script>
 import mixins from '@/mixins/index.js'
+import SvgIcon from '../icons/SvgIcon.vue';
 
 export default {
     name: 'AgendaTableList',
@@ -122,6 +126,9 @@ export default {
             })
             return column_list
         }
+    },
+    components: {
+        SvgIcon,
     },
     data() {
         return {

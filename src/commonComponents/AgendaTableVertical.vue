@@ -130,27 +130,7 @@ export default {
             });
             return result
         },
-        editActive(item) {
-            if ( !item.clickUrl ) {
-                return
-            }
-            let that = this;
-            IDM.layer.open({
-                title: ["单位领导活动", "font-size:18px;"],
-                type: 2,
-                area: ["1200px", "90%"],
-                content: IDM.url.getWebPath(item.clickUrl),
-                success: function (layero, index) {
-                    top.close = function () {
-                        IDM.layer.close(index);
-                        that.$emit('updateTableData')
-                    };
-                },
-                end: function () {
-                    that.$emit('updateTableData')
-                },
-            });
-        },
+        
         getShowStatus(data,item) {
             // data为-1表示结束时间
             if ( data == '-1' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
