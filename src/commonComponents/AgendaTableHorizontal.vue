@@ -1,10 +1,6 @@
 <template>
   <div class="agenda-table-horizontal">
-    <table
-      class="agenda-table-horizontal-main"
-      cellspacing="0"
-      ref="table"
-    >
+    <table class="agenda-table-horizontal-main" cellspacing="0" ref="table">
       <colgroup>
         <col
           :width="`${index === 0 ? '150' : thAuto ? 'auto' : '308'}`"
@@ -69,13 +65,13 @@
                       <SvgIcon icon-class="clock"></SvgIcon>
                     </div>
                     <span v-if="getShowStatus('0', todo)" class="time">{{
-                        todo.time
-                      }}</span>
-                      <SvgIcon
-                        v-if="todo.hasAnnex && getShowStatus('1', todo)"
-                        icon-class="file"
-                      ></SvgIcon>
-                      <span class="name">{{ todo.bt }}</span>
+                      todo.time
+                    }}</span>
+                    <SvgIcon
+                      v-if="todo.hasAnnex && getShowStatus('1', todo)"
+                      icon-class="file"
+                    ></SvgIcon>
+                    <span class="name">{{ todo.bt }}</span>
                   </div>
                   <div
                     v-if="getShowStatus('2', todo)"
@@ -108,9 +104,7 @@
                   </div>
 
                   <div
-                    v-if="
-                      todo.isBusy == '1' && setting_data.busyDetailShow == 1
-                    "
+                    v-if="todo.isBusy == '1'"
                     class="row flex_start busy_block"
                   >
                     <div class="svg_box flex_center">
@@ -233,17 +227,34 @@ export default {
           };
         },
         end: function () {
-            that.$emit('updateTableData')
-        }
+          that.$emit("updateTableData");
+        },
       });
     },
-    getShowStatus(data) {
+    getShowStatus(data, item) {
+      // data为-1表示结束时间
+      if (
+        data == "-1" &&
+        item.isBusy == "1" &&
+        !item.mySchedule &&
+        this.setting_data &&
+        !this.setting_data.hasPermission
+      ) {
+        return true;
+      }
       if (
         this.setting_data &&
         this.setting_data.viewColumn &&
         this.setting_data.viewColumn.includes(data)
       ) {
-        if (data == "6" && this.setting_data.busyDetailShow == 1) {
+        // 判断忙碌不显示时条件
+        if (
+          data != "0" &&
+          item.isBusy == "1" &&
+          !item.mySchedule &&
+          this.setting_data &&
+          !this.setting_data.hasPermission
+        ) {
           return false;
         } else {
           return true;
@@ -256,10 +267,16 @@ export default {
       if (item.photo) {
         return IDM.url.getWebPath(item.photo);
       } else {
-        if ( item.sex ) {
-            return IDM.url.getModuleAssetsWebPath( require(`../assets/default_girl.png`), this.moduleObject );
+        if (item.sex) {
+          return IDM.url.getModuleAssetsWebPath(
+            require(`../assets/default_girl.png`),
+            this.moduleObject
+          );
         } else {
-            return IDM.url.getModuleAssetsWebPath( require(`../assets/default_boy.png`), this.moduleObject );
+          return IDM.url.getModuleAssetsWebPath(
+            require(`../assets/default_boy.png`),
+            this.moduleObject
+          );
         }
       }
     },
@@ -423,7 +440,7 @@ export default {
     .th-user {
       // width: 200px;
     }
-    
+
     .user_info {
       display: flex;
       justify-content: center;
