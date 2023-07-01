@@ -51,7 +51,7 @@
         <span class="operation-btn primary" @click="hanldeSearch">检索</span>
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
-      <div class="operation-leader" v-if="viewModel == 1">
+      <div class="operation-leader" :class="{onlyView:!onlyView}" v-if="viewModel == 1">
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
@@ -80,17 +80,7 @@
         <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview"
           >新增</span
         >
-        <a-popconfirm
-          placement="left"
-          ok-text="是"
-          cancel-text="否"
-          @confirm="handlePublic"
-          v-if="!isPreview"
-        >
-          <template slot="title">确认发布？</template>
-          <span class="operation-btn">发布</span>
-        </a-popconfirm>
-
+        <span class="operation-btn" v-if="!isPreview" @click="handlePublic">发布</span>
         <span class="operation-btn" @click="handleExport">导出</span>
         <span class="operation-setting" @click="handleSetting"
           ><svg-icon icon-class="setting"
@@ -254,7 +244,8 @@ export default {
      * 发布
      */
     handlePublic() {
-      IDM.http
+      IDM.layer.confirm('确认发布？', {icon: 3, title:'提示'}, (index)=>{
+        IDM.http
         .get("/ctrl/leaderScheduleApi/batchPush", {
           startDate:
             this.timeViewType === "day" ? this.curDate : this.weekList[0].date,
@@ -276,6 +267,9 @@ export default {
           IDM.message.warning("发布失败");
         })
         .always((res) => {});
+        
+        IDM.layer.close(index);
+      });
     },
     /**
      * 请求领导列表
@@ -492,7 +486,7 @@ export default {
     .top-calendar {
       display: flex;
       .calendar-arrow {
-        color: #0080ff;
+        color: #0086D9;
         font-size: 20px;
         display: flex;
         justify-content: center;
@@ -503,7 +497,7 @@ export default {
       .calendar-container {
         .calendar-container-day,
         .calendar-container-week {
-          color: #0080ff;
+          color: #0086D9;
 
           span:nth-child(2) {
             color: #333;
@@ -587,11 +581,11 @@ export default {
                 position: absolute;
                 top: -10px;
                 right: -10px;
-                color: #0080ff;
+                color: #0086D9;
                 font-size: 12px;
               }
               img {
-                border: #0080ff 1px solid;
+                border: #0086D9 1px solid;
                 border-radius: 4px;
               }
             }
@@ -612,7 +606,7 @@ export default {
             &.checked {
               span {
                 border: 1px solid rgba(0, 134, 217, 1);
-                color: #0080ff;
+                color: #0086D9;
               }
             }
           }
@@ -648,6 +642,11 @@ export default {
             text-align: center;
           }
         }
+      }
+
+      &.onlyView {
+        flex: 1;
+        padding-left: 16px;
       }
     }
 

@@ -378,6 +378,7 @@ export default {
   overflow: auto;
   border: 1px solid #ddd;
   position: relative;
+  font-family: PingFang SC;
 
   ::v-deep .simplebar-scrollbar:before {
     background-color: #e8e8e8;
@@ -471,6 +472,7 @@ export default {
         margin-bottom: 16px;
         padding-bottom: 16px;
         border-bottom: 1px dotted #979797;
+        cursor: pointer;
         &:last-child {
           margin-bottom: 0;
           padding-bottom: 0;

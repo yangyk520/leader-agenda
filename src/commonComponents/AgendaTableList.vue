@@ -191,7 +191,9 @@ export default {
             }
         },
         getStyleData(item) {
-            var styleObject = {};
+            var styleObject = {
+                "cursor":"pointer"
+            };
             switch (item.state) {
                 case 1:
                     styleObject['color'] = '#0086D9';

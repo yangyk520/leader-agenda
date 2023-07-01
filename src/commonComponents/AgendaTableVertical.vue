@@ -288,6 +288,7 @@ export default {
                     
                     .active_block{
                         .active_list{
+                            cursor: pointer;
                             margin-bottom: 16px;
                             padding-bottom: 16px;
                             border-bottom: 1px dotted #979797;
