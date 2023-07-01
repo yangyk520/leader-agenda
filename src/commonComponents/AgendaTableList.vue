@@ -177,7 +177,7 @@ export default {
     methods: {
         getBusyStatus(item) {
             // 返回true，日程名称显示忙碌状，其他为空
-            if ( item.isBusy == '1' && this.setting_data && this.setting_data.busyDetailShow == 1 ) {
+            if ( item.isBusy == '1' && (!item.mySchedule) && this.setting_data && !this.setting_data.hasPermission ) {
                 return true
             } else {
                 return false

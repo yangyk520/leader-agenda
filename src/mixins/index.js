@@ -19,7 +19,7 @@ export default {
             if ( !item.clickUrl ) {
                 return
             }
-            if ( this.setting_data && this.setting_data.busyDetailShow == 1 && item.isBusy == '1' && (!this.setting_data.hasPermission) ) {
+            if ( this.setting_data && (!this.setting_data.hasPermission) && (!item.mySchedule) && item.isBusy == '1' ) {
                 return
             }
             let that = this;

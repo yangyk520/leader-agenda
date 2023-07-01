@@ -58,7 +58,7 @@
                                                 <span class="address"> {{ item2.participants }} </span>
                                             </div>
                                             
-                                            <div v-if="item2.isBusy == '1' && setting_data.busyDetailShow == 1" class="row flex_start busy_block">
+                                            <div v-if="item2.isBusy == '1'" class="row flex_start busy_block">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="busy"></SvgIcon>
                                                 </div>
@@ -133,11 +133,12 @@ export default {
         
         getShowStatus(data,item) {
             // data为-1表示结束时间
-            if ( data == '-1' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
+            if ( data == '-1' && item.isBusy == '1' && (!item.mySchedule) && this.setting_data && !this.setting_data.hasPermission ) {
                 return true
             }
             if ( this.setting_data && this.setting_data.viewColumn && this.setting_data.viewColumn.includes(data) ) {
-                if ( data != '0' && item.isBusy == '1' && this.setting_data.busyDetailShow == 1 ) {
+                // 判断忙碌不显示时条件
+                if ( data != '0' && item.isBusy == '1' && (!item.mySchedule) && this.setting_data && !this.setting_data.hasPermission ) {
                     return false
                 } else {
                     return true

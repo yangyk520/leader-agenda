@@ -114,7 +114,7 @@
                     </a-radio-group>
                 </div>
             </div>
-            <div v-if="form.hasPermission || form.leader" class="row flex_start">
+            <!-- <div v-if="form.hasPermission || form.leader" class="row flex_start">
                 <div class="label">忙碌详情：</div>
                 <div class="content">
                     <a-radio-group v-model="form.busyDetailShow" @change="e => onChange(e,'busyDetailShowText')">
@@ -126,7 +126,7 @@
                         </a-radio>
                     </a-radio-group>
                 </div>
-            </div>
+            </div> -->
             <div class="row flex_start">
                 <div class="label">空闲显示：</div>
                 <div class="content">
