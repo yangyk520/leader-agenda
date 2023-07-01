@@ -76,12 +76,10 @@
                       }}</span>
                       <SvgIcon
                         v-if="todo.hasAnnex && getShowStatus('1', todo)"
-                        v-show="!isPreview || !todo.isBusy"
                         icon-class="file"
                       ></SvgIcon>
                       <span
                         v-if="getShowStatus('1', todo)"
-                        v-show="!isPreview || !todo.isBusy"
                         class="name"
                         >{{ todo.bt }}</span
                       >
@@ -89,7 +87,6 @@
                   </div>
                   <div
                     v-if="getShowStatus('2', todo) && todo.place"
-                    v-show="!isPreview || !todo.isBusy"
                     class="row flex_start address_block"
                   >
                     <div class="svg_box flex_center">
@@ -101,7 +98,6 @@
                   </div>
                   <div
                     v-if="getShowStatus('3', todo) && todo.host"
-                    v-show="!isPreview || !todo.isBusy"
                     class="row flex_start"
                   >
                     <div class="svg_box flex_center">
@@ -111,7 +107,6 @@
                   </div>
                   <div
                     v-if="getShowStatus('6', todo) && todo.content"
-                    v-show="!isPreview || !todo.isBusy"
                     class="row flex_start"
                   >
                     <div class="svg_box flex_center">
@@ -121,7 +116,6 @@
                   </div>
                   <div
                     v-if="getShowStatus('4', todo) && todo.participants"
-                    v-show="!isPreview || !todo.isBusy"
                     class="row flex_start"
                   >
                     <div class="svg_box flex_center">
