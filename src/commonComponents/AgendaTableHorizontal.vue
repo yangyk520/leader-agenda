@@ -152,7 +152,7 @@
 </template>
 <script>
 import SvgIcon from "../icons/SvgIcon.vue";
-
+import mixins from '@/mixins/index.js'
 export default {
   name: "AgendaTableVertical",
   components: {
@@ -194,6 +194,7 @@ export default {
       thAuto: true,
     };
   },
+  mixins: [mixins],
   created() {
     console.log("isPreview", this.isPreview);
   },
@@ -230,27 +231,6 @@ export default {
         }
       });
       return result;
-    },
-    editActive(item) {
-      if (!item.clickUrl) {
-        return;
-      }
-      let that = this;
-      IDM.layer.open({
-        type: 2,
-        title: ["单位领导活动", "font-size:18px;"],
-        area: ["1200px", "90%"],
-        content: IDM.url.getWebPath(item.clickUrl),
-        success: function (layero, index) {
-          top.close = function () {
-            IDM.layer.close(index);
-            that.$emit("updateTableData");
-          };
-        },
-        end: function () {
-          that.$emit("updateTableData");
-        },
-      });
     },
     getShowStatus(data, item) {
       // data为-1表示结束时间

@@ -51,7 +51,7 @@
         <span class="operation-btn primary" @click="hanldeSearch">检索</span>
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
-      <div class="operation-leader" :class="{onlyView:!onlyView}" v-if="viewModel == 1">
+      <div class="operation-leader" v-if="viewModel == 1">
         <a-checkbox v-model="onlyView" @change="handleChange">
           只看
         </a-checkbox>
@@ -565,6 +565,8 @@ export default {
       display: flex;
       font-size: 14px;
       align-items: center;
+      flex: 1;
+      padding-left: 16px;
 
       .leader-container {
         display: flex;
@@ -643,11 +645,6 @@ export default {
             text-align: center;
           }
         }
-      }
-
-      &.onlyView {
-        flex: 1;
-        padding-left: 16px;
       }
     }
 
