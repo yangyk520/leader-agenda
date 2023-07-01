@@ -122,6 +122,7 @@ export default {
             if ( !this.isPreview ) {
                 return data
             }
+            console.log(888,this.isPreview)
             let result = [];
             data.forEach(item => {
                 if ( item.state != 0 ) {
