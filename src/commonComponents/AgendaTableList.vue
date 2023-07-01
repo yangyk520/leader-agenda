@@ -163,6 +163,10 @@ export default {
                 {
                     id: '2',
                     name: '地点'
+                },
+                {
+                    id: '6',
+                    name: '会议内容'
                 }
             ]
         }
