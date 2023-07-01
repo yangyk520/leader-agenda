@@ -498,6 +498,7 @@ export default {
         .calendar-container-day,
         .calendar-container-week {
           color: #0086D9;
+          font-weight: 400;
 
           span:nth-child(2) {
             color: #333;

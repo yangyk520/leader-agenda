@@ -76,6 +76,8 @@ export default {
       }).then((res) => {
           if ( res.data.code == '200' ) {
             this.setting_data = res.data.data || {};
+            // this.setting_data.viewModel = 1
+            // this.setting_data.viewType = 2
             if ( is_update_table_data ) {
               this.initData()
             }

@@ -27,11 +27,11 @@
                                                 </div>
                                                 <div>
                                                     <span v-if="getShowStatus('0',item2)" class="time">{{ `${item2.time} ${ item2.endTime && getShowStatus('-1',item2) ? '-' : '' } ${item2.endTime && getShowStatus('-1',item2) ? item2.endTime : ''}`  }}</span>
-                                                    <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)" icon-class="file"></SvgIcon>
-                                                    <span v-if="getShowStatus('1',item2)" class="name">{{ item2.bt }}</span>
+                                                    <SvgIcon v-if="item2.hasAnnex && getShowStatus('1',item2)"  v-show="!isPreview || !item2.isBusy" icon-class="file"></SvgIcon>
+                                                    <span v-if="getShowStatus('1',item2)" v-show="!isPreview || !item2.isBusy" class="name">{{ item2.bt }}</span>
                                                 </div>
                                             </div>
-                                            <div v-if="getShowStatus('2',item2) && item2.place" class="row flex_start address_block">
+                                            <div v-if="getShowStatus('2',item2) && item2.place" v-show="!isPreview || !item2.isBusy" class="row flex_start address_block">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="address"></SvgIcon>
                                                 </div>
@@ -39,19 +39,19 @@
                                                     <span >{{ item2.place }}</span>
                                                 </span>
                                             </div>
-                                            <div v-if="getShowStatus('3',item2) && item2.host" class="row flex_start">
+                                            <div v-if="getShowStatus('3',item2) && item2.host" v-show="!isPreview || !item2.isBusy" class="row flex_start">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="host"></SvgIcon>
                                                 </div>
                                                 <span class="address"> {{ item2.host }} </span>
                                             </div>
-                                            <div v-if="getShowStatus('6',item2) && item2.content" class="row flex_start">
+                                            <div v-if="getShowStatus('6',item2) && item2.content" v-show="!isPreview || !item2.isBusy" class="row flex_start">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="content"></SvgIcon>
                                                 </div>
                                                 <span class="address"> {{ item2.content }} </span>
                                             </div>
-                                            <div v-if="getShowStatus('4',item2) && item2.participants" class="row flex_start">
+                                            <div v-if="getShowStatus('4',item2) && item2.participants" v-show="!isPreview || !item2.isBusy" class="row flex_start">
                                                 <div class="svg_box flex_center">
                                                     <SvgIcon icon-class="participants"></SvgIcon>
                                                 </div>

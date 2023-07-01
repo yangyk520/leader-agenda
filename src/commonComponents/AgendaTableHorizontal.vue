@@ -57,24 +57,39 @@
                   :style="getStyleDataCancel(todo)"
                 >
                   <div
-                    v-if="getShowStatus('0', todo) || getShowStatus('1')"
+                    v-if="getShowStatus('0', todo) || getShowStatus('1', todo)"
                     class="row flex_start time_name_row"
                     :style="getStyleData(todo)"
                   >
-                    <div class="svg_box flex_center">
+                    <span class="svg_box">
                       <SvgIcon icon-class="clock"></SvgIcon>
-                    </div>
-                    <span v-if="getShowStatus('0', todo)" class="time">{{
-                      todo.time
-                    }}</span>
-                    <SvgIcon
-                      v-if="todo.hasAnnex && getShowStatus('1', todo)"
-                      icon-class="file"
-                    ></SvgIcon>
-                    <span class="name">{{ todo.bt }}</span>
+                    </span>
+                    <span>
+                      <span v-if="getShowStatus('0', todo)" class="time">{{
+                        `${todo.time} ${
+                          todo.endTime && getShowStatus("-1", todo) ? "-" : ""
+                        } ${
+                          todo.endTime && getShowStatus("-1", todo)
+                            ? todo.endTime
+                            : ""
+                        }`
+                      }}</span>
+                      <SvgIcon
+                        v-if="todo.hasAnnex && getShowStatus('1', todo)"
+                        v-show="!isPreview || !todo.isBusy"
+                        icon-class="file"
+                      ></SvgIcon>
+                      <span
+                        v-if="getShowStatus('1', todo)"
+                        v-show="!isPreview || !todo.isBusy"
+                        class="name"
+                        >{{ todo.bt }}</span
+                      >
+                    </span>
                   </div>
                   <div
-                    v-if="getShowStatus('2', todo)"
+                    v-if="getShowStatus('2', todo) && todo.place"
+                    v-show="!isPreview || !todo.isBusy"
                     class="row flex_start address_block"
                   >
                     <div class="svg_box flex_center">
@@ -84,23 +99,35 @@
                       <span>{{ todo.place }}</span>
                     </span>
                   </div>
-                  <div v-if="getShowStatus('3', todo)" class="row flex_start">
+                  <div
+                    v-if="getShowStatus('3', todo) && todo.host"
+                    v-show="!isPreview || !todo.isBusy"
+                    class="row flex_start"
+                  >
                     <div class="svg_box flex_center">
                       <SvgIcon icon-class="host"></SvgIcon>
                     </div>
                     <span class="address"> {{ todo.host }} </span>
                   </div>
-                  <div v-if="getShowStatus('6', todo)" class="row flex_start">
+                  <div
+                    v-if="getShowStatus('6', todo) && todo.content"
+                    v-show="!isPreview || !todo.isBusy"
+                    class="row flex_start"
+                  >
                     <div class="svg_box flex_center">
                       <SvgIcon icon-class="content"></SvgIcon>
                     </div>
                     <span class="address"> {{ todo.content }} </span>
                   </div>
-                  <div v-if="getShowStatus('4', todo)" class="row flex_start">
+                  <div
+                    v-if="getShowStatus('4', todo) && todo.participants"
+                    v-show="!isPreview || !todo.isBusy"
+                    class="row flex_start"
+                  >
                     <div class="svg_box flex_center">
                       <SvgIcon icon-class="participants"></SvgIcon>
                     </div>
-                    <span class="address">{{ todo.participants }}</span>
+                    <span class="address"> {{ todo.participants }} </span>
                   </div>
 
                   <div
@@ -417,6 +444,7 @@ export default {
       font-size: 20px;
       color: #333333;
       position: sticky;
+      font-weight: 500;
       top: 0;
       z-index: 2;
     }
