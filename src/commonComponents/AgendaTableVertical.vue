@@ -118,20 +118,6 @@ export default {
             }
             return styleObject
         },
-        getActiveList(data) {
-            if ( !this.isPreview ) {
-                return data
-            }
-            console.log(888,this.isPreview)
-            let result = [];
-            data.forEach(item => {
-                if ( item.state != 0 ) {
-                    result.push(item)
-                }
-            });
-            return result
-        },
-        
         getShowStatus(data,item) {
             // data为-1表示结束时间
             if ( data == '-1' && item.isBusy == '1' && (!item.mySchedule) && this.setting_data && !this.setting_data.hasPermission ) {

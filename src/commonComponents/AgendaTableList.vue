@@ -30,7 +30,7 @@
                                     </div>
                                     <div class="table_body_main_sub">
                                         <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length && getActiveData(data_list_table[item1.id].data)">
-                                            <div v-for="(item2,index2) in getActiveData(data_list_table[item1.id].data)" :key="index2" class="flex_between row">
+                                            <div v-for="(item2,index2) in getActiveList(data_list_table[item1.id].data)" :key="index2" class="flex_between row">
                                                 <div v-if="getColumnShowStatus('0')" class="cell">
                                                     <span>{{  `${item2.time} - ${item2.endTime}` }}</span>
                                                 </div>
@@ -175,22 +175,6 @@ export default {
 
     },
     methods: {
-        getActiveData(data) {
-            if ( (!data) || !data.length ) {
-                return []
-            }
-            console.log(999,this.isPreview)
-            if ( !this.isPreview ) {
-                return data
-            }
-            let result = [];
-            data.forEach((item) => {
-                if ( item.state != 0 ) {
-                    result.push(item)
-                }
-            })
-            return result
-        },
         getBusyStatus(item) {
             // 返回true，日程名称显示忙碌状，其他为空
             if ( item.isBusy == '1' && (!item.mySchedule) && this.setting_data && !this.setting_data.hasPermission ) {

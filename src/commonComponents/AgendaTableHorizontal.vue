@@ -220,18 +220,7 @@ export default {
       }
       return styleObject;
     },
-    getActiveList(data) {
-      if (!this.isPreview) {
-        return data;
-      }
-      let result = [];
-      data.forEach((item) => {
-        if (item.state != 0) {
-          result.push(item);
-        }
-      });
-      return result;
-    },
+    
     getShowStatus(data, item) {
       // data为-1表示结束时间
       if (

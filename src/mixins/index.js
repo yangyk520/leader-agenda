@@ -39,5 +39,21 @@ export default {
                 },
             });
         },
+        getActiveList(data) {
+            if ( !data ) {
+                return []
+            }
+            return data
+            // if ( !this.isPreview ) {
+            //     return data
+            // }
+            // let result = [];
+            // data.forEach(item => {
+            //     if ( item.state != 0 ) {
+            //         result.push(item)
+            //     }
+            // });
+            // return result
+        }
     }
 }
