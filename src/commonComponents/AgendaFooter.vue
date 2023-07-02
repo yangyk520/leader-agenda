@@ -15,10 +15,10 @@ export default {
     components: {
         SvgIcon,
     },
-    props: [ 'isPreview' ],
+    props: [ 'isPreview','setting_data' ],
     computed: {
         getStatusList: function() {
-            if ( !this.isPreview ) {
+            if ( (!this.isPreview) || this.setting_data.leader ) {
                 return this.status_list
             }
             return this.status_list.filter((item,index) => {
