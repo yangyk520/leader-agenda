@@ -29,7 +29,7 @@
                                         <span>{{ item1.name }}</span>
                                     </div>
                                     <div class="table_body_main_sub">
-                                        <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length && getActiveData(data_list_table[item1.id].data)">
+                                        <template v-if="data_list_table[item1.id] && data_list_table[item1.id].data && data_list_table[item1.id].data.length && getActiveList(data_list_table[item1.id].data)">
                                             <div v-for="(item2,index2) in getActiveList(data_list_table[item1.id].data)" :key="index2" class="flex_between row">
                                                 <div v-if="getColumnShowStatus('0')" class="cell">
                                                     <span>{{  `${item2.time} - ${item2.endTime}` }}</span>
