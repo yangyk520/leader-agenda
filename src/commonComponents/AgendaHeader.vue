@@ -29,6 +29,7 @@
         <div class="calendar-arrow arrow-left" @click="calendarToggle('right')">
           <svg-icon iconClass="rectangle_right"></svg-icon>
         </div>
+        <span class="calendar-btn" @click="curDayWeekHandle">{{timeViewType === 'day'?'今天':'本周'}}</span>
       </div>
       <div class="top-view">
         <span
@@ -169,6 +170,16 @@ export default {
     this.initTime(moment());
   },
   methods: {
+    /**
+     * 今天、本周切换
+     */
+    curDayWeekHandle(){
+      this.initTime(moment());
+      this.sendHeadParams();
+    },
+    /**
+     * 头像
+     */
     getUserPhoto(item) {
       if (item.photo) {
         return IDM.url.getWebPath(item.photo);
@@ -469,6 +480,7 @@ export default {
     font-weight: 500;
     border-bottom: 1px solid rgba(238, 238, 238, 1);
     user-select: none;
+    height: 50px;
 
     .top-tit {
       display: flex;
@@ -495,6 +507,8 @@ export default {
         margin: 0 16px;
       }
       .calendar-container {
+        display: flex;
+        align-items: center;
         .calendar-container-day,
         .calendar-container-week {
           color: #0086D9;
@@ -505,6 +519,21 @@ export default {
             margin-left: 16px;
           }
         }
+      }
+
+      .calendar-btn {
+        display: inline-block;
+        cursor: pointer;
+        border: 1px solid rgba(201, 201, 201, 1);
+        border-radius: 2px;
+        line-height: 26px;
+        padding: 0 10px;
+        margin-left: 12px;
+        font-size: 12px;
+        cursor: pointer;
+        // position: absolute;
+        // right: -46px;
+        // top: -2px;
       }
     }
 
