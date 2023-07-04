@@ -2,11 +2,8 @@
   <div class="agenda-table-horizontal">
     <table class="agenda-table-horizontal-main" cellspacing="0" ref="table">
       <colgroup>
-        <col
-          :width="`${index === 0 ? '150' : thAuto ? 'auto' : '308'}`"
-          v-for="(item, index) in header_list"
-          :key="index"
-        />
+        <col :width="`${index === 0 ? '150' : thAuto ? 'auto' : '308'}`" v-for="(item, index) in header_list"
+          :key="index" />
       </colgroup>
       <thead>
         <tr>
@@ -28,120 +25,18 @@
       <tbody>
         <tr v-for="(time, ti) in data_list" :key="ti">
           <template v-for="(header, hi) in header_list">
-            <td
-              v-if="header.userId == 0"
-              class="td-time"
-              :key="hi"
-              :style="getDomBg(time, 1)"
-            >
+            <td v-if="header.userId == 0" class="td-time" :key="hi" :style="getDomBg(time, 1)">
               <div>{{ time.name }}</div>
               <div v-if="time.week">({{ time.week }})</div>
             </td>
             <td v-else :key="hi" class="active_block" :style="getDomBg(time)">
-              <div
-                v-if="
-                  time.data &&
-                  time.data[header.userId] &&
-                  time.data[header.userId].data &&
-                  time.data[header.userId].data.length
-                "
-                class="block"
-              >
-                <div
-                  @click="editActive(todo)"
-                  v-for="(todo, index) in getActiveList(
-                    time.data[header.userId].data
-                  )"
-                  :key="index"
-                  class="active_list"
-                  :style="getStyleDataCancel(todo)"
-                >
-                  <div
-                    v-if="getShowStatus('0', todo) || getShowStatus('1', todo)"
-                    class="row flex_start time_name_row"
-                    :style="getStyleData(todo)"
-                  >
-                    <span class="svg_box">
-                      <SvgIcon icon-class="clock"></SvgIcon>
-                    </span>
-                    <span>
-                      <span v-if="getShowStatus('0', todo)" class="time">{{
-                        `${todo.time} ${
-                          todo.endTime && getShowStatus("-1", todo) ? "-" : ""
-                        } ${
-                          todo.endTime && getShowStatus("-1", todo)
-                            ? todo.endTime
-                            : ""
-                        }`
-                      }}</span>
-                      <SvgIcon
-                        v-if="todo.hasAnnex && getShowStatus('1', todo)"
-                        icon-class="file"
-                      ></SvgIcon>
-                      <span
-                        v-if="getShowStatus('1', todo)"
-                        class="name"
-                        >{{ todo.bt }}</span
-                      >
-                    </span>
-                  </div>
-                  <div
-                    v-if="getShowStatus('2', todo) && todo.place"
-                    class="row flex_start address_block"
-                  >
-                    <div class="svg_box flex_center">
-                      <SvgIcon icon-class="address"></SvgIcon>
-                    </div>
-                    <span class="address">
-                      <span>{{ todo.place }}</span>
-                    </span>
-                  </div>
-                  <div
-                    v-if="getShowStatus('3', todo) && todo.host"
-                    class="row flex_start"
-                  >
-                    <div class="svg_box flex_center">
-                      <SvgIcon icon-class="host"></SvgIcon>
-                    </div>
-                    <span class="address"> {{ todo.host }} </span>
-                  </div>
-                  <div
-                    v-if="getShowStatus('6', todo) && todo.content"
-                    class="row flex_start"
-                  >
-                    <div class="svg_box flex_center">
-                      <SvgIcon icon-class="content"></SvgIcon>
-                    </div>
-                    <span class="address"> {{ todo.content }} </span>
-                  </div>
-                  <div
-                    v-if="getShowStatus('4', todo) && todo.participants"
-                    class="row flex_start"
-                  >
-                    <div class="svg_box flex_center">
-                      <SvgIcon icon-class="participants"></SvgIcon>
-                    </div>
-                    <span class="address"> {{ todo.participants }} </span>
-                  </div>
-
-                  <div
-                    v-if="todo.isBusy == '1'"
-                    class="row flex_start busy_block"
-                  >
-                    <div class="svg_box flex_center">
-                      <SvgIcon icon-class="busy"></SvgIcon>
-                    </div>
-                    <span class="busy">忙碌</span>
-                  </div>
+              <div v-if=" time.data && time.data[header.userId] && time.data[header.userId].data && time.data[header.userId].data.length " class="block">
+                <div @click="editActive(todo)" v-for="(todo, index) in getActiveList( time.data[header.userId].data )" :key="index" class="active_list" :style="getStyleDataCancel(todo)">
+                  <ActiveItem :item2="todo" :setting_data="setting_data"></ActiveItem>
                 </div>
               </div>
               <div v-else class="empty">
-                {{
-                  setting_data.emptyShowType == 2 ||
-                  setting_data.emptyShowType == 1
-                    ? ""
-                    : "单位内办公"
-                }}
+                {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? "" : "单位内办公" }}
               </div>
             </td>
           </template>
@@ -152,11 +47,12 @@
 </template>
 <script>
 import SvgIcon from "../icons/SvgIcon.vue";
-import mixins from '@/mixins/index.js'
+import mixins from "@/mixins/index.js";
+import ActiveItem from './ActiveItem.vue'
 export default {
   name: "AgendaTableVertical",
   components: {
-    SvgIcon,
+    ActiveItem
   },
   props: [
     "propData",
@@ -220,7 +116,7 @@ export default {
       }
       return styleObject;
     },
-    
+
     getShowStatus(data, item) {
       // data为-1表示结束时间
       if (
