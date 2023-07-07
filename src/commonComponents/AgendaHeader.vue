@@ -238,7 +238,7 @@ export default {
         title: ["单位领导活动", "font-size:18px;"],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(
-          "ctrl/formControl/sysForm?moduleId=190620095151CIhXzAd3d2P12JrbQcn&formId=230620171614b9GcqFpATxmSYfCoTuq&nodeId=0"
+          "/formControl/sysForm?moduleId=230707104025XyvXLw0OS2fq4YSag9r&formId=230707104026StmXGrEk5KQkiQQnytf"
         ),
         success: (layero, index) => {
           top.close = () => {
