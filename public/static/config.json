@@ -24,6 +24,13 @@
       "className": "ILeaderAgenda",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.idailyscheduling",
+      "comName": "排班表",
+      "className": "IDailyScheduling",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }

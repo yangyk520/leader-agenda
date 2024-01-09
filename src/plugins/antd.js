@@ -9,7 +9,9 @@ import 'ant-design-vue/lib/checkbox/style/css';
 import 'ant-design-vue/lib/time-picker/style/css';
 import 'ant-design-vue/lib/empty/style/css';
 import 'ant-design-vue/lib/popconfirm/style/css';
-import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm } from 'ant-design-vue'
+import 'ant-design-vue/lib/select/style/css';
+
+import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm,Select } from 'ant-design-vue'
 
 /* v1.1.3+ registration methods */
 Vue.use(Base)
@@ -19,4 +21,5 @@ Vue.use(Checkbox)
 Vue.use(TimePicker)
 Vue.use(Empty)
 Vue.use(Popconfirm)
+Vue.use(Select)
 
