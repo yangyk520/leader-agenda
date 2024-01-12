@@ -68,6 +68,13 @@
                               <div>值班时间：</div>
                               <div>{{ item3.dutyTime }}</div>
                             </div>
+                            <div v-if="item3.shiftChangesType" class="person_list_pop_row">
+                              <div>{{ item3.shiftChangesType == '1' ? '换班' : '替班' }}：</div>
+                              <div v-for="(item4,index4) in item3.shiftChanges" :key="index4">
+                                <div>{{ item4.date }}</div>
+                                <div>{{ item4.info }}</div>
+                              </div>
+                            </div>
                             <div v-if="item3.phone" class="person_list_pop_row">
                               电话：{{ item3.phone }}
                             </div>
@@ -99,6 +106,13 @@
                               <div>值班时间：</div>
                               <div>{{ item3.dutyTime }}</div>
                             </div>
+                            <div v-if="item3.shiftChangesType" class="person_list_pop_row">
+                              <div>{{ item3.shiftChangesType == '1' ? '换班' : '替班' }}：</div>
+                              <div v-for="(item4,index4) in item3.shiftChanges" :key="index4">
+                                <div>{{ item4.date }}</div>
+                                <div>{{ item4.info }}</div>
+                              </div>
+                            </div>
                             <div v-if="item3.phone" class="person_list_pop_row">
                               电话：{{ item3.phone }}
                             </div>
@@ -129,6 +143,13 @@
                             <div class="person_list_pop_row">
                               <div>值班时间：</div>
                               <div>{{ item3.dutyTime }}</div>
+                            </div>
+                            <div v-if="item3.shiftChangesType" class="person_list_pop_row">
+                              <div>{{ item3.shiftChangesType == '1' ? '换班' : '替班' }}：</div>
+                              <div v-for="(item4,index4) in item3.shiftChanges" :key="index4">
+                                <div>{{ item4.date }}</div>
+                                <div>{{ item4.info }}</div>
+                              </div>
                             </div>
                             <div v-if="item3.phone" class="person_list_pop_row">
                               电话：{{ item3.phone }}
@@ -342,14 +363,16 @@ export default {
     makeDefaultData() {
       let queryObject = IDM.url.queryObject();
       this.queryObject = queryObject;
-      this.select_year = queryObject.year;
-      this.select_month = queryObject.month;
+      this.select_year = parseInt(queryObject.year);
+      this.select_month = parseInt(queryObject.month);
     },
     reset() {
       let that = this;
       this.$confirm({
         title: '提示',
         content: '重置排班，是否确认？',
+        cancelText: '取消',
+        okText: '确定',
         onOk() {
           that.schedulingReset()
         },
@@ -398,6 +421,7 @@ export default {
       this.schedulingApi()
     },
     schedulingApi() {
+      let that = this;
       IDM.http.get("ctrl/dutyScheduleCtrl/judgeIsScheduled",{
         year: this.select_year,
         month: this.select_month
@@ -408,8 +432,10 @@ export default {
             this.$confirm({
               title: '提示',
               content: '确认排班？',
+              cancelText: '取消',
+              okText: '确定',
               onOk() {
-                let url = IDM.url.getWebPath(`/ctrl/dutyScheduleCtrl/dailyScheduling?year=${this.select_year}&month=${this.select_month}`)
+                let url = IDM.url.getWebPath(`/ctrl/dutyScheduleCtrl/dailyScheduling?year=${that.select_year}&month=${that.select_month}`)
                 window.open(url);
               },
               onCancel() {},
@@ -420,8 +446,10 @@ export default {
             this.$confirm({
               title: '提示',
               content: '已排过班,是否重置?',
+              cancelText: '取消',
+              okText: '确定',
               onOk() {
-                this.schedulingReset()
+                that.schedulingReset()
               },
               onCancel() {},
             });
@@ -510,12 +538,8 @@ export default {
         return ''
       }
       let obj = LunarCalendar.solarToLunar(year,month,day)
-      let result;
-      if (obj.solarFestival) {
-        result = obj.solarFestival
-      } else {
-        result = obj.lunarMonthName + obj.lunarDayName
-      }
+      console.log(obj);
+      let result = obj.lunarMonthName + obj.lunarDayName
       return {
         value: result,
         solarFestival: obj.lunarFestival
@@ -733,8 +757,16 @@ export default {
      *  isAcross:如果为true则代表发送来源是其他页面的组件，默认为false
      * } object 
      */
-    receiveBroadcastMessage(object){
-      console.log("组件收到消息",object)
+    receiveBroadcastMessage(messageObject){
+      console.log("组件收到消息",messageObject)
+      // 配置了刷新KEY，消息类型是websocket，收到的消息对象有message并不为空
+      if(this.propData.messageRefreshKey && this.propData.messageRefreshKey.length && messageObject.type === 'websocket' && messageObject.message){
+        const messageData = typeof messageObject.message === 'string' && JSON.parse(messageObject.message) || messageObject.message
+        const arr = this.propData.messageRefreshKey || []
+        if(messageData.badgeType && arr.includes(messageData.badgeType)){
+          this.reload()
+        }
+      }
     },
     /**
      * 组件通信：发送消息的方法
@@ -775,7 +807,7 @@ export default {
   .scroll_block{
     height: 100%;
     overflow-y: auto;
-    padding: 20px 20px 62px 20px;
+    padding: 20px 20px 32px 20px;
   }
   .IDailyScheduling_header{
     .button_box{
@@ -1016,12 +1048,15 @@ export default {
   }
   .ant-select-selection:focus, .ant-select-selection:active{
     border-color: rgba(204,204,204,1);
+    box-shadow: none;
   }
   .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
     border-color: rgba(204,204,204,1);
+    box-shadow: none;
   }
   .ant-select-selection:hover{
     border-color: rgba(204,204,204,1);
+    box-shadow: none;
   }
 }
 </style>

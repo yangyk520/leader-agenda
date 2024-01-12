@@ -26,4 +26,5 @@ Vue.use(Popconfirm)
 Vue.use(Select)
 Vue.use(Popover)
 Vue.use(Modal)
+Vue.prototype.$confirm = Modal.confirm
 
