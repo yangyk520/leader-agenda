@@ -3,12 +3,12 @@
     <div class="scroll_block">
       <div class="IDailyScheduling_header flex_between">
         <div class="left flex_start">
-          <div class="button_box">月</div>
-          <div class="button_box">返回今天</div>
+          <!-- <div class="button_box">月</div> -->
+          <div @click="goBackCurrentMonth()" class="button_box">返回今天</div>
         </div>
         <div class="center flex_center">
           <div class="select_box">
-            <a-select v-model="select_year">
+            <a-select v-model="select_year" @change="changeCurrentTime(e)">
               <a-select-option v-for="(item,index) in getYearsList()" :key="index" :value="item.value">
                 {{ item.label }}
               </a-select-option>
@@ -16,7 +16,7 @@
           </div>
           <span>年</span>
           <div class="select_box">
-            <a-select v-model="select_month">
+            <a-select v-model="select_month" @change="changeCurrentTime(e)">
               <a-select-option v-for="(item,index) in getMonthsList()" :key="index" :value="item.value">
                 {{ item.label }}
               </a-select-option>
@@ -25,8 +25,10 @@
           <span>月</span>
         </div>
         <div class="right flex_end">
-          <div class="button_box">综合排班</div>
-          <div class="button_box">重置</div>
+          <div v-if="queryObject.showScheduling == '1'" class="button_box scheduling" @click="scheduling()">综合排班</div>
+          <div v-if="queryObject.showExport == '1'" class="button_box export" @click="doExport()">导出</div>
+          <div v-if="queryObject.showHolidayExport == '1'" class="button_box holidy_export" @click="doExportHoliday()">节假日导出</div>
+          <div v-if="queryObject.showReset == '1'" class="button_box reset" @click="reset()">重置</div>
         </div>
       </div>
       <div class="table">
@@ -37,23 +39,77 @@
         </div>
         <div class="table_body">
           <div v-for="(item,index) in data_list" :key="index" class="row flex_between">
-            <div v-for="(item1,index1) in table_header" :key="index1" class="cell">
+            <div v-for="(item1,index1) in table_header" :key="index1" class="cell" :class="getCellClassName(item[item1.value])">
               <div class="cell_header flex_between">
                 <div class="left flex_start">
-                  <span>休</span>
+                  <span v-if="item[item1.value].holidayType == 2">休</span>
                 </div>
                 <div class="right flex_end">
-                  <span>二十</span>
-                  <span>26日</span>
+                  <span v-if="getLunarCalendar(item[item1.value].date).solarFestival" class="lunar_calendar active">
+                    {{ getLunarCalendar(item[item1.value].date).solarFestival }}
+                  </span>
+                  <span v-else class="lunar_calendar">
+                    {{ getLunarCalendar(item[item1.value].date).value }}
+                  </span>
+                  <span class="solar_calendar">{{ getDateValue(item[item1.value].date) }}</span>
                 </div>
               </div>
               <div class="cell_body">
-                <template>
-                  <div v-for="(item2,index2) in item[item1.value].dayduty" :key="index2" class="day_duty flex_between">
+                <template v-if="item[item1.value].leaderDuty && item[item1.value].leaderDuty.length">
+                  <div class="leader_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].leaderDuty)">
                     <div class="left flex_start">
-                      <div v-for="(item3,index3) in item2.person" :key="index3" class="person_list flex_start">
-                        <span>{{ item3.name }}</span>
-                        <img :src="getAssetsImg('man')" alt="">
+                      <div v-for="(item3,index3) in item[item1.value].leaderDuty" :key="index3" class="person_list flex_start">
+                        <a-popover overlayClassName="person_list_pop" trigger="hover">
+                          <template slot="content">
+                            <div class="person_list_pop_row">
+                              值班组：{{ item3.dutyGroup }}
+                            </div>
+                            <div class="person_list_pop_row">
+                              <div>值班时间：</div>
+                              <div>{{ item3.dutyTime }}</div>
+                            </div>
+                            <div v-if="item3.phone" class="person_list_pop_row">
+                              电话：{{ item3.phone }}
+                            </div>
+                          </template>
+                          <span>{{ item3.name }}</span>
+                          <img v-if="item3.gender" :src="getAssetsImg(item3.gender == 1 ? 'man' : 'woman')" alt="">
+                          <template v-if="item3.shiftChangesType">
+                            <img v-if="item3.shiftChangesType == 1" :src="getAssetsImg('change')" alt="">
+                            <img v-if="item3.shiftChangesType == 2" :src="getAssetsImg('replace')" alt="">
+                          </template>
+                        </a-popover>
+                      </div>
+                    </div>
+                    <div class="right">
+                      <img :src="getAssetsImg('leader')" alt="">
+                    </div>
+                  </div>
+                </template>
+                <template v-if="item[item1.value].dayDuty && item[item1.value].dayDuty.length">
+                  <div class="day_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].dayDuty)">
+                    <div class="left flex_start">
+                      <div v-for="(item3,index3) in item[item1.value].dayDuty" :key="index3" class="person_list flex_start">
+                        <a-popover overlayClassName="person_list_pop" trigger="hover">
+                          <template slot="content">
+                            <div class="person_list_pop_row">
+                              值班组：{{ item3.dutyGroup }}
+                            </div>
+                            <div class="person_list_pop_row">
+                              <div>值班时间：</div>
+                              <div>{{ item3.dutyTime }}</div>
+                            </div>
+                            <div v-if="item3.phone" class="person_list_pop_row">
+                              电话：{{ item3.phone }}
+                            </div>
+                          </template>
+                          <span>{{ item3.name }}</span>
+                          <img v-if="item3.gender" :src="getAssetsImg(item3.gender == 1 ? 'man' : 'woman')" alt="">
+                          <template v-if="item3.shiftChangesType">
+                            <img v-if="item3.shiftChangesType == 1" :src="getAssetsImg('change')" alt="">
+                            <img v-if="item3.shiftChangesType == 2" :src="getAssetsImg('replace')" alt="">
+                          </template>
+                        </a-popover>
                       </div>
                     </div>
                     <div class="right">
@@ -61,29 +117,34 @@
                     </div>
                   </div>
                 </template>
-                <template>
-                  <div v-for="(item2,index2) in item[item1.value].nightduty" :key="index2" class="day_duty flex_between">
+                <template v-if="item[item1.value].nightDuty && item[item1.value].nightDuty.length">
+                  <div class="night_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].nightDuty)">
                     <div class="left flex_start">
-                      <div v-for="(item3,index3) in item2.person" :key="index3" class="person_list flex_start">
-                        <span>{{ item3.name }}</span>
-                        <img :src="getAssetsImg('man')" alt="">
+                      <div v-for="(item3,index3) in item[item1.value].nightDuty" :key="index3" class="person_list flex_start">
+                        <a-popover overlayClassName="person_list_pop" trigger="hover">
+                          <template slot="content">
+                            <div class="person_list_pop_row">
+                              值班组：{{ item3.dutyGroup }}
+                            </div>
+                            <div class="person_list_pop_row">
+                              <div>值班时间：</div>
+                              <div>{{ item3.dutyTime }}</div>
+                            </div>
+                            <div v-if="item3.phone" class="person_list_pop_row">
+                              电话：{{ item3.phone }}
+                            </div>
+                          </template>
+                          <span>{{ item3.name }}</span>
+                          <img v-if="item3.gender" :src="getAssetsImg(item3.gender == 1 ? 'man' : 'woman')" alt="">
+                          <template v-if="item3.shiftChangesType">
+                            <img v-if="item3.shiftChangesType == 1" :src="getAssetsImg('change')" alt="">
+                            <img v-if="item3.shiftChangesType == 2" :src="getAssetsImg('replace')" alt="">
+                          </template>
+                        </a-popover>
                       </div>
                     </div>
                     <div class="right">
-                      <img :src="getAssetsImg('dayduty')" alt="">
-                    </div>
-                  </div>
-                </template>
-                <template>
-                  <div v-for="(item2,index2) in item[item1.value].leader" :key="index2" class="day_duty flex_between">
-                    <div class="left flex_start">
-                      <div v-for="(item3,index3) in item2.person" :key="index3" class="person_list flex_start">
-                        <span>{{ item3.name }}</span>
-                        <img :src="getAssetsImg('man')" alt="">
-                      </div>
-                    </div>
-                    <div class="right">
-                      <img :src="getAssetsImg('dayduty')" alt="">
+                      <img :src="getAssetsImg('nightduty')" alt="">
                     </div>
                   </div>
                 </template>
@@ -97,6 +158,8 @@
 </template>
 
 <script>
+import LunarCalendar from "lunar-calendar" //获取二十四节气和农历日期
+// import calendar from 'js-calendar-converter'
 export default {
   name: 'IDailyScheduling',
   components:{
@@ -159,6 +222,14 @@ export default {
                   },
                   {
                     name: '费玉清',
+                    sex: 2
+                  },
+                  {
+                    name: '王翔',
+                    sex: 2
+                  },
+                  {
+                    name: '李煜',
                     sex: 2
                   }
                 ]
@@ -254,17 +325,220 @@ export default {
           Saturday: {},
         }
       ],
+      queryObject: {},
     }
   },
   props: {
   },
   created() {
     this.moduleObject = this.$root.moduleObject;
+    this.makeDefaultData()
     this.convertAttrToStyleObject();
+    this.getInitData()
   },
   mounted() {},
   destroyed() {},
   methods:{
+    makeDefaultData() {
+      let queryObject = IDM.url.queryObject();
+      this.queryObject = queryObject;
+      this.select_year = queryObject.year;
+      this.select_month = queryObject.month;
+    },
+    reset() {
+      let that = this;
+      this.$confirm({
+        title: '提示',
+        content: '重置排班，是否确认？',
+        onOk() {
+          that.schedulingReset()
+        },
+        onCancel() {},
+      });
+    },
+    doExport() {
+      IDM.http.get(`ctrl/dutyScheduleCtrl/generate`,{
+        year: this.select_year,
+        month: this.select_month
+      },{
+        responseType: 'blob'
+      }).then((res) => {
+        let name = `${this.select_year}年${this.select_month}月排班表.xlsx`;
+        this.downloadFile(res.data,name)
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    doExportHoliday() {
+      IDM.layer.open({
+        type: 2,
+        title: '节假日选择',
+        content: IDM.url.getWebPath(`ctrl/dutyScheduleCtrl/holiday/select?year=${this.select_year}`),
+        area: ['400px', '300px']
+      });
+      
+    },
+    downloadFile(data,name) {
+      let blob = new Blob([data], {
+          type: 'application/vnd.ms-excel',
+        })
+        const blobUrl = URL.createObjectURL(blob)
+        const a = document.createElement('a')
+        // 截取文件名
+        const fileName = name
+        a.style.display = 'none'
+        a.href = blobUrl
+        a.download = fileName
+        document.body.appendChild(a)
+        a.click()
+        URL.revokeObjectURL(blobUrl) // 释放内存
+        document.body.removeChild(a)
+    },
+    scheduling() {
+      this.schedulingApi()
+    },
+    schedulingApi() {
+      IDM.http.get("ctrl/dutyScheduleCtrl/judgeIsScheduled",{
+        year: this.select_year,
+        month: this.select_month
+      }).then((res) => {
+        if ( res.data.code == '200' ) {
+          let flag = res.data.data;
+          if ( flag == '0' ) {
+            this.$confirm({
+              title: '提示',
+              content: '确认排班？',
+              onOk() {
+                let url = IDM.url.getWebPath(`/ctrl/dutyScheduleCtrl/dailyScheduling?year=${this.select_year}&month=${this.select_month}`)
+                window.open(url);
+              },
+              onCancel() {},
+            });
+          } else if (flag == '1') {
+            IDM.message.info('没有可用的值班组')
+          } else if (flag == '2') {
+            this.$confirm({
+              title: '提示',
+              content: '已排过班,是否重置?',
+              onOk() {
+                this.schedulingReset()
+              },
+              onCancel() {},
+            });
+          } else if (flag == '3') {
+            IDM.message.info('本月之后已排过班!')
+          } 
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    schedulingReset() {
+      IDM.http.get('/ctrl/dutyScheduleCtrl/judgeReset',{
+        year: this.select_year,
+        month: this.select_month
+      }).then((res) => {
+        if ( res.data.code == '200' ) {
+          let flag = res.data.data;
+          if (flag == '0'){
+            this.schedulingResetApi()
+          } else if (flag == '1') {
+            IDM.message.info('重置的月份已大于当前月!')
+          } else if (flag == '2') {
+            IDM.message.info('本月之后已排过班!')
+          }
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    schedulingResetApi() {
+      IDM.http.get('/ctrl/dutyScheduleCtrl/resetDuty',{
+        year: this.select_year,
+        month: this.select_month
+      }).then((res) => {
+        if ( res.data.code == '200' ) {
+          IDM.message.success(res.data.message)
+          this.getInitData()
+        } else {
+          IDM.message.error(res.data.message)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
+    goBackCurrentMonth() {
+      this.getCurrentTime()
+      this.getInitData()
+    },
+    getDutyListClassName(arr) {
+      let flag = false
+      arr && arr.length && arr.forEach((item) => {
+        if( item.isSelf ) {
+          flag = true
+        }
+      })
+      if(flag) {
+        return 'isSelf'
+      } else {
+        return ''
+      }
+    },
+    getCellClassName(item) {
+      var time = new Date(item.date);
+      let month = time.getMonth() + 1;
+      let result = '';
+      if ( month == this.select_month ) {
+        result = 'isCurrentMonth'
+      }
+      if ( item.holidayType == 2 ) {
+        result = result ? `${result} isRelax` : 'isRelax'
+      }
+      return result
+    },
+    getCurrentTime() {
+      var time = new Date();
+      this.select_year = time.getFullYear()
+      this.select_month = time.getMonth() + 1;
+    },
+    getLunarCalendar(value) {
+      var time = new Date(value);
+      let year = time.getFullYear();
+      let month = time.getMonth() + 1;
+      let day = time.getDate();
+      if ( (!year) || (!month) || !day ) {
+        return ''
+      }
+      let obj = LunarCalendar.solarToLunar(year,month,day)
+      let result;
+      if (obj.solarFestival) {
+        result = obj.solarFestival
+      } else {
+        result = obj.lunarMonthName + obj.lunarDayName
+      }
+      return {
+        value: result,
+        solarFestival: obj.lunarFestival
+      }
+    },
+    changeCurrentTime(e) {
+      this.getInitData()
+    },
+    getDateValue(value) {
+      return IDM.dateFormat(value,"d日");
+    },
+    getInitData() {
+      IDM.http.get('/ctrl/newSchedule/GetFgwSchedule',{
+        year: this.select_year,
+        month: this.select_month
+      }).then((res) => {
+        if ( res.data.code == '200' ) {
+          this.data_list = res.data.data;
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     getAssetsImg(name) {
       return IDM.url.getModuleAssetsWebPath(require(`../assets/${name}.png`),this.moduleObject)
     },
@@ -290,50 +564,7 @@ export default {
       }
       return months;
     },
-
-
-    updateTableData() {
-      this.initData()
-    },
-    getSettingData(is_update_table_data) {
-      IDM.http.get('/ctrl/leaderScheduleApi/getViewConfigByPC',{
-
-      }).then((res) => {
-          if ( res.data.code == '200' ) {
-            this.setting_data = res.data.data || {};
-            // this.setting_data.viewModel = 1
-            // this.setting_data.viewType = 2
-            if ( is_update_table_data ) {
-              this.initData()
-            }
-          }
-      }).catch((err) => {
-          console.log(err)
-      })
-    },
-    /**
-     * 更新头部组件参数
-     */
-    updateHeadParams(params){
-      console.log('更新头部组件参数',params)
-      this.form_data = params;
-      this.initData()
-      // this.getSettingData(1)
-    },
-    /**
-     * 更新设置
-     */
-    updateSetting(){
-      console.log('更新设置')
-      this.getSettingData(1)
-    },
-    /**
-     * 对属性设置进行初始化
-     */
-    initAttrToModule() {
-      this.initBaseAttrToModule();
-      this.convertThemeListAttrToStyleObject();
-    },
+    
     /**
      * 主题颜色
      */
@@ -370,22 +601,6 @@ export default {
         );
       }
     },
-    /**
-     * 加载基本属性到组件中
-     */
-    initBaseAttrToModule() {
-      this.isPreview = IDM.url.queryString("isPreview") == 1;
-    },
-    /**
-     * 提供父级组件调用的刷新prop数据组件
-     */
-    propDataWatchHandle(propData){
-      this.propData = propData.compositeAttr||{};
-      this.initAttrToModule()
-    },
-    /**
-     * 把属性转换成样式对象
-     */
     convertAttrToStyleObject(){
       this.convertThemeListAttrToStyleObject()
       var styleObject = {};
@@ -449,10 +664,12 @@ export default {
       }
       window.IDM.setStyleToPageHead(this.moduleObject.id,styleObject);
     },
-    /**
-     * 通用的url参数对象
-     * 所有地址的url参数转换
-     */
+    
+    propDataWatchHandle(propData){
+      this.propData = propData.compositeAttr||{};
+      this.convertAttrToStyleObject()
+      this.getInitData()
+    },
     commonParam(){
       let urlObject = IDM.url.queryObject();
       var params = {
@@ -464,114 +681,9 @@ export default {
       };
       return params;
     },
-    /**
-     * 重新加载
-     */
     reload(){
       //请求数据源
-      this.initData();
-    },
-    /**
-     * 加载动态数据
-     */
-    initData(){
-      if ( this.setting_data.viewModel == 1 ) {
-        if ( this.form_data.timeViewType == 'day' ) {
-          this.getDayInitData()
-        } else {
-          this.getWeekInitData()
-        }
-      } else {
-        this.getWeekInitDataTableList()
-      }
-    },
-    getDayInitData() {
-      IDM.http.get('/ctrl/leaderScheduleApi/getDaySchedule',{
-        date: this.form_data.dates,
-        content: this.form_data.searchVal,
-        userIds: this.form_data.leaders,
-        isPreview: this.isPreview
-      }).then((res) => {
-        if ( res.data.code == '200' ) {
-          this.header_list = res.data.data.header;
-          this.data_list = res.data.data.data;
-
-          this.formatHorizontalData(res.data.data.header,res.data.data.data)
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
-    getWeekInitData() {
-      let days_arr = this.form_data.dates.split(',');
-      let startDate = days_arr[0];
-      let endDate = days_arr[days_arr.length - 1];
-      IDM.http.get('/ctrl/leaderScheduleApi/getWeekSchedule',{
-        startDate: startDate,
-        endDate: endDate,
-        userIds: this.form_data.leaders,
-        content: this.form_data.searchVal
-      }).then((res) => {
-        this.header_list = res.data.data.header;
-        this.data_list = res.data.data.data;
-
-        this.formatHorizontalData(res.data.data.header,res.data.data.data)
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
-    getWeekInitDataTableList() {
-      let days_arr = this.form_data.dates.split(',');
-      let startDate = days_arr[0];
-      let endDate = days_arr[days_arr.length - 1];
-      IDM.http.get('/ctrl/leaderScheduleApi/getWeekScheduleInList',{
-        startDate: startDate,
-        endDate: endDate,
-        userIds: this.form_data.leaders,
-        content: this.form_data.searchVal
-      }).then((res) => {
-        this.header_list_table = res.data.data.header;
-        this.data_list_table = res.data.data.data;
-      }).catch((err) => {
-        console.log(err)
-      })
-    },
-    /**
-     * 格式化水平表格数据
-     */
-    formatHorizontalData(header,list){
-      this.header_list_horizontal = [
-        {
-          userId: 0,
-          userName:'时间'
-        }
-      ];
-      
-      list.forEach(item=>{
-        this.header_list_horizontal.push({
-          userId: item.userId,
-          userName: item.userName,
-          photo: item.photo,
-          sex: item.sex
-        })
-      });
-
-      this.data_list_horizontal = [];
-      header.forEach((time,index) => {
-        if(index>0){
-          const row = {
-            id: time.id,
-            name: time.name,
-            week: time.week,
-            data:{}
-          }
-           list.forEach(inner=>{
-            row.data[inner.userId] = inner.data[time.id]
-          });
-          this.data_list_horizontal.push(row)
-        }
-      })
-      console.log(this.data_list_horizontal,789)
+      this.getInitData();
     },
     /**
      * 通用的获取表达式匹配后的结果
@@ -678,7 +790,8 @@ export default {
       .button_box{
         margin-right: 18px;
         &:nth-child(1){
-          width: 60px;
+          // width: 60px;
+          width: 90px;
           color: white;
           background: #0091FF;
         }
@@ -716,38 +829,67 @@ export default {
       .button_box{
         margin-left: 15px;
         &:nth-child(1){
-          width: 100px;
           margin-left: 0;
-          color: white;
-          background: #2EC178;
         }
-        &:nth-child(2){
-          width: 80px;
-          color: #666666;
-          font-weight: 400;
-          background: #FFFFFF;
-          border: 1px solid rgba(204,204,204,1);
-        }
+      }
+      .scheduling{
+        width: 100px;
+        color: white;
+        background: #2EC178;
+      }
+      .export,.reset{
+        width: 80px;
+        color: #666666;
+        font-weight: 400;
+        background: #FFFFFF;
+        border: 1px solid rgba(204,204,204,1);
+      }
+      .holidy_export{
+        width: 120px;
+        color: #666666;
+        font-weight: 400;
+        background: #FFFFFF;
+        border: 1px solid rgba(204,204,204,1);
       }
     }
   }
   .table{
+    margin-top: 30px;
     .cell{
       width: 100%;
     }
     .table_header{
+      margin-bottom: 4px;
       .cell{
         text-align: right;
+        font-size: 20px;
+        line-height: 20px;
+        color: #333333;
+        text-align: right;
+        font-weight: 500;
+        &:nth-child(1){
+          color: #E02020;
+        }
+        &:last-child{
+          color: #E02020;
+        }
       }
     }
     .table_body{
       .row{
+        align-items: stretch;
         &:nth-child(1){
           .cell{
             border-top: 1px solid rgba(231,231,231,1);
           }
         }
+        .isRelax{
+          background: rgba(253,227,228,0.60);
+        }
         .cell{
+          width: 14.2857%;
+          flex-grow: 0;
+          flex-shrink: 0;
           min-height: 130px;
           padding: 16px 13px;
           border-right: 1px solid rgba(231,231,231,1);
@@ -755,13 +897,57 @@ export default {
           &:nth-child(1){
             border-left: 1px solid rgba(231,231,231,1);
           }
+          .cell_header{
+            height: 24px;
+            margin-bottom: 6px;
+            .left{
+              font-size: 16px;
+              color: #E02020;
+              font-weight: 500;
+            }
+            .right{
+              max-width: 80%;
+              overflow: hidden;
+              white-space: nowrap;
+              .lunar_calendar{
+                max-width: 60%;
+                white-space: nowrap;
+                overflow: hidden;
+                text-overflow: ellipsis;
+                display: inline-block;
+                line-height: 16px;
+                font-size: 16px;
+                color: #999999;
+                font-weight: 400;
+              }
+              .solar_calendar{
+                margin-left: 20px;
+                display: inline-block;
+                line-height: 20px;
+                font-size: 20px;
+                color: #999999;
+                text-align: right;
+                font-weight: 500;
+              }
+              .active{
+                color: #E02020;
+              }
+            }
+          }
           .cell_body{
-            .day_duty{
+            .duty_list{
+              margin-bottom: 8px;
               padding: 10px;
-              background: #FFFDF2;
+              align-items: flex-start;
+
+              &:last-child{
+                margin-bottom: 0;
+              }
               .left{
+                flex-wrap: wrap;
                 .person_list{
                   margin-right: 13px;
+                  white-space: nowrap;
                   &:last-child{
                     margin-right: 0;
                   }
@@ -769,6 +955,27 @@ export default {
                     margin-left: 3px;
                   }
                 }
+              }
+            }
+            .day_duty{
+              background: #FFFDF2;
+            }
+            .night_duty{
+              background: #EBF4FF;
+            }
+            .leader_duty{
+              background: #F6EBFF;
+            }
+            .isSelf{
+              background: #32C5FF;
+            }
+          }
+        }
+        .isCurrentMonth{
+          .cell_header{
+            .right{
+              .solar_calendar{
+                color: #333333;
               }
             }
           }
@@ -789,5 +996,32 @@ export default {
 .scroll_block::-webkit-scrollbar-thumb {
     min-height: 18px;
     border-radius: 4px;
+}
+.person_list_pop{
+  .person_list_pop_row{
+    margin-bottom: 10px;
+    line-height: 20px;
+    font-size: 15px;
+    color: #666666;
+    font-weight: 400;
+    &:last-child{
+      margin-bottom: 0;
+    }
+  }
+}
+.IDailyScheduling_app{
+  .ant-select-selection{
+    box-shadow: none;
+    border-color: rgba(204,204,204,1);
+  }
+  .ant-select-selection:focus, .ant-select-selection:active{
+    border-color: rgba(204,204,204,1);
+  }
+  .ant-select-focused .ant-select-selection, .ant-select-selection:focus, .ant-select-selection:active{
+    border-color: rgba(204,204,204,1);
+  }
+  .ant-select-selection:hover{
+    border-color: rgba(204,204,204,1);
+  }
 }
 </style>

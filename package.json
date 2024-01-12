@@ -12,6 +12,7 @@
     "@idm-modules/core": "^1.0.71",
     "ant-design-vue": "^1.7.6",
     "core-js": "^3.6.5",
+    "lunar-calendar": "^0.1.4",
     "moment": "^2.29.4",
     "monent": "0.0.2-security",
     "sass-loader": "^8.0.2",

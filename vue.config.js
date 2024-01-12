@@ -158,13 +158,13 @@ module.exports = {
         }
     },
     devServer: {
-        proxy: {
-            '^/DreamWeb/*': {
-                target: "http://www.jiangzf.top:9999/",
-                changeOrigin: true,
-                secure: false
-            }
-        }
+      proxy: {
+          '^/DreamWeb/*': {
+              target: "http://192.168.9.119:9006/",
+              changeOrigin: true,
+              secure: false
+          }
+      }
     }
 
 }

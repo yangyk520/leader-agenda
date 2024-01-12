@@ -19,7 +19,7 @@ export default {
   },
   created() {
     if ( process.env.NODE_ENV == "development" ) {
-      // this.login()
+      this.login()
     }
   },
   mounted() {
@@ -30,8 +30,8 @@ export default {
   },
   methods: {
     login() {
-      IDM.http.get('/ctrl/answerManagementController/login',{
-          
+      IDM.http.get('/ctrl/dutyCommon/login',{
+        
       }).then((res) => {
           if ( res.data.code == 200 ) {
               console.log('登录成功')
