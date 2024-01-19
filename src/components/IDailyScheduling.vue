@@ -89,7 +89,8 @@
                       </div>
                     </div>
                     <div class="right">
-                      <img :src="getAssetsImg('leader')" alt="">
+                      <img v-if="item[item1.value].holidayType == 2" :src="getAssetsImg('zhiban')" alt="">
+                      <img v-else :src="getAssetsImg('leader')" alt="">
                     </div>
                   </div>
                 </template>
@@ -199,10 +200,6 @@ export default {
       select_month: '',
       table_header: [
         {
-          label: '周日',
-          value: 'Sunday'
-        },
-        {
           label: '周一',
           value: 'Monday'
         },
@@ -225,7 +222,11 @@ export default {
         {
           label: '周六',
           value: 'Saturday'
-        }
+        },
+        {
+          label: '周日',
+          value: 'Sunday'
+        },
       ],
       data_list: [
         {
@@ -899,7 +900,7 @@ export default {
         color: #333333;
         text-align: right;
         font-weight: 500;
-        &:nth-child(1){
+        &:nth-child(6){
           color: #E02020;
         }
         &:last-child{
