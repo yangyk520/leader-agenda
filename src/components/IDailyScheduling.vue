@@ -419,6 +419,7 @@ export default {
         document.body.removeChild(a)
     },
     scheduling() {
+
       this.schedulingApi()
     },
     schedulingApi() {
@@ -456,7 +457,19 @@ export default {
             });
           } else if (flag == '3') {
             IDM.message.info('本月之后已排过班!')
-          } 
+          } else if (flag == '4') {
+            this.$confirm({
+              title: '提示',
+              content: (res.data && res.data.message ? res.data.message : '') + '，确认继续排班',
+              cancelText: '取消',
+              okText: '确定',
+              onOk() {
+                let url = IDM.url.getWebPath(`/ctrl/dutyScheduleCtrl/dailyScheduling?year=${that.select_year}&month=${that.select_month}`)
+                window.open(url);
+              },
+              onCancel() {},
+            });
+          }
         }
       }).catch((err) => {
         console.log(err)
