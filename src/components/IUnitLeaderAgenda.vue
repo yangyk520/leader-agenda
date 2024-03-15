@@ -80,6 +80,7 @@
                     type3: agenda.agendaType != 300 && agenda.agendaType != 301,
                   }"
                   @mouseenter="() => (activeAgenda = agenda.id)"
+                  @click="agendaHander(agenda)"
                 >
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
@@ -102,7 +103,7 @@
                       <div class="item-value">{{ agenda.attendantsText }}</div>
                     </section>
                     <section v-if="agenda.id === activeAgenda">
-                      <div class="item-label">相关领导</div>
+                      <div class="item-label">相关单位</div>
                       ：
                       <div class="item-value">{{ agenda.relateUnit }}</div>
                     </section>
@@ -127,6 +128,7 @@
                     type3: agenda.agendaType == 3,
                   }"
                   @mouseenter="() => (activeAgenda = agenda.id)"
+                  @click="agendaHander(agenda)"
                 >
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
@@ -149,7 +151,7 @@
                       <div class="item-value">{{ agenda.attendantsText }}</div>
                     </section>
                     <section v-if="agenda.id === activeAgenda">
-                      <div class="item-label">相关领导</div>
+                      <div class="item-label">相关单位</div>
                       ：
                       <div class="item-value">{{ agenda.relateUnit }}</div>
                     </section>
@@ -218,6 +220,32 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    agendaHander(todo) {
+      if (todo.url) {
+        top.window.simpleWin(this, {
+          url: IDM.url.getWebPath(todo.url),
+          isfresh: false,
+          name: "我的日程",
+        });
+        return;
+      }
+      IDM.layer.open({
+        type: 2,
+        title: ["我的日程", "font-size:18px;"],
+        area: ["1200px", "90%"],
+        content: IDM.url.getWebPath(
+          `ctrl/formControl/form?listId=1807311741357weRO9ArLPr1orXgSB8&method=info&moduleId=180719094152MnF6C2hEPtqIvhjJIxo&pk=${todo.id}`
+        ),
+        success: function (layero, index) {
+          top.close = function () {
+            IDM.layer.close(index);
+          };
+          window.closeDialog = function () {
+            IDM.layer.close(index);
+          };
+        },
+      });
+    },
     departHanlde(item) {
       this.activeDepart = item.id;
       this.initData();
@@ -463,7 +491,7 @@ export default {
             searchText: this.form_data.searchVal,
           })
           .then((res) => {
-            console.log("单位领导日程数据",res)
+            console.log("单位领导日程数据", res);
             if (res.data.code == "200") {
               const result = res.data.data;
               result.forEach((item) => {
@@ -705,6 +733,7 @@ export default {
             display: flex;
             margin-bottom: 20px;
             transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
+            cursor: pointer;
             &:last-child {
               margin-bottom: 0;
             }
@@ -717,18 +746,18 @@ export default {
             }
             &.type2 {
               .agenda-day-item-right {
-                background: #fff3e1;
-              }
-              .agenda-day-item-right {
-                border-color: #f7ac00;
-              }
-            }
-            &.type3 {
-              .agenda-day-item-right {
                 background: rgba(68, 215, 182, 0.12);
               }
               .agenda-day-item-right {
                 border-color: #44d7b6;
+              }
+            }
+            &.type3 {
+              .agenda-day-item-right {
+                background: #fff3e1;
+              }
+              .agenda-day-item-right {
+                border-color: #f7ac00;
               }
             }
             .agenda-day-item-left {

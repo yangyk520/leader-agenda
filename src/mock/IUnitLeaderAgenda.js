@@ -4,21 +4,30 @@ export const departListMock = [
     name: '宣传培训处',
     children: [
       {
+        type:'userInfo',
         name: '张三',
         relaId: '10101'
       },
       {
+        type:'userInfo',
         name: '李四',
         relaId: '10102'
       },
       {
+        type:'userInfo',
         name: '王五',
         relaId: '10103'
       },
       {
+        type:'userInfo',
         name: '赵六',
         relaId: '10104'
-      }
+      },
+      {
+        type:'department',
+        id: '104',
+        name: '部门1'
+      },
     ]
   },
   {
