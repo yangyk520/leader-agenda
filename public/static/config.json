@@ -38,6 +38,13 @@
       "className": "IUnitLeaderAgenda",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.ileaderactive",
+      "comName": "领导活动",
+      "className": "ILeaderActive",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
