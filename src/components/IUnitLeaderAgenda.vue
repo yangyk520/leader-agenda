@@ -24,7 +24,13 @@
             {{ form_data.timeViewType === "person" ? "个人" : "部门" }}日程
           </div>
           <div class="depart-list-content scroll_block">
-            <div
+            <UnitAgendaMenu
+              :menuData="departList"
+              :activeId="activeId"
+              :type="form_data.timeViewType"
+              @updateActiveId="updateActiveId"
+            ></UnitAgendaMenu>
+            <!-- <div
               class="list-item-outer"
               v-for="(item, index) in departList"
               :key="index"
@@ -55,7 +61,7 @@
                   {{ child.name }}
                 </li>
               </ul>
-            </div>
+            </div> -->
           </div>
         </div>
         <div class="agenda-main-box scroll_block">
@@ -100,7 +106,7 @@
                     <section>
                       <div class="item-label">局领导</div>
                       ：
-                      <div class="item-value">{{ agenda.attendantsText }}</div>
+                      <div class="item-value">{{ agenda.leader }}</div>
                     </section>
                     <section v-if="agenda.id === activeAgenda">
                       <div class="item-label">相关单位</div>
@@ -148,7 +154,7 @@
                     <section>
                       <div class="item-label">局领导</div>
                       ：
-                      <div class="item-value">{{ agenda.attendantsText }}</div>
+                      <div class="item-value">{{ agenda.leader }}</div>
                     </section>
                     <section v-if="agenda.id === activeAgenda">
                       <div class="item-label">相关单位</div>
@@ -169,6 +175,7 @@
 <script>
 const mock = [];
 import AgendaHeader from "../commonComponents/UnitAgendaHeader.vue";
+import UnitAgendaMenu from "../commonComponents/UnitAgendaMenu.vue";
 import {
   departListMock,
   agendaListMock,
@@ -178,19 +185,20 @@ export default {
   name: "ILeaderAgenda",
   components: {
     AgendaHeader,
+    UnitAgendaMenu,
   },
   data() {
     return {
       moduleObject: {},
       propData: this.$root.propData.compositeAttr || {},
       form_data: {
-        timeViewType: "",
+        timeViewType: "unit",
       },
       // 周几中文
       weekCn: ["一", "二", "三", "四", "五", "六", "日"],
+      baseDepartList: null,
       departList: [],
-      activeDepart: "",
-      activeUser: "",
+      activeId: "",
       weekList: [],
       agendaList: [],
       activeAgenda: "",
@@ -199,10 +207,11 @@ export default {
   },
   props: {},
   watch: {
-    activeDepart: function (newVal) {
-      if (this.form_data.timeViewType === "person") {
-        this.getDepartList(newVal);
-      }
+    "form_data.timeViewType": function (newV, oldV) {
+      this.departList = this.setUpDepartList(
+        JSON.parse(JSON.stringify(this.baseDepartList)),
+        true
+      );
     },
   },
   created() {
@@ -214,12 +223,17 @@ export default {
       this.userInfo = IDM.user.getCurrentUserInfo();
     }
 
+    this.initActiveDepartOrUser();
     this.getDepartList();
     this.initAttrToModule();
   },
   mounted() {},
   destroyed() {},
   methods: {
+    updateActiveId(id) {
+      this.activeId = id;
+      this.initData();
+    },
     agendaHander(todo) {
       if (todo.url) {
         top.window.simpleWin(this, {
@@ -246,48 +260,30 @@ export default {
         },
       });
     },
-    departHanlde(item) {
-      this.activeDepart = item.id;
-      this.initData();
+    initActiveDepartOrUser(type = "unit") {
+      this.activeId =
+        type === "unit"
+          ? "department_" + this.userInfo.userOrgId
+          : "person_" + this.userInfo.userid;
     },
-    userHanlde(item) {
-      this.activeUser = item.relaId;
-      this.initData();
-    },
-    initActiveDepartOrUser() {
-      this.activeDepart = this.userInfo.userOrgId;
-      this.activeUser = this.userInfo.userid;
-      // this.initData();
-    },
-    getDepartList(deptId) {
+    getDepartList() {
       if (!this.moduleObject.env || this.moduleObject.env == "develop") {
-        this.departList = departListMock;
-        if (!deptId) {
-          this.initActiveDepartOrUser();
-        }
+        this.baseDepartList = departListMock.data.departmentList[0].children;
+        this.departList = this.setUpDepartList(
+          JSON.parse(JSON.stringify(this.baseDepartList)),
+          true
+        );
       } else {
         IDM.http
-          .post("ctrl/userinfo/asyncData", {
-            fid: deptId ? deptId : this.userInfo.unitInfo.unitId,
-          })
+          .post("ctrl/deptScheduleList/getUserByOrgIdSync")
           .then((res) => {
-            if (res.status == "200") {
-              if (deptId) {
-                const list = res.data.filter((item) => {
-                  return item.type === "userinfo";
-                });
-                this.departList.forEach((item) => {
-                  if (item.id === this.activeDepart) {
-                    item.children = list;
-                  }
-                });
-              } else {
-                this.departList = res.data.filter((item) => {
-                  item.children = [];
-                  return item.type === "department";
-                });
-                this.initActiveDepartOrUser();
-              }
+            if (res.data && res.data.code == "200") {
+              this.baseDepartList = res.data.data.departmentList[0].children;
+              this.departList = this.setUpDepartList(
+                JSON.parse(JSON.stringify(this.baseDepartList)),
+                true
+              );
+              console.log("单位数据", this.baseDepartList, this.departList);
             }
           })
           .catch((err) => {
@@ -295,15 +291,24 @@ export default {
           });
       }
     },
+    setUpDepartList(list, first) {
+      return list.filter((item) => {
+        item.open = first;
+        if (item.children && item.children.length) {
+          item.children = this.setUpDepartList(item.children);
+        }
+        return this.form_data.timeViewType === "unit"
+          ? item.type == 4 || item.type == 5
+          : true;
+      });
+    },
     /**
      * 更新头部组件参数
      */
     updateHeadParams(params) {
       console.log("更新头部组件参数", params);
       if (params.timeViewType != this.form_data.timeViewType) {
-        this.initActiveDepartOrUser();
-        params.timeViewType === "person" &&
-          this.getDepartList(this.activeDepart);
+        this.initActiveDepartOrUser(params.timeViewType);
       }
       this.weekList = params.dates.split(",");
       this.form_data = params;
@@ -481,15 +486,18 @@ export default {
         });
         this.agendaList = result;
       } else {
+        const id = this.activeId?.split("_")[1];
+        const params = {
+          deptId: "",
+          userId: "",
+          startTime: this.weekList[0],
+          endTime: this.weekList[this.weekList.length - 1],
+          searchText: this.form_data.searchVal,
+        };
+        params[this.form_data.timeViewType === "unit" ? "deptId" : "userId"] =
+          id;
         IDM.http
-          .get("ctrl/deptScheduleList/queryWeekData", {
-            deptId: this.activeDepart,
-            userId:
-              this.form_data.timeViewType === "person" ? this.activeUser : "",
-            startTime: this.weekList[0],
-            endTime: this.weekList[this.weekList.length - 1],
-            searchText: this.form_data.searchVal,
-          })
+          .get("ctrl/deptScheduleList/queryWeekData", params)
           .then((res) => {
             console.log("单位领导日程数据", res);
             if (res.data.code == "200") {
@@ -633,52 +641,6 @@ export default {
       .depart-list-content {
         height: calc(100% - 48px);
         overflow-y: auto;
-        .list-item {
-          padding: 15px 27px;
-          border-left: 10px solid transparent;
-          color: #333333;
-          transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-          cursor: pointer;
-          overflow: hidden;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-
-          &:hover {
-            border-color: #0086d9;
-            background: rgba(84, 190, 255, 0.22);
-            color: #0086d9;
-          }
-          &.active {
-            border-color: #0086d9;
-            background: rgba(84, 190, 255, 0.22);
-            color: #0086d9;
-          }
-        }
-
-        ul,
-        li {
-          list-style: none;
-          margin: 0;
-          padding: 0;
-        }
-
-        ul {
-          padding: 10px 0;
-          border-bottom: 1px solid rgba(230, 230, 230, 1);
-          li {
-            padding: 10px 50px;
-            cursor: pointer;
-            transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
-            &.active {
-              background: rgba(84, 190, 255, 0.22);
-              color: #0086d9;
-            }
-            &:hover {
-              background: rgba(84, 190, 255, 0.22);
-              color: #0086d9;
-            }
-          }
-        }
       }
     }
 
