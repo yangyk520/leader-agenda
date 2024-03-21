@@ -637,6 +637,10 @@ export default {
     .ant-btn{
       margin-left: 10px;
     }
+    .ant-btn-primary:focus{
+      background-color: #1890ff;
+      border-color: #1890ff;
+    }
   }
 }
 </style>
