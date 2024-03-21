@@ -169,7 +169,7 @@ export default {
      */
     curDayWeekHandle(){
       this.initTime(moment());
-      this.sendHeadParams();
+      // this.sendHeadParams();
     },
     /**
      * 导出
@@ -410,7 +410,7 @@ export default {
           );
         }
       }
-      this.sendHeadParams();
+      // this.sendHeadParams();
     },
   },
 };

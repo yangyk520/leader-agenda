@@ -32,7 +32,7 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel: '1',// 1标识预览；2标识编辑
+        viewModel: '2',// 1标识预览；2标识编辑
         scheduleType: 2, // 1标识day
       },
       form_data: {},
@@ -55,6 +55,16 @@ export default {
   destroyed() {},
   methods:{
     exportData() {
+      let status = 1;
+      this.data_list_table && this.data_list_table.length && this.data_list_table.forEach((item) => {
+        if(!item.status) {
+          status = 0
+        }
+      })
+      if ( !status ) {
+        IDM.message.warning('存在未发布的活动，暂不能导出！')
+        return
+      }
       this.$refs[this.moduleObject.id][`exportData_loading`] = true;
 
       let days_arr = this.form_data.dates.split(',');
