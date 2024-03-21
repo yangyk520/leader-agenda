@@ -7,33 +7,30 @@
                     <span v-if="item.id != '0' && item.week && form_data && form_data.timeViewType == 'week'">（{{ item.week }}）</span>
                 </div>
             </div>
-                <div class="table_body">
-                    <vue-scroll :ops="scrollOps">
-
-                        <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
-                            <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
-                                <div v-if="item1.id == '0'" class="user_info">
-                                    <div v-if="setting_data.leaderImageShow != 1" class="img_box">
-                                        <img :src="getUserPhoto(item)" alt="">
-                                    </div>
-                                    <div class="name">{{ item.userName }}</div>
+              <div class="table_body">
+                <vue-scroll :ops="scrollOps">
+                    <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
+                        <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :class="item1.id == '0' ? 'flex_center' : ''" :style="getDomBg(item1)">
+                            <div v-if="item1.id == '0'" class="user_info">
+                                <div v-if="setting_data.leaderImageShow != 1" class="img_box">
+                                    <img :src="getUserPhoto(item)" alt="">
                                 </div>
-                                <div v-else class="active_block">
-                                    <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
-                                        <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                                            <ActiveItem :item2="item2" :setting_data="setting_data"></ActiveItem>
-                                        </div>
+                                <div class="name">{{ item.userName }}</div>
+                            </div>
+                            <div v-else class="active_block">
+                                <div v-if="item.data && item.data[item1.id] && item.data[item1.id].data && item.data[item1.id].data.length" class="block">
+                                    <div @click="editActive(item2)" v-for="(item2,index2) in getActiveList(item.data[item1.id].data)" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
+                                        <ActiveItem :item2="item2" :setting_data="setting_data"></ActiveItem>
                                     </div>
-                                    <div v-else class="empty">
-                                        {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? '' : '单位内办公' }}
-                                    </div>
+                                </div>
+                                <div v-else class="empty">
+                                    {{ setting_data.emptyShowType == 2 || setting_data.emptyShowType == 1 ? '' : '单位内办公' }}
                                 </div>
                             </div>
                         </div>
-                    </vue-scroll>
-
-                </div>
-            
+                    </div>
+                </vue-scroll>
+              </div>
         </div>
     </div>
 </template>

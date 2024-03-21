@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     login() {
-      IDM.http.get('/ctrl/dutyCommon/login',{
+      IDM.http.get('/ctrl/p2433JxwLeaderSchedule/login',{
         
       }).then((res) => {
           if ( res.data.code == 200 ) {
