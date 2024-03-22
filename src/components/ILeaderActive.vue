@@ -6,7 +6,7 @@
       @unRelease="unRelease"
       @release="release"
       @exportData="exportData" />
-    <template v-if="propData.isPreview">
+    <template v-if="propData.viewModel == '1'">
       <LeaderActiveTable :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :header_list="header_list" :data_list="data_list"></LeaderActiveTable>
     </template>
     <template v-else>
@@ -55,16 +55,22 @@ export default {
   destroyed() {},
   methods:{
     exportData() {
+      let status = 1;
+      this.data_list_table && this.data_list_table.length && this.data_list_table.forEach((item) => {
+        if(!item.status) {
+          status = 0
+        }
+      })
+      if ( !status ) {
+        IDM.message.warning('存在未发布的活动，暂不能导出！')
+        return
+      }
       this.$refs[this.moduleObject.id][`exportData_loading`] = true;
 
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
       let endDate = days_arr[days_arr.length - 1];
       let fileName = `领导${startDate}至${endDate}活动安排.doc`;
-      let url
-
-      // window.open('http://localhost:8081/DreamWeb/ctrl/p2433JxwLeaderSchedule/download?templateId=2402201548552eQLEcA2QZHDx2gnV3C&fileName=%E9%A2%86%E5%AF%BC2024-03-18%E8%87%B32024-03-24%E6%B4%BB%E5%8A%A8%E5%AE%89%E6%8E%92.doc&moduleId=240220154854Kosqknc4MPO2LNAK95c&userId=230622133333yNhQrjaq7e1LDAdiEfs&sDate=2024-03-18&eDate=2024-03-24')
-
       IDM.http.post('/ctrl/p2433JxwLeaderSchedule/download',{
         templateId: '2402201548552eQLEcA2QZHDx2gnV3C',
         fileName: fileName,
@@ -92,6 +98,9 @@ export default {
       })
     },
     release() {
+      this.save(true)
+    },
+    releaseApi() {
       this.$refs[this.moduleObject.id][`release_loading`] = true;
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
@@ -135,18 +144,25 @@ export default {
         console.log(err)
       })
     },
-    save() {
-      this.$refs[this.moduleObject.id][`save_loading`] = true;
+    save(isRelease) {
+      if(!isRelease) {
+        this.$refs[this.moduleObject.id][`save_loading`] = true;
+      }
       IDM.http.post('/ctrl/p2433JxwLeaderSchedule/save',JSON.stringify(this.data_list_table),{
         headers: {
           'Content-Type': 'application/json',
         }
       }).then((res) => {
-        this.$refs[this.moduleObject.id][`save_loading`] = false;
-
+        if(!isRelease) {
+          this.$refs[this.moduleObject.id][`save_loading`] = false;
+        }
         if ( res.data.code == '200' ) {
-          IDM.message.success(res.data.message)
-          this.initData()
+          if(isRelease) {
+            this.releaseApi()
+          } else {
+            IDM.message.success(res.data.message)
+            this.initData()
+          }
         } else {
           IDM.message.error(res.data.message)
         }
@@ -406,9 +422,12 @@ export default {
         userIds: this.form_data.leaders,
       }).then((res) => {
         this.data_list_table = res.data.data;
-        if(this.data_list_table && this.data_list_table.length){
-          this.publickStatus = this.data_list_table[0].status
-        }
+        this.publickStatus = 0;
+        this.data_list_table && this.data_list_table.forEach((item) => {
+          if(item.status == 1) {
+            this.publickStatus = 1
+          }
+        })
       }).catch((err) => {
         console.log(err)
       })

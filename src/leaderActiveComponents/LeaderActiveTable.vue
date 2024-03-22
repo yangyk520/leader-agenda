@@ -2,7 +2,7 @@
   <div class="LeaderActiveTable_app">
     <div class="table" :class="form_data.timeViewType == 'day' ? 'day_table' : 'week_table' ">
       <div class="table_header flex_between">
-        <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item)">
+        <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,true)">
           {{ item.name }}
           <span v-if="item.week && form_data && form_data.timeViewType == 'week'">
             ({{ item.week }})
@@ -62,9 +62,9 @@ export default {
 
   },
   methods: {
-    getDomBg(item) {
+    getDomBg(item,isHeader) {
       var styleObject = {};
-      if (item.week != "周六" && item.week != "周日") {
+      if (item.week != "周六" && item.week != "周日" && !isHeader) {
         styleObject["background-color"] = "#FFFFFF";
       }
       return styleObject;

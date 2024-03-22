@@ -169,7 +169,7 @@ export default {
      */
     curDayWeekHandle(){
       this.initTime(moment());
-      this.sendHeadParams();
+      // this.sendHeadParams();
     },
     /**
      * 导出
@@ -410,7 +410,7 @@ export default {
           );
         }
       }
-      this.sendHeadParams();
+      // this.sendHeadParams();
     },
   },
 };
@@ -636,6 +636,10 @@ export default {
   .operate_block{
     .ant-btn{
       margin-left: 10px;
+    }
+    .ant-btn-primary:focus{
+      background-color: #1890ff;
+      border-color: #1890ff;
     }
   }
 }

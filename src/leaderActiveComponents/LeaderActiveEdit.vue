@@ -10,9 +10,9 @@
         <vue-scroll :ops="scrollOps">
           <div v-for="(item,index) in data_list_table" :key="index" class="row table_body_row flex_between">
             <div v-for="(item1,index1) in header_list" :key="index1" class="cell">
-              <div v-if="item1.key == 'index'">{{ index + 1 }}</div>
-              <div class="day_active_block" v-else-if="item1.key == 'date'">
-                {{ item[item1.key] }}
+              <div class="day_active_block" v-if="item1.key == 'date'">
+                <div>{{ week_number[index] }}</div>
+                <div>{{ item[item1.key] }}</div>
               </div>
               <div v-else>
                 <a-textarea v-model="item.subList[0][item1.key]" placeholder="请输入" :auto-size="{ minRows: 3, maxRows: 5 }">
@@ -75,10 +75,10 @@ export default {
   data() {
     return {
       header_list: [
-        {
-          name: '序号',
-          key: 'index'
-        },
+        // {
+        //   name: '序号',
+        //   key: 'index'
+        // },
         {
           name: '日期',
           key: 'date'
@@ -91,7 +91,8 @@ export default {
           name: '下午',
           key: 'afternoonContent'
         }
-      ]
+      ],
+      week_number: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
     };
   },
   created() {
@@ -246,9 +247,15 @@ export default {
             width: 152px;
             flex-grow: 0;
             flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-align: center;
           }
         }
         .day_active_block{
+          
           background: white;
         }
       }
