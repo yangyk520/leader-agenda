@@ -293,7 +293,7 @@ export default {
     },
     setUpDepartList(list, first) {
       return list.filter((item) => {
-        item.open = first;
+        item.open = first && item?.children?.every(j=>j.type==4||j.type==5)
         if (item.children && item.children.length) {
           item.children = this.setUpDepartList(item.children);
         }
