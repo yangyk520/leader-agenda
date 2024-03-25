@@ -32,7 +32,7 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel: '2',// 1标识预览；2标识编辑
+        viewModel: '1',// 1标识预览；2标识编辑
         scheduleType: 2, // 1标识day
       },
       form_data: {},

@@ -13,7 +13,7 @@
         <vue-scroll :ops="scrollOps">
           <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
             <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :style="getDomBg(item1)">
-              <div v-if="item1.key == 'leaderText'">{{ item[item1.key] }}</div>
+              <div v-if="item1.key == 'leaderText'" class="leader_name">{{ item[item1.key] }}</div>
               <div class="day_active_block" v-else-if="form_data && form_data.timeViewType == 'day'">
                 {{ item[item1.key] }}
               </div>
@@ -223,6 +223,9 @@ export default {
         }
         .day_active_block{
           background: white;
+        }
+        .leader_name{
+          text-align: center;
         }
       }
     }
