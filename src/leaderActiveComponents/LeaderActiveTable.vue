@@ -15,7 +15,7 @@
             <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :style="getDomBg(item1)">
               <div v-if="item1.key == 'leaderText'" class="leader_name">{{ item[item1.key] }}</div>
               <div class="day_active_block" v-else-if="form_data && form_data.timeViewType == 'day'">
-                {{ item[item1.key] }}
+                <span v-html="item[item1.key]"></span>
               </div>
               <div v-else :style="getDomBg(item1)">
                 <ActiveItem :item2="item[item1.key]"></ActiveItem>
@@ -215,6 +215,7 @@ export default {
           padding: 12px 12px 16px 12px;
           word-break: break-all;
           border-left: 1px solid rgba(230, 230, 230, 1);
+          white-space: pre-line;
           &:nth-child(1) {
             width: 152px;
             flex-grow: 0;
