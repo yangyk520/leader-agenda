@@ -1,10 +1,10 @@
 <template>
   <div class="ActiveItem_app">
     <div v-if="item2 && item2.morningContent" class="morning flex_start">
-      <span>上午：</span><span v-html="item2.morningContent"></span>
+      <span class="label">上午：</span><span v-html="item2.morningContent"></span>
     </div>
     <div v-if="item2 && item2.afternoonContent" class="afternoon flex_start">
-      <span>下午：</span><span v-html="item2.afternoonContent"></span>
+      <span class="label">下午：</span><span v-html="item2.afternoonContent"></span>
     </div>
   </div>
 </template>
@@ -126,6 +126,9 @@ export default {
   }
   .morning,.afternoon{
     align-items: baseline;
+    .label{
+      white-space: nowrap;
+    }
   }
 }
 </style>

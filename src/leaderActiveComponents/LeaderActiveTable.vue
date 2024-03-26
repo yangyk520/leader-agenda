@@ -193,7 +193,7 @@ export default {
         border-left: 1px solid rgba(230, 230, 230, 1);
         overflow: hidden;
         &:nth-child(1) {
-          width: 152px;
+          width: 122px;
           flex-grow: 0;
           flex-shrink: 0;
           // border-left: 1px solid rgba(230, 230, 230, 1);
@@ -217,7 +217,7 @@ export default {
           border-left: 1px solid rgba(230, 230, 230, 1);
           white-space: pre-line;
           &:nth-child(1) {
-            width: 152px;
+            width: 122px;
             flex-grow: 0;
             flex-shrink: 0;
           }
