@@ -30,38 +30,6 @@
               :type="form_data.timeViewType"
               @updateActiveId="updateActiveId"
             ></UnitAgendaMenu>
-            <!-- <div
-              class="list-item-outer"
-              v-for="(item, index) in departList"
-              :key="index"
-            >
-              <div
-                class="list-item"
-                :class="{ active: activeDepart === item.id }"
-                :data-id="item.id"
-                @click="departHanlde(item)"
-              >
-                <span>{{ item.name }}</span>
-              </div>
-              <ul
-                v-if="
-                  form_data.timeViewType === 'person' &&
-                  activeDepart === item.id &&
-                  item.children &&
-                  item.children.length > 0
-                "
-              >
-                <li
-                  v-for="(child, c) in item.children"
-                  :key="c"
-                  :class="{ active: activeUser === child.relaId }"
-                  :data-id="child.relaId"
-                  @click="userHanlde(child)"
-                >
-                  {{ child.name }}
-                </li>
-              </ul>
-            </div> -->
           </div>
         </div>
         <div class="agenda-main-box scroll_block">
@@ -203,6 +171,8 @@ export default {
       agendaList: [],
       activeAgenda: "",
       userInfo: null,
+      activeDepart: '',
+      activeUser: ''
     };
   },
   props: {},
@@ -230,8 +200,14 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    updateActiveId(id) {
-      this.activeId = id;
+    updateActiveId(item) {
+      this.activeDepart = item.deptId;
+      this.activeUser = item.userId;
+      if(this.form_data.timeViewType == 'unit') {
+        this.activeId = `department_${item.deptId}`
+      } else {
+        this.activeId = `person_${item.userId}`
+      }
       this.initData();
     },
     agendaHander(todo) {
@@ -486,16 +462,14 @@ export default {
         });
         this.agendaList = result;
       } else {
-        const id = this.activeId?.split("_")[1];
         const params = {
-          deptId: "",
-          userId: "",
+          deptId: this.activeDepart || '',
+          userId: this.activeUser || '',
           startTime: this.weekList[0],
           endTime: this.weekList[this.weekList.length - 1],
           searchText: this.form_data.searchVal,
         };
-        params[this.form_data.timeViewType === "unit" ? "deptId" : "userId"] =
-          id;
+        
         IDM.http
           .get("ctrl/deptScheduleList/queryWeekData", params)
           .then((res) => {
