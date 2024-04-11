@@ -90,6 +90,10 @@ export default {
         {
           name: '下午',
           key: 'afternoonContent'
+        },
+        {
+          name: '晚上',
+          key: 'nightContent'
         }
       ],
       week_number: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],

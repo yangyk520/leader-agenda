@@ -207,6 +207,10 @@ export default {
           {
             name: '下午',
             key: 'afternoonContent'
+          },
+          {
+            name: '晚上',
+            key: 'nightContent'
           }
         ]
       }
