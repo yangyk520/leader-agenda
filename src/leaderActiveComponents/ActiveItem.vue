@@ -6,6 +6,9 @@
     <div v-if="item2 && item2.afternoonContent" class="afternoon flex_start">
       <span class="label">下午：</span><span v-html="item2.afternoonContent"></span>
     </div>
+    <div v-if="item2 && item2.nightContent" class="night flex_start">
+      <span class="label">晚上：</span><span v-html="item2.nightContent"></span>
+    </div>
   </div>
 </template>
 <script>
@@ -124,7 +127,7 @@ export default {
       }
     }
   }
-  .morning,.afternoon{
+  .morning,.afternoon,.night{
     align-items: baseline;
     .label{
       white-space: nowrap;
