@@ -45,6 +45,13 @@
       "className": "ILeaderActive",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.iworkscheduling",
+      "comName": "工作安排",
+      "className": "IWorkScheduling",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }

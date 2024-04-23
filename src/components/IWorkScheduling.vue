@@ -1,43 +1,38 @@
 <template>
-  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-leader-agenda-outer"> <div class="scroll_block">
-    <LeaderActiveHeader :ref="moduleObject.id" :moduleObject="moduleObject" :scheduleType="propData.scheduleType" :viewModel="propData.viewModel" :publickStatus="publickStatus" 
-      @updateHeadParams="updateHeadParams" 
-      @save="save" 
-      @unRelease="unRelease"
-      @release="release"
-      @exportData="exportData" />
-    <template v-if="propData.viewModel == '1'">
-      <LeaderActiveTable :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :header_list="header_list" :data_list="data_list"></LeaderActiveTable>
-    </template>
-    <template v-else>
-      <LeaderActiveEdit @updateTableData="updateTableData" :form_data="form_data" :data_list_table="data_list_table"></LeaderActiveEdit>
-    </template>
-   </div>
+  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-leader-agenda-outer"> 
+    <div class="scroll_block">
+      <LeaderActiveHeader :ref="moduleObject.id" :moduleObject="moduleObject" :scheduleType="scheduleType" :viewModel="viewModel" :publickStatus="publickStatus" 
+        @updateHeadParams="updateHeadParams" 
+        @save="save" 
+        @getRecord="getRecord"
+        @exportData="exportData" >
+      </LeaderActiveHeader>
+      <template>
+        <LeaderActiveEdit :form_data="form_data" :data_list_table="data_list_table"></LeaderActiveEdit>
+      </template>
+    </div>
   </div>
 </template>
 
 <script>
 const mock = []
-import LeaderActiveHeader from "../leaderActiveComponents/LeaderActiveHeader.vue"
-import LeaderActiveTable from '@/leaderActiveComponents/LeaderActiveTable.vue'
-import LeaderActiveEdit from "@/leaderActiveComponents/LeaderActiveEdit.vue"
+import LeaderActiveHeader from "@/workSchedulingComponents/LeaderActiveHeader.vue"
+import LeaderActiveEdit from "@/workSchedulingComponents/LeaderActiveEdit.vue"
 export default {
-  name: 'ILeaderActive',
+  name: 'IWorkScheduling',
   components:{
     LeaderActiveHeader,
-    LeaderActiveTable,
     LeaderActiveEdit
   },
   data(){
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel: '2',// 1标识预览；2标识编辑
-        scheduleType: 2, // 1标识day
       },
+      scheduleType: 2, // 1标识day
+      viewModel: '2',// 1标识预览；2标识编辑
       form_data: {},
       
-      header_list: [],
       data_list: [],
       header_list_table: [],
       data_list_table: [],
@@ -54,28 +49,25 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    getRecord() {
+      let days_arr = this.form_data.dates.split(',');
+      let startDate = days_arr[0];
+      let endDate = days_arr[days_arr.length - 1];
+      let url = `/ctrl/list/240422152742573ZpmVz0arjeGCxoDL?moduleId=240422135952IHRCjdIf9dNdR13J0Bl&sDate=${startDate}&eDate=${endDate}`;
+      IDM.layer.open({
+        area: ['85vw','90vh'],
+        type: 2, 
+        content: IDM.url.getWebPath(url)
+      }); 
+    },
     exportData() {
-      let status = 1;
-      this.data_list_table && this.data_list_table.length && this.data_list_table.forEach((item) => {
-        if(!item.status) {
-          status = 0
-        }
-      })
-      if ( !status ) {
-        IDM.message.warning('存在未发布的活动，暂不能导出！')
-        return
-      }
       this.$refs[this.moduleObject.id][`exportData_loading`] = true;
 
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
       let endDate = days_arr[days_arr.length - 1];
-      let fileName = `领导${startDate}至${endDate}活动安排.doc`;
-      IDM.http.post('/ctrl/p2433JxwLeaderSchedule/download',{
-        templateId: '2402201548552eQLEcA2QZHDx2gnV3C',
-        fileName: fileName,
-        moduleId: '240220154854Kosqknc4MPO2LNAK95c',
-        userId: this.form_data.leaders,
+      let fileName = `职转处一周工作安排（${startDate}-${endDate}）.xls`;
+      IDM.http.post('/ctrl/oneWeekPlan/export',{
         sDate: startDate,
         eDate: endDate,
       },{
@@ -97,72 +89,17 @@ export default {
         console.log(err)
       })
     },
-    release() {
-      this.save(true)
-    },
-    releaseApi() {
-      this.$refs[this.moduleObject.id][`release_loading`] = true;
-      let days_arr = this.form_data.dates.split(',');
-      let startDate = days_arr[0];
-      let endDate = days_arr[days_arr.length - 1];
-      IDM.http.post('/ctrl/p2433JxwLeaderSchedule/release',{
-        userIds: this.form_data.leaders,
-        sDate: startDate,
-        eDate: endDate,
-      }).then((res) => {
-        this.$refs[this.moduleObject.id][`release_loading`] = false;
-        if ( res.data.code == '200' ) {
-          IDM.message.success(res.data.message)
-          this.initData()
-        } else {
-          IDM.message.error(res.data.message)
-        }
-      }).catch((err) => {
-        this.$refs[this.moduleObject.id][`release_loading`] = false;
-        console.log(err)
-      })
-    },
-    unRelease() {
-      this.$refs[this.moduleObject.id][`unRelease_loading`] = true;
-      let days_arr = this.form_data.dates.split(',');
-      let startDate = days_arr[0];
-      let endDate = days_arr[days_arr.length - 1];
-      IDM.http.post('/ctrl/p2433JxwLeaderSchedule/unRelease',{
-        userIds: this.form_data.leaders,
-        sDate: startDate,
-        eDate: endDate,
-      }).then((res) => {
-        this.$refs[this.moduleObject.id][`unRelease_loading`] = false;
-        if ( res.data.code == '200' ) {
-          IDM.message.success(res.data.message)
-          this.initData()
-        } else {
-          IDM.message.error(res.data.message)
-        }
-      }).catch((err) => {
-        this.$refs[this.moduleObject.id][`unRelease_loading`] = false;
-        console.log(err)
-      })
-    },
-    save(isRelease) {
-      if(!isRelease) {
-        this.$refs[this.moduleObject.id][`save_loading`] = true;
-      }
-      IDM.http.post('/ctrl/p2433JxwLeaderSchedule/save',JSON.stringify(this.data_list_table),{
+    save() {
+      this.$refs[this.moduleObject.id][`save_loading`] = true;
+      IDM.http.post('/ctrl/oneWeekPlan/save',JSON.stringify(this.data_list_table),{
         headers: {
           'Content-Type': 'application/json',
         }
       }).then((res) => {
-        if(!isRelease) {
-          this.$refs[this.moduleObject.id][`save_loading`] = false;
-        }
+        this.$refs[this.moduleObject.id][`save_loading`] = false;
         if ( res.data.code == '200' ) {
-          if(isRelease) {
-            this.releaseApi()
-          } else {
-            IDM.message.success(res.data.message)
-            this.initData()
-          }
+          IDM.message.success(res.data.message)
+          this.initData()
         } else {
           IDM.message.error(res.data.message)
         }
@@ -171,9 +108,6 @@ export default {
         console.log(err)
       })
     },
-    updateTableData() {
-      this.initData()
-    },
    
     /**
      * 更新头部组件参数
@@ -181,39 +115,6 @@ export default {
     updateHeadParams(params){
       console.log('更新头部组件参数',params)
       let form_data = params;
-      if ( form_data.timeViewType == "week" ) {
-        let header_list = params.weekList.map((item,index) => {
-          return {
-            name: item.monthAndDay,
-            key: item.date,
-            week: this.week_number[index]
-          }
-        });
-        header_list.unshift({
-          name: '领导',
-          key: 'leaderText'
-        })
-        this.header_list = header_list;
-      } else {
-        this.header_list = [
-          {
-            name: '领导',
-            key: 'leaderText'
-          },
-          {
-            name: '上午',
-            key: 'morningContent'
-          },
-          {
-            name: '下午',
-            key: 'afternoonContent'
-          },
-          {
-            name: '晚上',
-            key: 'nightContent'
-          }
-        ]
-      }
       this.form_data = params;
       this.initData()
     },
@@ -386,7 +287,7 @@ export default {
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
       let endDate = days_arr[days_arr.length - 1];
-      IDM.http.get('/ctrl/p2433JxwLeaderSchedule/get',{
+      IDM.http.get('/ctrl/oneWeekPlan/get',{
         sDate: startDate,
         eDate: endDate,
       }).then((res) => {
@@ -420,18 +321,11 @@ export default {
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
       let endDate = days_arr[days_arr.length - 1];
-      IDM.http.get('/ctrl/p2433JxwLeaderSchedule/editGet',{
+      IDM.http.get('/ctrl/oneWeekPlan/get',{
         sDate: startDate,
-        eDate: endDate,
-        userIds: this.form_data.leaders,
+        eDate: endDate
       }).then((res) => {
         this.data_list_table = res.data.data;
-        this.publickStatus = 0;
-        this.data_list_table && this.data_list_table.forEach((item) => {
-          if(item.status == 1) {
-            this.publickStatus = 1
-          }
-        })
       }).catch((err) => {
         console.log(err)
       })
