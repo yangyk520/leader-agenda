@@ -52,6 +52,13 @@
       "className": "IWorkScheduling",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.ielectronicweeklytable",
+      "comName": "电子周表",
+      "className": "IElectronicWeeklyTable",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
