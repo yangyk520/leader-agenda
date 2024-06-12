@@ -7,6 +7,7 @@ import 'ant-design-vue/lib/radio/style/css';
 import 'ant-design-vue/lib/input/style/css';
 import 'ant-design-vue/lib/checkbox/style/css';
 import 'ant-design-vue/lib/time-picker/style/css';
+import 'ant-design-vue/lib/date-picker/style/css';
 import 'ant-design-vue/lib/empty/style/css';
 import 'ant-design-vue/lib/popconfirm/style/css';
 import 'ant-design-vue/lib/select/style/css';
@@ -14,7 +15,7 @@ import 'ant-design-vue/lib/popover/style/css';
 import 'ant-design-vue/lib/modal/style/css';
 import 'ant-design-vue/lib/button/style/css';
 
-import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm,Select,Popover,Modal,Button } from 'ant-design-vue'
+import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm,Select,Popover,Modal,Button,DatePicker } from 'ant-design-vue'
 
 /* v1.1.3+ registration methods */
 Vue.use(Base)
@@ -28,5 +29,6 @@ Vue.use(Select)
 Vue.use(Popover)
 Vue.use(Modal)
 Vue.use(Button)
+Vue.use(DatePicker)
 Vue.prototype.$confirm = Modal.confirm
 

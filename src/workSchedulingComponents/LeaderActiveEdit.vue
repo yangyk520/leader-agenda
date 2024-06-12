@@ -1,24 +1,23 @@
 <template>
-  <div class="LeaderActiveTable_app">
-    <div class="table" :class="form_data.timeViewType == 'day' ? 'day_table' : 'week_table' ">
+  <div class="LeaderActiveEdit_app">
+    <div class="table">
       <div class="table_header flex_between">
-        <div v-for="(item,index) in header_list" :key="index" class="cell" :style="getDomBg(item,true)">
+        <div v-for="(item,index) in header_list" :key="index" class="cell">
           {{ item.name }}
-          <span v-if="item.week && form_data && form_data.timeViewType == 'week'">
-            ({{ item.week }})
-          </span>
         </div>
       </div>
-      <div v-if="data_list && data_list.length" class="table_body">
+      <div v-if="data_list_table && data_list_table.length" class="table_body">
         <vue-scroll :ops="scrollOps">
-          <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
-            <div v-for="(item1,index1) in header_list" :key="index1" class="cell" :style="getDomBg(item1)">
-              <div v-if="item1.key == 'leaderText'" class="leader_name">{{ item[item1.key] }}</div>
-              <div class="day_active_block" v-else-if="form_data && form_data.timeViewType == 'day'">
-                <span v-html="item[item1.key]"></span>
+          <div v-for="(item,index) in data_list_table" :key="index" class="row table_body_row flex_between">
+            <div v-for="(item1,index1) in header_list" :key="index1" class="cell">
+              <div class="day_active_block" v-if="item1.key == 'date'">
+                <div>{{ week_number[index] }}</div>
+                <div>{{ item[item1.key] }}</div>
               </div>
-              <div v-else :style="getDomBg(item1)">
-                <ActiveItem :item2="item[item1.key]"></ActiveItem>
+              <div v-else>
+                <a-textarea v-model="item[item1.key]" placeholder="请输入" :auto-size="{ minRows: 3, maxRows: 5 }">
+
+                </a-textarea>
               </div>
             </div>
           </div>
@@ -27,25 +26,43 @@
       <div class="empty_blcok" v-else>
         <a-empty description="暂无数据" />
       </div>
+
     </div>
   </div>
 </template>
 <script>
 import mixins from "@/mixins/index.js";
-import ActiveItem from "./ActiveItem.vue";
 export default {
-  name: "LeaderActiveTable",
+  name: "LeaderActiveEdit",
   mixins: [mixins],
   components: {
-    ActiveItem,
   },
-  props: [
-    "propData",
-    "moduleObject",
-    "header_list",
-    "data_list",
-    "form_data",
-  ],
+  props: {
+    propData: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    moduleObject: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    form_data: {
+      type: Object,
+      default() {
+        return {};
+      },
+    },
+    data_list_table: {
+      type: Array,
+      default() {
+        return []
+      }
+    }
+  },
   watch: {
     propData: {
       handler: function () {
@@ -53,23 +70,30 @@ export default {
       },
       immediate: true,
       deep: true,
-    },
+    }
   },
   data() {
-    return {};
+    return {
+      header_list: [
+        {
+          name: '日期',
+          key: 'date'
+        },
+        {
+          name: '上午',
+          key: 'morningContent'
+        },
+        {
+          name: '下午',
+          key: 'afternoonContent'
+        }
+      ],
+      week_number: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
+    };
   },
   created() {
-
   },
   methods: {
-    getDomBg(item,isHeader) {
-      var styleObject = {};
-      if (item.week != "周六" && item.week != "周日" && !isHeader) {
-        styleObject["background-color"] = "#FFFFFF";
-      }
-      return styleObject;
-    },
-
     getUserPhoto(item) {
       if (item.photo) {
         return IDM.url.getWebPath(item.photo);
@@ -129,25 +153,25 @@ export default {
         }
       }
       window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table",
+        this.moduleObject.id + " .AgendaTableVertical_app .table",
         styleObject
       );
       window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table .table_header",
+        this.moduleObject.id + " .AgendaTableVertical_app .table .table_header",
         styleObjectHeader
       );
       window.IDM.setStyleToPageHead(
         this.moduleObject.id +
-          " .LeaderActiveTable_app .table .table_header .cell",
+          " .AgendaTableVertical_app .table .table_header .cell",
         styleObjectCell
       );
       window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table .table_body",
+        this.moduleObject.id + " .AgendaTableVertical_app .table .table_body",
         styleObjectBody
       );
       window.IDM.setStyleToPageHead(
         this.moduleObject.id +
-          " .LeaderActiveTable_app .table .table_body .row:nth-child(2n)",
+          " .AgendaTableVertical_app .table .table_body .row:nth-child(2n)",
         styleObjectBodyRow
       );
     },
@@ -162,7 +186,7 @@ export default {
 };
 </script>
 <style lang="scss" scoped>
-.LeaderActiveTable_app {
+.LeaderActiveEdit_app {
   height: calc(100% - 88px);
   .week_table{
     .table_body_row{
@@ -193,7 +217,7 @@ export default {
         border-left: 1px solid rgba(230, 230, 230, 1);
         overflow: hidden;
         &:nth-child(1) {
-          width: 122px;
+          width: 152px;
           flex-grow: 0;
           flex-shrink: 0;
           // border-left: 1px solid rgba(230, 230, 230, 1);
@@ -215,18 +239,20 @@ export default {
           padding: 12px 12px 16px 12px;
           word-break: break-all;
           border-left: 1px solid rgba(230, 230, 230, 1);
-          white-space: pre-line;
           &:nth-child(1) {
-            width: 122px;
+            width: 152px;
             flex-grow: 0;
             flex-shrink: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            text-align: center;
           }
         }
         .day_active_block{
+          
           background: white;
-        }
-        .leader_name{
-          text-align: center;
         }
       }
     }

@@ -160,7 +160,7 @@ module.exports = {
     devServer: {
       proxy: {
           '^/DreamWeb/*': {
-              target: "http://192.168.9.119:8080/",
+              target: "http://192.168.9.111:8080/",
               changeOrigin: true,
               secure: false
           }

@@ -54,13 +54,16 @@ export default {
   },
   methods: {
     handleClick(item) {
-      console.log()
+      console.log('item',item);
       if (this.type === "unit" && (item.type == 4 || item.type == 5)) {
-        console.log("选中", item.id);
-        this.$emit("updateActiveId", item.id);
+        this.$emit("updateActiveId", {
+          deptId: item.attrs.idValue
+        });
       } else if (this.type === "person" && item.type == 1) {
-        console.log("选中", item.id);
-        this.$emit("updateActiveId", item.id);
+        this.$emit("updateActiveId", {
+          userId: item.attrs.idValue,
+          deptId: item.attrs.deptId
+        });
       }
       item.open = !item.open;
     },

@@ -1,10 +1,13 @@
 <template>
   <div class="ActiveItem_app">
-    <div v-if="item2 && item2.morningContent" class="morning">
-      <span>上午：</span>{{ item2.morningContent }}
+    <div v-if="item2 && item2.morningContent" class="morning flex_start">
+      <span class="label">上午：</span><span v-html="item2.morningContent"></span>
     </div>
-    <div v-if="item2 && item2.afternoonContent" class="afternoon">
-      <span>下午：</span>{{ item2.afternoonContent }}
+    <div v-if="item2 && item2.afternoonContent" class="afternoon flex_start">
+      <span class="label">下午：</span><span v-html="item2.afternoonContent"></span>
+    </div>
+    <div v-if="item2 && item2.nightContent" class="night flex_start">
+      <span class="label">晚上：</span><span v-html="item2.nightContent"></span>
     </div>
   </div>
 </template>
@@ -109,10 +112,7 @@ export default {
       margin: 0;
     }
   }
-  .time,
-  .name,
-  .address,
-  .busy {
+  .time, .name, .address, .busy {
     font-size: 16px;
     line-height: 22px;
     font-weight: 400;
@@ -125,6 +125,12 @@ export default {
       &:nth-child(1) {
         margin-left: 0;
       }
+    }
+  }
+  .morning,.afternoon,.night{
+    align-items: baseline;
+    .label{
+      white-space: nowrap;
     }
   }
 }

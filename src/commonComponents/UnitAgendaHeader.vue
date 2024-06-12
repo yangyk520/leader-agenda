@@ -141,6 +141,7 @@ export default {
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "_blank");
+      a.setAttribute("download", IDM.url.getWebPath(url));
       a.href = IDM.url.getWebPath(url);
       document.body.appendChild(a);
       a.click();
