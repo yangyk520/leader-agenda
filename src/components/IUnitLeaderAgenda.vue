@@ -254,9 +254,9 @@ export default {
           top.close = function () {
             IDM.layer.close(index);
           };
-          window.closeDialog = function () {
-            IDM.layer.close(index);
-          };
+          // window.closeDialog = function () {
+          //   IDM.layer.close(index);
+          // };
         },
       });
     },
