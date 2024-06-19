@@ -97,9 +97,9 @@
                   :key="a"
                   :class="{
                     active: agenda.id === activeAgenda,
-                    type1: agenda.agendaType == 1,
-                    type2: agenda.agendaType == 2,
-                    type3: agenda.agendaType == 3,
+                    type1: agenda.agendaType == 300,
+                    type2: agenda.agendaType == 301,
+                    type3: agenda.agendaType != 300 && agenda.agendaType != 301,
                   }"
                   @mouseenter="() => (activeAgenda = agenda.id)"
                   @click="agendaHander(agenda)"
