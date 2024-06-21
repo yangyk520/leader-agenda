@@ -4,20 +4,22 @@
     <div class="line"></div>
     <div class="text">一周工作安排</div>
   </div>
+  <div class="form_block flex_start">
+    <div class="form_item">
+      <div class="select_box">
+        <a-select v-model="leader" @change="e => handleChange(e,1)" allowClear>
+          <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.value">
+            {{ item.text }}
+          </a-select-option>
+        </a-select>
+      </div>
+    </div>
+  </div>
   <div class="table leader_table">
     <div class="table_header flex_between">
       <div class="table_header_left flex_start">
         <div class="icon"></div>
         <div class="text">委领导一周工作安排</div>
-      </div>
-      <div class="table_header_right">
-        <div class="select_box">
-          <a-select v-model="leader" @change="e => handleChange(e,1)" allowClear>
-            <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.id">
-              {{ item.bt }}
-            </a-select-option>
-          </a-select>
-        </div>
       </div>
     </div>
     <div class="table_body">
@@ -41,15 +43,6 @@
           <div class="icon"></div>
           <div class="text">机关处室一周工作安排</div>
         </div>
-        <div class="table_header_right">
-          <div class="select_box">
-            <a-select v-model="depart" @change="e => handleChange(e,2)" allowClear>
-              <a-select-option v-for="(item,index) in departList" :key="index" :value="item.id">
-                {{ item.bt }}
-              </a-select-option>
-            </a-select>
-          </div>
-        </div>
       </div>
       <div class="table_body">
         <vue-scroll :ops="scrollOps">
@@ -70,15 +63,6 @@
         <div class="table_header_left flex_start">
           <div class="icon"></div>
           <div class="text">事业单位一周工作安排</div>
-        </div>
-        <div class="table_header_right">
-          <div class="select_box">
-            <a-select v-model="unit" @change="e => handleChange(e,3)" allowClear>
-              <a-select-option v-for="(item,index) in unitList" :key="index" :value="item.id">
-                {{ item.bt }}
-              </a-select-option>
-            </a-select>
-          </div>
         </div>
       </div>
       <div class="table_body">
@@ -112,11 +96,7 @@ export default {
         fontContent: "Hello Word"
       },
       leader: '',
-      depart: '',
-      unit: '',
       leaderList: [],
-      departList: [],
-      unitList: [],
       table_data_leader: [],
       table_data_depart: [],
       table_data_unit: [],
@@ -146,12 +126,8 @@ export default {
 
       }).then((res) => {
         if ( res.data.code == '200' ) {
-          this.leaderList = res.data.data.wldList || [];
-          this.departList = res.data.data.deptList || [];
-          this.unitList = res.data.data.unitList || [];
-          this.leader = this.leaderList[0]?.id;
-          this.depart = this.departList[0]?.id;
-          this.unit = this.unitList[0]?.id;
+          this.leaderList = res.data.data.selectArray || [];
+          this.leader = this.leaderList[0]?.value;
           this.getTableData()
         }
       }).catch((err) => {
@@ -160,39 +136,14 @@ export default {
     },
     getTableData() {
       this.getLeaderTableData()
-      this.getDepartTableData()
-      this.getUnitTableData()
     },
     getLeaderTableData() {
       IDM.http.get('/ctrl/oneWeek/getSubData',{
-        type: 1,
-        wldId: this.leader
+        date: this.leader
       }).then((res) => {
         if ( res.data.code == '200' ) {
           this.table_data_leader = res.data.data.wldList;
-        }
-      }).catch((err) => {
-          console.log(err)
-      })
-    },
-    getDepartTableData() {
-      IDM.http.get('/ctrl/oneWeek/getSubData',{
-        type: 2,
-        deptId: this.depart
-      }).then((res) => {
-        if ( res.data.code == '200' ) {
           this.table_data_depart = res.data.data.deptList;
-        }
-      }).catch((err) => {
-          console.log(err)
-      })
-    },
-    getUnitTableData() {
-      IDM.http.get('/ctrl/oneWeek/getSubData',{
-        type: 3,
-        unitId: this.unit
-      }).then((res) => {
-        if ( res.data.code == '200' ) {
           this.table_data_unit = res.data.data.unitList;
         }
       }).catch((err) => {
@@ -201,13 +152,7 @@ export default {
     },
     handleChange(e,type) {
       console.log(e);
-      if(type == 1) {
-        this.getLeaderTableData()
-      } else if (type == 2) {
-        this.getDepartTableData()
-      } else if (type == 3) {
-        this.getUnitTableData()
-      }
+      this.getTableData()
     },
     /**
      * 提供父级组件调用的刷新prop数据组件
@@ -401,6 +346,15 @@ export default {
       font-weight: 400;
     }
   }
+  .form_block{
+    margin-top: 18px;
+    .select_box{
+      width: 300px;
+      .ant-select{
+        width: 100%;
+      }
+    }
+  }
   .leader_table{
     height: 184px;
     margin-top: 18px;
@@ -431,12 +385,7 @@ export default {
         margin-right: 8px;
         background: #3389E0;
       }
-      .select_box{
-        width: 300px;
-        .ant-select{
-          width: 100%;
-        }
-      }
+      
     }
     .table_body{
       height: calc(100% - 48px);
@@ -473,7 +422,7 @@ export default {
     }
   }
   .footer_block{
-    height: calc(100vh - 293px);
+    height: calc(100vh - 343px);
     margin-top: 15px;
     .table{
       width: 50%;
