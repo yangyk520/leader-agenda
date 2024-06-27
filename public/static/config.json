@@ -66,6 +66,13 @@
       "className": "IWeeklyWorkReview",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.weeklymorningafternoonwork",
+      "comName": "周上下午工作安排",
+      "className": "IWeeklyMorningAfternoonWork",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
