@@ -549,7 +549,21 @@ export default {
         this.showThisModuleHandle();
       } else if (object.type && object.type == "linkageHideModule") {
         this.hideThisModuleHandle();
-      }
+      } else if (
+        object.type &&
+        object.type == "websocket" &&
+        this.propData.messageRefreshKey
+      ) {
+        const messageData =
+          (typeof object.message === "string" && JSON.parse(object.message)) ||
+          object.message;
+        const arr = Array.isArray(this.propData.messageRefreshKey)
+          ? this.propData.messageRefreshKey
+          : [this.propData.messageRefreshKey];
+        if (messageData.badgeType && arr.includes(messageData.badgeType)) {
+          this.reload();
+        }
+      } 
     },
     /**
      * 组件通信：发送消息的方法

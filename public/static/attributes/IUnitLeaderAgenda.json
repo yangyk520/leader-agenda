@@ -369,6 +369,25 @@
               "text": "数据源",
               "desc": "组件所需的数据源",
               "bindKey": "dataSource"
+            },
+            {
+              "type": "select",
+              "layoutType": "inline",
+              "text": "刷新KEY",
+              "bindKey": "messageRefreshKey",
+              "desc": "根据组件接收到的消息KEY来刷新数据",
+              "default": "",
+              "multiple": true,
+              "placeholder": "示例：emergencyBureauSchedule",
+              "ctrlAttrObject": {
+                "mode": "tags"
+              },
+              "dictionary": [
+                {
+                  "label": "emergencyBureauSchedule",
+                  "value": "emergencyBureauSchedule"
+                }
+              ]
             }
           ]
       }
