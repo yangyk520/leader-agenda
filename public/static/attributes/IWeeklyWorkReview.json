@@ -430,6 +430,29 @@
         "desc": "点击？查看高级设置用法指南",
         "children": [
           {
+            "type": "select",
+            "layoutType": "inline",
+            "text": "刷新KEY",
+            "bindKey": "messageRefreshKey",
+            "desc": "根据组件接收到的消息KEY来刷新数据，可选择多个",
+            "default": "",
+            "placeholder": "请选择刷新KEY",
+            "multiple": true,
+            "ctrlAttrObject": {
+                "mode": "tags"
+            },
+            "dictionary": [
+                {
+                    "label": "info",
+                    "value": "info"
+                },
+                {
+                    "label": "inbox",
+                    "value": "inbox"
+                }
+            ]
+          },
+          {
             "type": "actionSelect",
             "layoutType": "block",
             "text": "点击时动作",
