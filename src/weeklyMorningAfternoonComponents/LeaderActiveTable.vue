@@ -22,7 +22,7 @@
         <vue-scroll :ops="scrollOps">
           <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
             <div class="cell flex_center">
-              <span>{{ item.name }}</span>
+              <span @click="handleClickLeader(item)" class="pointer">{{ item.name }}</span>
             </div>
             <div v-for="(item1,index1) in header_list" :key="index1" class="cell flex_between">
               <div class="list">{{ item[item1.date] ? item[item1.date][0]?.morning : '' }}</div>
@@ -67,6 +67,12 @@ export default {
 
   },
   methods: {
+    handleClickLeader(item) {
+      this.propData.clickFunction && this.propData.clickFunction.length && IDM.invokeCustomFunctions.apply(this,[this.propData.clickFunction,{
+        item: item,
+        _this: this
+      }])
+    },
     getDomBg(item,isHeader) {
       var styleObject = {};
       if (item.week != "周六" && item.week != "周日" && !isHeader) {

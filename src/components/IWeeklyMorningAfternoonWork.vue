@@ -297,6 +297,14 @@ export default {
      */
     receiveBroadcastMessage(object){
       console.log("组件收到消息",object)
+      // 配置了刷新KEY，消息类型是websocket，收到的消息对象有message并不为空
+      if(this.propData.messageRefreshKey && this.propData.messageRefreshKey.length && object.type === 'websocket' && object.message){
+        const messageData = typeof object.message === 'string' && JSON.parse(object.message) || object.message
+        const arr = this.propData.messageRefreshKey || [];
+        if(messageData.badgeType && arr.includes(messageData.badgeType)){
+          this.reload()
+        }
+      }
     },
     /**
      * 组件通信：发送消息的方法
