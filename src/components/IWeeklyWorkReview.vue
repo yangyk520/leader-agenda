@@ -107,13 +107,19 @@ export default {
     this.moduleObject = this.$root.moduleObject
     this.convertAttrToStyleObject();
     this.getLeaderDepartUnitList()
-    // this.getTableData()
+    this.getDefaultValue()
   },
   mounted() {
 
   },
   destroyed() {},
   methods: {
+    getDefaultValue() {
+      let value = IDM.url.queryString("value");
+      if(value && value != 'undefined') {
+        this.leader = value;
+      }
+    },
     clickItem(item,type) {
       this.propData.clickFunction && this.propData.clickFunction.length && IDM.invokeCustomFunctions.apply(this,[this.propData.clickFunction,{
         item: item,
@@ -127,7 +133,9 @@ export default {
       }).then((res) => {
         if ( res.data.code == '200' ) {
           this.leaderList = res.data.data.selectArray || [];
-          this.leader = this.leaderList[0]?.value;
+          if(!this.leader) {
+            this.leader = this.leaderList[0]?.value;
+          }
           this.getTableData()
         }
       }).catch((err) => {
