@@ -450,7 +450,7 @@
             "layoutType": "inline",
             "text": "列表数据",
             "bindKey": "listDataUrl",
-            "default": "ctrl/oneWeek/getSubDataa",
+            "default": "ctrl/oneWeek/getSubData",
             "desc": "多组列表数据来源接口"
           },
           {
