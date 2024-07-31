@@ -2,7 +2,7 @@
 <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IWeeklyWorkReview_app">
   <div class="IWeeklyWorkReview_app_header flex_start">
     <div class="line"></div>
-    <div class="text">一周工作安排</div>
+    <div class="text">一{{weekOrMonth}}工作安排</div>
   </div>
   <div class="form_block flex_start">
     <div class="form_item">
@@ -15,11 +15,11 @@
       </div>
     </div>
   </div>
-  <div class="table leader_table">
+  <div v-if="propData.showWld" class="table leader_table">
     <div class="table_header flex_between">
       <div class="table_header_left flex_start">
         <div class="icon"></div>
-        <div class="text">委领导一周工作安排</div>
+        <div class="text">委领导一{{weekOrMonth}}工作安排</div>
       </div>
     </div>
     <div class="table_body">
@@ -36,12 +36,12 @@
       </vue-scroll>
     </div>
   </div>
-  <div class="footer_block flex_between">
+  <div class="footer_block flex_between" :style="`height:calc(100vh - ${propData.showWld ? 343 : 141 }px)`">
     <div class="table depart_table">
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
-          <div class="text">机关处室一周工作安排</div>
+          <div class="text">机关处室一{{weekOrMonth}}工作安排</div>
         </div>
       </div>
       <div class="table_body">
@@ -62,7 +62,7 @@
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
-          <div class="text">事业单位一周工作安排</div>
+          <div class="text">事业单位一{{weekOrMonth}}工作安排</div>
         </div>
       </div>
       <div class="table_body">
@@ -93,7 +93,9 @@ export default {
     return {
       moduleObject: {},
       propData: this.$root.propData.compositeAttr || {
-        fontContent: "Hello Word"
+        fontContent: "Hello Word",
+        showWld:false,
+        scheduleType:'2'
       },
       leader: '',
       leaderList: [],
@@ -112,6 +114,11 @@ export default {
   mounted() {
 
   },
+  computed:{
+    weekOrMonth(){
+      return this.propData.scheduleType == '1' ? '周':'月'
+    }
+  },
   destroyed() {},
   methods: {
     getDefaultValue() {
@@ -128,7 +135,7 @@ export default {
       }])
     },
     getLeaderDepartUnitList() {
-      IDM.http.get('/ctrl/oneWeek/getSelectData',{
+      IDM.http.get(this.propData.optionDataUrl,{
 
       }).then((res) => {
         if ( res.data.code == '200' ) {
@@ -146,7 +153,7 @@ export default {
       this.getLeaderTableData()
     },
     getLeaderTableData() {
-      IDM.http.get('/ctrl/oneWeek/getSubData',{
+      IDM.http.get(this.propData.listDataUrl,{
         date: this.leader
       }).then((res) => {
         if ( res.data.code == '200' ) {
