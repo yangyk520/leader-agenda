@@ -38,7 +38,7 @@
         </template>
         <template v-else>
           <div class="top_right flex_end">
-            <div class="select_box">
+            <div v-if="viewModel == 2" class="select_box">
               <a-select v-model="selectedUser" show-search placeholder="请选择" option-filter-prop="children" style="width: 200px" :filter-option="filterOption" @change="handleChange" >
                 <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.userId">
                   {{ item.userName }}
@@ -46,15 +46,17 @@
               </a-select>
             </div>
             <div class="operate_block">
-              <a-button @click="save()" :loading="save_loading" type="primary">
+              <a-button v-if="viewModel == 2" @click="save()" :loading="save_loading" type="primary">
                 保存
               </a-button>
-              <a-button v-if="publickStatus === 0" @click="release()" :loading="release_loading" type="primary">
-                发布
-              </a-button>
-              <a-button v-else @click="unRelease()" :loading="unRelease_loading" type="primary">
-                取消发布
-              </a-button>
+              <template v-if="viewModel == 2">
+                <a-button  v-if="publickStatus === 0" @click="release()" :loading="release_loading" type="primary">
+                  发布
+                </a-button>
+                <a-button v-else @click="unRelease()" :loading="unRelease_loading" type="primary">
+                  取消发布
+                </a-button>
+              </template>
               <a-button @click="exportData()" :loading="exportData_loading" type="primary">
                 导出
               </a-button>

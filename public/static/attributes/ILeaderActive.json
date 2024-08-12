@@ -40,8 +40,7 @@
               ]
             },
             {
-              "type": "radio",
-              "styleType": "button",
+              "type": "select",
               "layoutType": "inline",
               "text": "页面模式",
               "desc":"页面打开的模式，可选择编辑模式或者预览模式",
@@ -55,6 +54,10 @@
                   {
                       "label": "编辑",
                       "value": "2"
+                  },
+                  {
+                      "label": "领导班子预览",
+                      "value": "3"
                   }
               ]
             },

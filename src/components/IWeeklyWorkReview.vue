@@ -2,7 +2,7 @@
 <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IWeeklyWorkReview_app">
   <div class="IWeeklyWorkReview_app_header flex_start">
     <div class="line"></div>
-    <div class="text">一{{weekOrMonth}}工作安排</div>
+    <div class="text">{{weekOrMonth}}</div>
   </div>
   <div class="form_block flex_start">
     <div class="form_item">
@@ -19,7 +19,7 @@
     <div class="table_header flex_between">
       <div class="table_header_left flex_start">
         <div class="icon"></div>
-        <div class="text">委领导一{{weekOrMonth}}工作安排</div>
+        <div class="text">委领导{{weekOrMonth}}</div>
       </div>
     </div>
     <div class="table_body">
@@ -41,7 +41,7 @@
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
-          <div class="text">机关处室一{{weekOrMonth}}工作安排</div>
+          <div class="text">机关处室{{weekOrMonth}}</div>
         </div>
       </div>
       <div class="table_body">
@@ -62,7 +62,7 @@
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
-          <div class="text">事业单位一{{weekOrMonth}}工作安排</div>
+          <div class="text">事业单位{{weekOrMonth}}</div>
         </div>
       </div>
       <div class="table_body">
@@ -116,7 +116,7 @@ export default {
   },
   computed:{
     weekOrMonth(){
-      return this.propData.scheduleType == '1' ? '周':'月'
+      return this.propData.scheduleType == '1' ? '一周工作安排':'月度工作要点'
     }
   },
   destroyed() {},

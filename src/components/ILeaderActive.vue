@@ -10,7 +10,7 @@
       <LeaderActiveTable :propData="propData" :moduleObject="moduleObject" :form_data="form_data" :header_list="header_list" :data_list="data_list"></LeaderActiveTable>
     </template>
     <template v-else>
-      <LeaderActiveEdit @updateTableData="updateTableData" :form_data="form_data" :data_list_table="data_list_table"></LeaderActiveEdit>
+      <LeaderActiveEdit @updateTableData="updateTableData" :form_data="form_data" :data_list_table="data_list_table" :viewModel="propData.viewModel"></LeaderActiveEdit>
     </template>
    </div>
   </div>
@@ -21,6 +21,7 @@ const mock = []
 import LeaderActiveHeader from "../leaderActiveComponents/LeaderActiveHeader.vue"
 import LeaderActiveTable from '@/leaderActiveComponents/LeaderActiveTable.vue'
 import LeaderActiveEdit from "@/leaderActiveComponents/LeaderActiveEdit.vue"
+import { leaderTeamListMock } from "../mock/ILeaderActive";
 export default {
   name: 'ILeaderActive',
   components:{
@@ -32,7 +33,7 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel: '2',// 1标识预览；2标识编辑
+        viewModel: '3',// 1标识预览；2标识编辑 3标识领导班子预览
         scheduleType: 2, // 1标识day
       },
       form_data: {},
@@ -55,30 +56,48 @@ export default {
   destroyed() {},
   methods:{
     exportData() {
-      let status = 1;
-      this.data_list_table && this.data_list_table.length && this.data_list_table.forEach((item) => {
-        if(!item.status) {
-          status = 0
-        }
-      })
-      if ( !status ) {
-        IDM.message.warning('存在未发布的活动，暂不能导出！')
-        return
-      }
-      this.$refs[this.moduleObject.id][`exportData_loading`] = true;
-
       let days_arr = this.form_data.dates.split(',');
       let startDate = days_arr[0];
       let endDate = days_arr[days_arr.length - 1];
-      let fileName = `领导${startDate}至${endDate}活动安排.doc`;
-      IDM.http.post('/ctrl/p2433JxwLeaderSchedule/download',{
-        templateId: '2402201548552eQLEcA2QZHDx2gnV3C',
-        fileName: fileName,
-        moduleId: '240220154854Kosqknc4MPO2LNAK95c',
-        userId: this.form_data.leaders,
-        sDate: startDate,
-        eDate: endDate,
-      },{
+      let params = null
+      let fileName = ''
+      let url = ''
+      if(this.propData.viewModel == '2'){
+        let status = 1;
+        this.data_list_table && this.data_list_table.length && this.data_list_table.forEach((item) => {
+          if(!item.status) {
+            status = 0
+          }
+        })
+        if ( !status ) {
+          IDM.message.warning('存在未发布的活动，暂不能导出！')
+          return
+        }
+        fileName = `领导${startDate}至${endDate}活动安排.doc`;
+        url = '/ctrl/p2433JxwLeaderSchedule/download'
+        params = {
+          templateId: '2402201548552eQLEcA2QZHDx2gnV3C',
+          fileName: fileName,
+          moduleId: '240220154854Kosqknc4MPO2LNAK95c',
+          userId: this.form_data.leaders,
+          sDate: startDate,
+          eDate: endDate,
+        }
+      }else{
+        fileName = `领导班子${startDate}至${endDate}日程安排.XLSX`;
+        url = 'ctrl/tswCustom/exportSchedule'
+        if(!this.data_list_table?.length){
+          IDM.message.warning('暂无数据，不能导出！')
+          return
+        }
+        params = {
+          startDay: startDate,
+          endDay: endDate
+        }
+      }
+      
+      this.$refs[this.moduleObject.id][`exportData_loading`] = true;
+      IDM.http.post(url, params,{
         responseType: "blob",
       }).then((res) => {
         this.$refs[this.moduleObject.id][`exportData_loading`] = false;
@@ -207,10 +226,6 @@ export default {
           {
             name: '下午',
             key: 'afternoonContent'
-          },
-          {
-            name: '晚上',
-            key: 'nightContent'
           }
         ]
       }
@@ -366,8 +381,30 @@ export default {
         } else {
           this.getWeekInitData()
         }
-      } else {
+      } else if(this.propData.viewModel == 2) {
         this.getWeekInitDataTableList()
+      }else{
+        this.getLeaderTeamTableList()
+      }
+    },
+    getLeaderTeamTableList() {
+      if (!this.moduleObject.env || this.moduleObject.env == "develop") {
+        this.data_list_table = leaderTeamListMock
+        console.log(this.data_list_table)
+      }else{
+        let days_arr = this.form_data.dates.split(',');
+        let startDay = days_arr[0];
+        let endDay = days_arr[days_arr.length - 1];
+        IDM.http.get('ctrl/tswCustom/getSchedule',{
+          startDay,
+          endDay,
+        }).then((res) => {
+          if ( res.data.code == '200' ) {
+            this.data_list_table = res.data.data || [];
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
       }
     },
     getDayInitData() {
