@@ -2,15 +2,11 @@
   <div class="LeaderActiveTable_app">
     <div class="table">
       <div class="table_header flex_between">
-        <div class="cell">
-          领导
-        </div>
-        <div v-for="(item,index) in header_list" :key="index" class="cell">
+        <div class="cell">领导</div>
+        <div v-for="(item, index) in header_list" :key="index" class="cell">
           <div class="cell_top">
             {{ item.date }}
-            <div class="week">
-              ({{ item.week }})
-            </div>
+            <div class="week">({{ item.week }})</div>
           </div>
           <div class="cell_bottom flex_between">
             <div class="list">上午</div>
@@ -20,13 +16,13 @@
       </div>
       <div v-if="data_list && data_list.length" class="table_body">
         <vue-scroll :ops="scrollOps">
-          <div v-for="(item,index) in data_list" :key="index" class="row table_body_row flex_between">
+          <div v-for="(item, index) in data_list" :key="index" class="row table_body_row flex_between">
             <div class="cell flex_center">
               <span @click="handleClickLeader(item)" class="pointer">{{ item.name }}</span>
             </div>
-            <div v-for="(item1,index1) in header_list" :key="index1" class="cell flex_between">
-              <div class="list">{{ item[item1.date] ? item[item1.date][0]?.morning : '' }}</div>
-              <div class="list">{{ item[item1.date] ? item[item1.date][0]?.afternoon : '' }}</div>
+            <div v-for="(item1, index1) in header_list" :key="index1" class="cell flex_between">
+              <div class="list">{{ item[item1.date] ? item[item1.date][0]?.morning : "" }}</div>
+              <div class="list">{{ item[item1.date] ? item[item1.date][0]?.afternoon : "" }}</div>
             </div>
           </div>
         </vue-scroll>
@@ -42,15 +38,8 @@ import mixins from "@/mixins/index.js";
 export default {
   name: "LeaderActiveTable",
   mixins: [mixins],
-  components: {
-  },
-  props: [
-    "propData",
-    "moduleObject",
-    "header_list",
-    "data_list",
-    "form_data",
-  ],
+  components: {},
+  props: ["propData", "moduleObject", "header_list", "data_list", "form_data"],
   watch: {
     propData: {
       handler: function () {
@@ -63,17 +52,20 @@ export default {
   data() {
     return {};
   },
-  created() {
-
-  },
+  created() {},
   methods: {
     handleClickLeader(item) {
-      this.propData.clickFunction && this.propData.clickFunction.length && IDM.invokeCustomFunctions.apply(this,[this.propData.clickFunction,{
-        item: item,
-        _this: this
-      }])
+      this.propData.clickFunction &&
+        this.propData.clickFunction.length &&
+        IDM.invokeCustomFunctions.apply(this, [
+          this.propData.clickFunction,
+          {
+            item: item,
+            _this: this,
+          },
+        ]);
     },
-    getDomBg(item,isHeader) {
+    getDomBg(item, isHeader) {
       var styleObject = {};
       if (item.week != "周六" && item.week != "周日" && !isHeader) {
         styleObject["background-color"] = "#FFFFFF";
@@ -86,15 +78,9 @@ export default {
         return IDM.url.getWebPath(item.photo);
       } else {
         if (item.sex) {
-          return IDM.url.getModuleAssetsWebPath(
-            require(`../assets/default_girl.png`),
-            this.moduleObject
-          );
+          return IDM.url.getModuleAssetsWebPath(require(`../assets/default_girl.png`), this.moduleObject);
         } else {
-          return IDM.url.getModuleAssetsWebPath(
-            require(`../assets/default_boy.png`),
-            this.moduleObject
-          );
+          return IDM.url.getModuleAssetsWebPath(require(`../assets/default_boy.png`), this.moduleObject);
         }
       }
     },
@@ -104,13 +90,8 @@ export default {
       var styleObjectCell = {};
       var styleObjectBody = {};
       var styleObjectBodyRow = {};
-      if (
-        this.propData.stripe &&
-        this.propData.bgColorStripe &&
-        this.propData.bgColorStripe.hex8
-      ) {
-        styleObjectBodyRow["background-color"] =
-          this.propData.bgColorStripe.hex8;
+      if (this.propData.stripe && this.propData.bgColorStripe && this.propData.bgColorStripe.hex8) {
+        styleObjectBodyRow["background-color"] = this.propData.bgColorStripe.hex8;
       }
       for (const key in this.propData) {
         if (this.propData.hasOwnProperty.call(this.propData, key)) {
@@ -139,28 +120,11 @@ export default {
           }
         }
       }
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table",
-        styleObject
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table .table_header",
-        styleObjectHeader
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id +
-          " .LeaderActiveTable_app .table .table_header .cell",
-        styleObjectCell
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id + " .LeaderActiveTable_app .table .table_body",
-        styleObjectBody
-      );
-      window.IDM.setStyleToPageHead(
-        this.moduleObject.id +
-          " .LeaderActiveTable_app .table .table_body .row:nth-child(2n)",
-        styleObjectBodyRow
-      );
+      window.IDM.setStyleToPageHead(this.moduleObject.id + " .LeaderActiveTable_app .table", styleObject);
+      window.IDM.setStyleToPageHead(this.moduleObject.id + " .LeaderActiveTable_app .table .table_header", styleObjectHeader);
+      window.IDM.setStyleToPageHead(this.moduleObject.id + " .LeaderActiveTable_app .table .table_header .cell", styleObjectCell);
+      window.IDM.setStyleToPageHead(this.moduleObject.id + " .LeaderActiveTable_app .table .table_body", styleObjectBody);
+      window.IDM.setStyleToPageHead(this.moduleObject.id + " .LeaderActiveTable_app .table .table_body .row:nth-child(2n)", styleObjectBodyRow);
     },
     getStyleDataCancel(item) {
       var styleObject = {};
@@ -175,9 +139,9 @@ export default {
 <style lang="scss" scoped>
 .LeaderActiveTable_app {
   height: 100%;
-  .week_table{
-    .table_body_row{
-      background: #FFFCF2;
+  .week_table {
+    .table_body_row {
+      background: #fffcf2;
     }
   }
   .table {
@@ -209,21 +173,21 @@ export default {
           flex-shrink: 0;
           border-left: none;
         }
-        .cell_top{
+        .cell_top {
           padding: 10px 0;
         }
-        .cell_bottom{
+        .cell_bottom {
           border-top: 1px solid rgba(230, 230, 230, 1);
-          .list{
+          .list {
             width: 100%;
             height: 100%;
             padding: 10px 0;
             text-align: center;
-            &:nth-child(1){
+            &:nth-child(1) {
               background: #fef4ec;
               border-right: 1px solid rgba(230, 230, 230, 1);
             }
-            &:nth-child(2){
+            &:nth-child(2) {
               background: #e9f0ff;
             }
           }
@@ -254,26 +218,26 @@ export default {
             border-left: none;
             background: #f4f9f8;
           }
-          .list{
+          .list {
             width: 100%;
             height: 100%;
             align-items: stretch;
             padding: 12px 12px 12px 12px;
-            &:nth-child(1){
+            &:nth-child(1) {
               border-right: 1px solid rgba(230, 230, 230, 1);
             }
           }
         }
-        .day_active_block{
+        .day_active_block {
           background: white;
         }
-        .leader_name{
+        .leader_name {
           text-align: center;
         }
       }
     }
   }
-  .empty_blcok{
+  .empty_blcok {
     padding: 100px 0;
     border: 1px solid #e6e6e6;
     border-top: none;
