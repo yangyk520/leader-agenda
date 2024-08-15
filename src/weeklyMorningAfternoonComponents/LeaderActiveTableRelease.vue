@@ -4,7 +4,7 @@
       <div class="table_header flex_between" ref="scrollHeader">
         <div class="cell" :style="{ left: scrollLeft + 'px' }">日期</div>
         <div class="cell" :style="{ left: scrollLeft + 122 + 'px' }">时间</div>
-        <div v-for="(item, index) in data_list" :key="index" class="cell" @click="handleClickLeader(item)">
+        <div v-for="(item, index) in data_list" :key="index" class="cell pointer" @click="handleClickLeader(item)">
           <div class="cell_top">
             {{ item.name }}
           </div>
@@ -14,7 +14,7 @@
         <vue-scroll :ops="scrollOps" @handle-scroll="onScroll" ref="scrollBody">
           <div v-for="(item, index) in header_list" :key="index" class="row table_body_row flex_between">
             <div class="cell flex_center" :style="{ left: scrollLeft + 'px' }">
-              <span @click="handleClickLeader(item)" class="pointer">
+              <span @click="handleClickLeader(item)">
                 <div class="cell_top">
                   {{ item.date }}
                   <div class="week">{{ item.week }}</div>
