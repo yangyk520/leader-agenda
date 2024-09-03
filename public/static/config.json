@@ -33,6 +33,13 @@
       "comLangue": "vue"
     },
     {
+      "classId": "idm.component.leaderAgenda.idailyscheduling1",
+      "comName": "排班表市发改委",
+      "className": "IDailyScheduling1",
+      "comType": "common",
+      "comLangue": "vue"
+    },
+    {
       "classId": "idm.component.leaderAgenda.iunitleaderagenda",
       "comName": "单位领导日程",
       "className": "IUnitLeaderAgenda",

@@ -1,5 +1,5 @@
 <template>
-  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IDailyScheduling_app">
+  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IDailyScheduling1_app">
     <div class="scroll_block">
       <div class="IDailyScheduling_header flex_between">
         <div class="left flex_start">
@@ -45,12 +45,12 @@
                   <span v-if="item[item1.value].holidayType == 2">休</span>
                 </div>
                 <div class="right flex_end">
-                  <span v-if="getLunarCalendar(item[item1.value].date).solarFestival" class="lunar_calendar active">
+                  <!-- <span v-if="getLunarCalendar(item[item1.value].date).solarFestival" class="lunar_calendar active">
                     {{ getLunarCalendar(item[item1.value].date).solarFestival }}
                   </span>
                   <span v-else class="lunar_calendar">
                     {{ getLunarCalendar(item[item1.value].date).value }}
-                  </span>
+                  </span> -->
                   <span class="solar_calendar">{{ getDateValue(item[item1.value].date) }}</span>
                 </div>
               </div>
@@ -62,7 +62,10 @@
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
-                              值班组：{{ item3.dutyGroup }}
+                              姓名：{{ item3.name }}
+                            </div>
+                            <div v-if="item3.deptName" class="person_list_pop_row">
+                              处室：{{ item3.deptName }}
                             </div>
                             <div class="person_list_pop_row">
                               <div>值班时间：</div>
@@ -94,14 +97,17 @@
                     </div>
                   </div>
                 </template>
-                <template v-if="item[item1.value].dayDuty && item[item1.value].dayDuty.length">
+                <!-- <template v-if="item[item1.value].dayDuty && item[item1.value].dayDuty.length"> -->
                   <div class="day_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].dayDuty)">
                     <div class="left flex_start">
                       <div v-for="(item3,index3) in item[item1.value].dayDuty" :key="index3" class="person_list flex_start">
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
-                              值班组：{{ item3.dutyGroup }}
+                              姓名：{{ item3.name }}
+                            </div>
+                            <div v-if="item3.deptName" class="person_list_pop_row">
+                              处室：{{ item3.deptName }}
                             </div>
                             <div class="person_list_pop_row">
                               <div>值班时间：</div>
@@ -131,7 +137,7 @@
                       <img :src="getAssetsImg('dayduty')" alt="">
                     </div>
                   </div>
-                </template>
+                <!-- </template> -->
                 <template v-if="item[item1.value].nightDuty && item[item1.value].nightDuty.length">
                   <div class="night_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].nightDuty)">
                     <div class="left flex_start">
@@ -139,7 +145,10 @@
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
-                              值班组：{{ item3.dutyGroup }}
+                              姓名：{{ item3.name }}
+                            </div>
+                            <div v-if="item3.deptName" class="person_list_pop_row">
+                              处室：{{ item3.deptName }}
                             </div>
                             <div class="person_list_pop_row">
                               <div>值班时间：</div>
@@ -183,7 +192,7 @@
 import LunarCalendar from "lunar-calendar" //获取二十四节气和农历日期
 // import calendar from 'js-calendar-converter'
 export default {
-  name: 'IDailyScheduling',
+  name: 'IDailyScheduling1',
   components:{
     
   },
@@ -229,186 +238,95 @@ export default {
         },
       ],
       data_list: [
-        {
-          Sunday: {
-            dayDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  },
-                  {
-                    name: '王翔',
-                    sex: 2
-                  },
-                  {
-                    name: '李煜',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            nightDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            leaderDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ]
-          },
-          Monday: {
-            dayDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  },
-                  {
-                    name: '王翔',
-                    sex: 2
-                  },
-                  {
-                    name: '李煜',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            nightDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            leaderDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ]
-          },
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        }
+        // {
+        //   Sunday: {
+        //     dayDuty: [
+        //       {
+        //         name: '李军',
+        //         gender: 2
+        //       }
+        //     ],
+        //     nightDuty: [
+        //       {
+        //         name: '王楠',
+        //         sex: 2
+                
+        //       }
+        //     ],
+        //     leaderDuty: [
+        //       {
+        //         name: '费玉清',
+        //         sex: 2
+        //       }
+        //     ]
+        //   },
+        //   Monday: {
+        //     dayDuty: [ ],
+        //     nightDuty: [
+        //       {
+        //         name: '王楠',
+        //         sex: 2
+                
+        //       }
+        //     ],
+        //     leaderDuty: [
+        //       {
+        //         name: '费玉清',
+        //         sex: 2
+        //       }
+        //     ]
+        //   },
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // }
       ],
       queryObject: {},
     }
@@ -419,7 +337,7 @@ export default {
     this.moduleObject = this.$root.moduleObject;
     this.makeDefaultData()
     this.convertAttrToStyleObject();
-    // this.getInitData()
+    this.getInitData()
   },
   mounted() {},
   destroyed() {},
@@ -577,6 +495,9 @@ export default {
       this.getInitData()
     },
     getDutyListClassName(arr) {
+      if(!arr?.length) {
+        return 'emptyPosition'
+      }
       let flag = false
       arr && arr.length && arr.forEach((item) => {
         if( item.isSelf ) {
@@ -626,7 +547,7 @@ export default {
       this.getInitData()
     },
     getDateValue(value) {
-      return IDM.dateFormat(value,"d日");
+      return IDM.dateFormat(value,"m月d日");
     },
     getInitData() {
       IDM.http.get('/ctrl/newSchedule/GetFgwSchedule',{
@@ -874,7 +795,7 @@ export default {
 }
 </script>
 <style scoped lang="scss">
-.IDailyScheduling_app {
+.IDailyScheduling1_app {
   position: relative;
   width: 100%;
   height: 100%;
@@ -1078,6 +999,12 @@ export default {
             .isSelf{
               background: #32C5FF;
             }
+            .emptyPosition{
+              background: none !important;
+              .right{
+                visibility: hidden;
+              }
+            }
           }
         }
         .isCurrentMonth{
@@ -1118,7 +1045,7 @@ export default {
     }
   }
 }
-.IDailyScheduling_app{
+.IDailyScheduling1_app{
   .ant-select-selection{
     box-shadow: none;
     border-color: rgba(204,204,204,1);
