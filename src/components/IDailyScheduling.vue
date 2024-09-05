@@ -229,186 +229,186 @@ export default {
         },
       ],
       data_list: [
-        {
-          Sunday: {
-            dayDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  },
-                  {
-                    name: '王翔',
-                    sex: 2
-                  },
-                  {
-                    name: '李煜',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            nightDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            leaderDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ]
-          },
-          Monday: {
-            dayDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  },
-                  {
-                    name: '王翔',
-                    sex: 2
-                  },
-                  {
-                    name: '李煜',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            nightDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ],
-            leaderDuty: [
-              {
-                person: [
-                  {
-                    name: '李军',
-                    sex: 1
-                  },
-                  {
-                    name: '王楠',
-                    sex: 2
-                  },
-                  {
-                    name: '费玉清',
-                    sex: 2
-                  }
-                ]
-              }
-            ]
-          },
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        },
-        {
-          Sunday: {},
-          Monday: {},
-          Tuesday: {},
-          Wednesday: {},
-          Thursday: {},
-          Friday: {},
-          Saturday: {},
-        }
+        // {
+        //   Sunday: {
+        //     dayDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '王翔',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '李煜',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ],
+        //     nightDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ],
+        //     leaderDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ]
+        //   },
+        //   Monday: {
+        //     dayDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '王翔',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '李煜',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ],
+        //     nightDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ],
+        //     leaderDuty: [
+        //       {
+        //         person: [
+        //           {
+        //             name: '李军',
+        //             sex: 1
+        //           },
+        //           {
+        //             name: '王楠',
+        //             sex: 2
+        //           },
+        //           {
+        //             name: '费玉清',
+        //             sex: 2
+        //           }
+        //         ]
+        //       }
+        //     ]
+        //   },
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // },
+        // {
+        //   Sunday: {},
+        //   Monday: {},
+        //   Tuesday: {},
+        //   Wednesday: {},
+        //   Thursday: {},
+        //   Friday: {},
+        //   Saturday: {},
+        // }
       ],
       queryObject: {},
     }
