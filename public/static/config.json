@@ -80,6 +80,13 @@
       "className": "IWeeklyMorningAfternoonWork",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.ileaderagendacaizhengju",
+      "comName": "财政局领导日程定制",
+      "className": "ILeaderAgendaCaiZhengJu",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }

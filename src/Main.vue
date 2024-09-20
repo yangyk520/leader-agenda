@@ -19,7 +19,7 @@ export default {
   },
   created() {
     if ( process.env.NODE_ENV == "development" ) {
-      // this.login()
+      this.login()
     }
   },
   mounted() {
@@ -30,7 +30,7 @@ export default {
   },
   methods: {
     login() {
-      IDM.http.get('/ctrl/p2433JxwLeaderSchedule/login',{
+      IDM.http.get('/ctrl/jzf/login ',{
         
       }).then((res) => {
           if ( res.data.code == 200 ) {
