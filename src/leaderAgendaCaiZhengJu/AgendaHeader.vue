@@ -136,7 +136,7 @@ export default {
         startDate: this.weekList[0].date,
         endDate: this.weekList[this.weekList.length - 1].date
       };
-      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${false}`;
+      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${this.isView}`;
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "download");
