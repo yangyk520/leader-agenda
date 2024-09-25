@@ -419,7 +419,7 @@ export default {
     this.moduleObject = this.$root.moduleObject;
     this.makeDefaultData()
     this.convertAttrToStyleObject();
-    // this.getInitData()
+    this.getInitData()
   },
   mounted() {},
   destroyed() {},
