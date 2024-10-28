@@ -2,7 +2,10 @@
   <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IWorkStatistics_app"> 
     <LeaderAgendaHeader :ref="moduleObject.id" :moduleObject="moduleObject" :propData="propData" @updateHeadParams="updateHeadParams" :isView="isView">
     </LeaderAgendaHeader>
-    <LeaderAgendaTable :propData="propData" :header_list="header_list" :data_list_table="data_list" @updateTableDate="updateTableDate"></LeaderAgendaTable>
+    <div class="IWorkStatistics_app_middle">
+      <Calendar></Calendar>
+      <LeaderAgendaTable :propData="propData" :header_list="header_list" :data_list_table="data_list" @updateTableDate="updateTableDate"></LeaderAgendaTable>
+    </div>
     <AgendaFooter :setting_data="setting_data" :propData="propData"></AgendaFooter>
   </div>
 </template>
@@ -10,17 +13,20 @@
 import LeaderAgendaHeader from "@/leaderAgendaCaiZhengJu/AgendaHeader.vue"
 import LeaderAgendaTable from "@/leaderAgendaCaiZhengJu/LeaderAgendaTable.vue"
 import AgendaFooter from "@/leaderAgendaCaiZhengJu/AgendaFooter.vue"
+import Calendar from "@/leaderAgendaCaiZhengJu/Calendar.vue"
 export default {
   name: 'IWorkStatistics',
   components:{
     LeaderAgendaHeader,
     LeaderAgendaTable,
-    AgendaFooter
+    AgendaFooter,
+    Calendar
   },
   data() {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
+        showWeekPicker:true,
         operateList: [
           {
             buttonText: '导出'
@@ -50,22 +56,67 @@ export default {
       this.getInitData();
     },
     getInitData() {
-      let dates = this.form_data.dates;
-      let dates_arr = dates ? dates.split(',') : [];
-      let startDate = dates_arr[0];
-      let endDate  = dates_arr.length ? dates_arr[dates_arr.length - 1] : '';
-      var params = this.commonParam();
-      params = this.makeParamsData(params);
-      IDM.http.get('ctrl/czjWorkPlan/getData', {
-        startDate,
-        endDate,
-        isView: this.isView
-      }).then((res) => {
-        console.log(res)
-        this.data_list = res.data.data
-      }).catch((err) => {
-        console.log(err)
-      })
+      if (!this.moduleObject.env || this.moduleObject.env == "develop") {
+        this.data_list = [
+            {
+                "type": "上午",
+                "2024-09-30": [],
+                "2024-10-15": [
+                    {
+                        "title": "测试会议",
+                        "url": "ctrl/formControl/form?moduleId=240821173209i4sYjb4HrBVwcsEbRmm&listId=240821173210yY2wB59zU4GVwmpIMrD&method=view&validateByList=1&pk=240930103543tbpFi6kSe3xqHqmiVmz",
+                        "time": "9时00分",
+                        "releaseType": 1,
+                        "releaseTypeText": "已发布",
+                        "range": "测试领导",
+                        "place": "市政府"
+                    }
+                ],
+                "2024-10-02": [],
+                "2024-10-03": [],
+                "2024-10-04": [],
+                "2024-10-05": [],
+                "2024-10-06": []
+            },
+            {
+                "type": "下午",
+                "2024-09-30": [],
+                "2024-10-15": [
+                    {
+                        "title": "测试只保存不发布",
+                        "url": "ctrl/formControl/form?moduleId=240821173209i4sYjb4HrBVwcsEbRmm&listId=240821173210yY2wB59zU4GVwmpIMrD&method=view&validateByList=1&pk=240930103631DgPwdr6nBrkxTZGZMUw",
+                        "time": "下午",
+                        "releaseType": 1,
+                        "releaseTypeText": "已发布",
+                        "range": "测试领导人员",
+                        "place": "市财政局"
+                    }
+                ],
+                "2024-10-02": [],
+                "2024-10-03": [],
+                "2024-10-04": [],
+                "2024-10-05": [],
+                "2024-10-06": []
+            }
+        ]
+      }else{
+        let dates = this.form_data.dates;
+        let dates_arr = dates ? dates.split(',') : [];
+        let startDate = dates_arr[0];
+        let endDate  = dates_arr.length ? dates_arr[dates_arr.length - 1] : '';
+        var params = this.commonParam();
+        params = this.makeParamsData(params);
+        IDM.http.get('ctrl/czjWorkPlan/getData', {
+          startDate,
+          endDate,
+          isView: this.isView
+        }).then((res) => {
+          console.log(res)
+          this.data_list = res.data.data
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
     makeParamsData(data) {
       let result = {};
@@ -399,5 +450,12 @@ export default {
 .IWorkStatistics_app{
   height: 100vh;
   padding: 0 20px 25px 20px;
+  .IWorkStatistics_app_middle {
+    height: calc(100% - 120px);
+    display: flex;
+    align-items: flex-start;
+    margin-top: 18px;
+    padding-bottom: 25px;
+  }
 }
 </style>

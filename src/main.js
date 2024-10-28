@@ -75,3 +75,4 @@ window[`${process.env.CodeVar}`] = Main;
 //     }
 //   }
 // }).$mount("#component_202003T6YG1GH0L1YFEREQLKK9")
+Vue.prototype.$eventBus = new Vue();

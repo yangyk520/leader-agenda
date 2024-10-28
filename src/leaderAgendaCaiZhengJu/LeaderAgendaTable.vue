@@ -19,6 +19,7 @@
                     <ActiveItem :item2="item2"></ActiveItem>
                   </div>
                 </div>
+                <div class="btn-add" @click="addHanlder(item1.key,item.type)"><svg-icon icon-class="add-new"></svg-icon></div>
               </template>
             </div>
           </div>
@@ -85,6 +86,23 @@ export default {
 
   },
   methods: {
+    addHanlder(date,now){
+      IDM.layer.open({
+        type: 2,
+        title: ["单位领导活动", "font-size:18px;"],
+        area: ["1200px", "90%"],
+        content: IDM.url.getWebPath( `ctrl/formControl/form?moduleId=240821173209i4sYjb4HrBVwcsEbRmm&startDate=${date}&type=${now == '上午' ? 1 : 2}` ),
+        success: (layero, index) => {
+          top.close = () => {
+            IDM.layer.close(index);
+            this.$emit('updateTableDate')
+          };
+        },
+        end: () => {
+          this.$emit('updateTableDate')
+        },
+      });
+    },
     editActive(item) {
       console.log(item)
       IDM.layer.open({
@@ -244,9 +262,10 @@ export default {
 </script>
 <style lang="scss" scoped>
 .LeaderActiveEdit_app {
-  height: calc(100% - 120px);
-  margin-top: 18px;
-  padding-bottom: 25px;
+  // height: calc(100% - 120px);
+  // margin-top: 18px;
+  // padding-bottom: 25px;
+  flex: 1;
   .week_table{
     .table_body_row{
       background: #FFFCF2;
@@ -295,10 +314,11 @@ export default {
           flex-grow: 2;
           flex-shrink: 1;
           box-sizing: border-box;
-          padding: 12px 12px 12px 12px;
+          padding: 12px 20px 12px 20px;
           word-break: break-all;
           font-size: 14px;
           border-left: 1px solid rgba(230, 230, 230, 1);
+          min-height: 132px;
           &:nth-child(1) {
             width: 152px;
             flex-grow: 0;
@@ -321,7 +341,16 @@ export default {
                   border-bottom: none;
               }
             }
-        }
+          }
+
+          .btn-add {
+            position: absolute;
+            right: 2px;
+            bottom: 0;
+            font-size: 20px;
+            cursor: pointer;
+            color:#0086d9;
+          }
         }
       }
       .note{

@@ -2,10 +2,10 @@
 <div class="ActiveItem_app">
   <div class="row flex_start time_name_row" :style="getStyleData(item2)">
     <div class="svg_box flex_center">
-      <SvgIcon icon-class="clock"></SvgIcon>
+      <SvgIcon icon-class="agenda-colorful"></SvgIcon>
     </div>
     <div>
-      <span class="time">{{ `${item2.time} ${ item2.endTime && getShowStatus('-1',item2) ? '-' : '' } ${item2.endTime && getShowStatus('-1',item2) ? item2.endTime : ''}`  }}</span>
+      <!-- <span class="time">{{ `${item2.time} ${ item2.endTime && getShowStatus('-1',item2) ? '-' : '' } ${item2.endTime && getShowStatus('-1',item2) ? item2.endTime : ''}`  }}</span> -->
       <span class="name">{{ item2.title }}</span>
     </div>
   </div>
@@ -17,7 +17,7 @@
       <span>{{ item2.place }}</span>
     </span>
   </div>
-  <div class="row flex_start">
+  <div class="row flex_start" v-if="item2.range">
     <div class="svg_box flex_center">
       <SvgIcon icon-class="participants"></SvgIcon>
     </div>

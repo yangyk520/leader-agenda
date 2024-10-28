@@ -33,13 +33,13 @@ export default {
           color: '#0086D9',
           name: '正常'
         },
-        {
-          color: '#FFA500',
-          name: '变更'
-        },
+        // {
+        //   color: '#FFA500',
+        //   name: '变更'
+        // },
         {
           color: '#E30000',
-          name: '未发布'
+          name: '标记'
         }
       ]
     }

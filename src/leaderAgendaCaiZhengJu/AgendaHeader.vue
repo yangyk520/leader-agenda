@@ -7,7 +7,10 @@
           <svg-icon iconClass="rectangle_left"></svg-icon>
         </div>
         <div class="calendar-container">
-          <div class="calendar-container-week" v-if="weekList.length > 0" >
+          <div class="calendar-container-day" v-if="timeViewType === 'day'">
+            <span>{{ curMonthAndDay }} ({{ curWeek }})</span>
+          </div>
+          <div class="calendar-container-week" v-if="timeViewType === 'week' && weekList.length > 0" >
             <span>{{ weekList[0].monthAndDay }} - {{ weekList[weekList.length - 1].monthAndDay }}</span >
           </div>
         </div>
@@ -16,16 +19,29 @@
           <svg-icon iconClass="rectangle_right"></svg-icon>
         </div>
       </div>
+      <div class="top-view">
+        <span
+          :class="{ active: timeViewType === 'day' }"
+          @click="timeViewToggle('day')"
+          >日</span
+        >
+        <span
+          :class="{ active: timeViewType === 'week' }"
+          @click="timeViewToggle('week')"
+          >周</span
+        >
+      </div>
     </div>
     <div class="agenda-header-main-operation">
       <div class="operation-search flex_start">
-        <template v-if="propData.showWeekPicker">
+        <!-- <template v-if="propData.showWeekPicker && timeViewType === 'week'">
           <a-week-picker :value="week_picker" placeholder="选择开始周" @change="onChangeDatePicker" />
-        </template>
+        </template> -->
       </div>
       <div v-if="propData.operateList && propData.operateList.length" class="operation-btns">
-        <span v-if="!isView" @click="handleAdd" class="operation-btn primary">新增</span>
-        <span v-if="!isView" @click="handlePublic" class="operation-btn">发布</span>
+        <!-- <span v-if="!isView" @click="handleAdd" class="operation-btn primary">新增</span>
+        <span v-if="!isView" @click="handlePublic" class="operation-btn">发布</span> -->
+        <span @click="handleSearch" class="operation-btn">检索</span>
         <span @click="handleExport" class="operation-btn">导出</span>
       </div>
     </div>
@@ -67,6 +83,8 @@ export default {
       curMonthAndDay: "",
       // 当前年月
       curYearAndMonth: "",
+      // 当前周
+      curWeek: "",
       // 周开始日期
       weekStart: "",
       // 一周数据
@@ -90,8 +108,23 @@ export default {
   created() {
     this.initTime(moment());
     this.sendHeadParams();
+    this.$eventBus.$on("updateDate", (dates) => {
+      if(this.timeViewType==='day'){
+        this.initTime(moment(dates, "YYYY-MM-DD"))
+      }else{
+        this.initTime(moment(dates.split(",")[3], "YYYY-MM-DD"));
+      }
+      this.sendHeadParams(false);
+    });
   },
   methods: {
+    /**
+     * 时间视图切换
+     */
+     timeViewToggle(type) {
+      this.timeViewType = type;
+      this.sendHeadParams();
+    },
     handleAdd() {
       IDM.layer.open({
         type: 2,
@@ -145,6 +178,19 @@ export default {
       a.click();
       document.body.removeChild(a);
     },
+    handleSearch(){
+      IDM.layer.open({
+        type: 2,
+        title: ["单位领导活动检索", "font-size:18px;"],
+        area: ["1200px", "90%"],
+        content: IDM.url.getWebPath( "ctrl/list/241024163322cjgQJSoi7PjQGXOXc65?moduleId=240821173209i4sYjb4HrBVwcsEbRmm" ),
+        success: (layero, index) => {
+          top.close = () => {
+            IDM.layer.close(index);
+          };
+        }
+      });
+    },
     onChangeDatePicker(date) {
       this.week_picker = date
       if(date) {
@@ -180,24 +226,31 @@ export default {
     /**
      * 向父组件发送参数
      */
-    sendHeadParams() {
-      const params = { };
-      params.dates = this.weekList.map((item) => item.date).join(",");
+    sendHeadParams(isEventBus = true) {
+      const params = { 
+        timeViewType: this.timeViewType
+      };
+      if (this.timeViewType === "day") {
+        params.dates = this.curDate;
+      } else {
+        params.dates = this.weekList.map((item) => item.date).join(",");
+      }
       if(this.selected_leader && this.selected_leader.length) {
         params.leaderId = this.selected_leader.join(",");
       }
       params.deptId = this.selected_depart;
       this.$emit("updateHeadParams", params);
+      isEventBus && this.$eventBus.$emit("updateHeadParams",params)
     },
     /**
      * 初始化时间数据
      */
     initTime(today) {
-
       // 天数据
       this.curDate = today.format("YYYY-MM-DD");
       this.curMonthAndDay = today.format("MM月DD日");
       this.curYearAndMonth = today.format("YYYY-MM");
+      this.curWeek = "周" + this.weekCn[today.isoWeekday() - 1];
       // 周数据
       const weekStart = today.startOf("isoWeek");
       this.weekList = [];
@@ -216,9 +269,21 @@ export default {
     calendarToggle(type) {
       this.week_picker = '';
       if (type === "left") {
-        this.initTime( moment(this.weekStart, "YYYY-MM-DD").subtract(1, "isoWeek") );
+        if (this.timeViewType === "day") {
+          this.initTime(moment(this.curDate, "YYYY-MM-DD").subtract(1, "day"));
+        } else {
+          this.initTime(
+            moment(this.weekStart, "YYYY-MM-DD").subtract(1, "isoWeek")
+          );
+        }
       } else {
-        this.initTime( moment(this.weekStart, "YYYY-MM-DD").subtract(-1, "isoWeek") );
+        if (this.timeViewType === "day") {
+          this.initTime(moment(this.curDate, "YYYY-MM-DD").subtract(-1, "day"));
+        } else {
+          this.initTime(
+            moment(this.weekStart, "YYYY-MM-DD").subtract(-1, "isoWeek")
+          );
+        }
       }
       this.sendHeadParams();
     },
@@ -237,6 +302,7 @@ export default {
     border-bottom: 1px solid rgba(238, 238, 238, 1);
     user-select: none;
     height: 50px;
+    position: relative;
 
     .top-tit {
       width: 150px;
@@ -297,7 +363,33 @@ export default {
     }
 
     .top-view {
-      width: 150px;
+      position: absolute;
+      right: 0;
+      span {
+        width: 60px;
+        display: inline-block;
+        border: 1px solid rgba(204, 204, 204, 1);
+        border-radius: 4px;
+        line-height: 30px;
+        text-align: center;
+        cursor: pointer;
+
+        &:first-child {
+          border-top-right-radius: 0;
+          border-bottom-right-radius: 0;
+        }
+        &:last-child {
+          border-top-left-radius: 0;
+          border-bottom-left-radius: 0;
+          border-left: 0;
+        }
+
+        &.active {
+          background: #0086d9;
+          border-color: #0086d9;
+          color: #fff;
+        }
+      }
     }
   }
 
