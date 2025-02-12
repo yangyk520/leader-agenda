@@ -9,20 +9,20 @@
       <span class="name">{{ item2.title }}</span>
     </div>
   </div>
-  <div v-if="item2.place" class="row flex_start address_block">
+  <!-- <div v-if="item2.place" class="row flex_start address_block">
     <div class="svg_box flex_center">
       <SvgIcon icon-class="address"></SvgIcon>
     </div>
     <span class="address">
       <span>{{ item2.place }}</span>
     </span>
-  </div>
-  <div class="row flex_start" v-if="item2.range">
+  </div> -->
+  <!-- <div class="row flex_start" v-if="item2.range">
     <div class="svg_box flex_center">
       <SvgIcon icon-class="participants"></SvgIcon>
     </div>
     <span class="address"> {{ item2.range }} </span>
-  </div>
+  </div> -->
 </div>
 </template>
 

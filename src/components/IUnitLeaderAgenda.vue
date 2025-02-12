@@ -5,31 +5,18 @@
     id：使用moduleObject.id，如果id不使用这个将会被idm-ctrl-id属性替换
     idm-ctrl-id：组件的id，这个必须不能为空
   -->
-  <div
-    idm-ctrl="idm_module"
-    :id="moduleObject.id"
-    :idm-ctrl-id="moduleObject.id"
-    class="idm-unit-leader-agenda-outer"
-  >
+  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-unit-leader-agenda-outer">
     <div class="idm-unit-leader-agenda-container scroll_block">
-      <AgendaHeader
-        :moduleObject="moduleObject"
-        :activeDepart="activeDepart"
-        :activeUser="activeUser"
-        @updateHeadParams="updateHeadParams"
-      />
+      <AgendaHeader :moduleObject="moduleObject" :activeDepart="activeDepart" :activeUser="activeUser"
+        @updateHeadParams="updateHeadParams" />
       <div class="agenda-main">
         <div class="depart-list">
           <div class="depart-list-title">
             {{ form_data.timeViewType === "person" ? "个人" : "部门" }}日程
           </div>
           <div class="depart-list-content scroll_block">
-            <UnitAgendaMenu
-              :menuData="departList"
-              :activeId="activeId"
-              :type="form_data.timeViewType"
-              @updateActiveId="updateActiveId"
-            ></UnitAgendaMenu>
+            <UnitAgendaMenu :menuData="departList" :activeId="activeId" :type="form_data.timeViewType"
+              @updateActiveId="updateActiveId"></UnitAgendaMenu>
           </div>
         </div>
         <div class="agenda-main-box scroll_block">
@@ -39,23 +26,13 @@
                 <span>{{ day }} 周{{ weekCn[index] }}</span>
                 <span>上午</span>
               </div>
-              <div
-                v-if="agendaList[index] && agendaList[index].morningList"
-                class="agenda-day-list"
-              >
-                <div
-                  class="agenda-day-item"
-                  v-for="(agenda, a) in agendaList[index].morningList"
-                  :key="a"
-                  :class="{
-                    active: agenda.id === activeAgenda,
-                    type1: agenda.agendaType == 300,
-                    type2: agenda.agendaType == 301,
-                    type3: agenda.agendaType != 300 && agenda.agendaType != 301,
-                  }"
-                  @mouseenter="() => (activeAgenda = agenda.id)"
-                  @click="agendaHander(agenda)"
-                >
+              <div v-if="agendaList[index] && agendaList[index].morningList" class="agenda-day-list">
+                <div class="agenda-day-item" v-for="(agenda, a) in agendaList[index].morningList" :key="a" :class="{
+                  active: agenda.id === activeAgenda,
+                  type1: agenda.agendaType == 300,
+                  type2: agenda.agendaType == 301,
+                  type3: agenda.agendaType != 300 && agenda.agendaType != 301,
+                }" @mouseenter="() => (activeAgenda = agenda.id)" @click="agendaHander(agenda)">
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
                     <div>{{ agenda.endTime }}</div>
@@ -72,7 +49,7 @@
                       <div class="item-value">{{ agenda.place }}</div>
                     </section>
                     <section>
-                      <div class="item-label">局领导</div>
+                      <div class="item-label">{{ isYJJ ? '局领导' : '中心领导' }}</div>
                       ：
                       <div class="item-value">{{ agenda.leader }}</div>
                     </section>
@@ -87,23 +64,13 @@
             </div>
             <div class="agenda-day-afternoon">
               <div class="agenda-day-info">下午</div>
-              <div
-                v-if="agendaList[index] && agendaList[index].afternoonList"
-                class="agenda-day-list"
-              >
-                <div
-                  class="agenda-day-item"
-                  v-for="(agenda, a) in agendaList[index].afternoonList"
-                  :key="a"
-                  :class="{
-                    active: agenda.id === activeAgenda,
-                    type1: agenda.agendaType == 300,
-                    type2: agenda.agendaType == 301,
-                    type3: agenda.agendaType != 300 && agenda.agendaType != 301,
-                  }"
-                  @mouseenter="() => (activeAgenda = agenda.id)"
-                  @click="agendaHander(agenda)"
-                >
+              <div v-if="agendaList[index] && agendaList[index].afternoonList" class="agenda-day-list">
+                <div class="agenda-day-item" v-for="(agenda, a) in agendaList[index].afternoonList" :key="a" :class="{
+                  active: agenda.id === activeAgenda,
+                  type1: agenda.agendaType == 300,
+                  type2: agenda.agendaType == 301,
+                  type3: agenda.agendaType != 300 && agenda.agendaType != 301,
+                }" @mouseenter="() => (activeAgenda = agenda.id)" @click="agendaHander(agenda)">
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
                     <div>{{ agenda.endTime }}</div>
@@ -120,7 +87,7 @@
                       <div class="item-value">{{ agenda.place }}</div>
                     </section>
                     <section>
-                      <div class="item-label">局领导</div>
+                      <div class="item-label">{{ isYJJ ? '局领导' : '中心领导' }}</div>
                       ：
                       <div class="item-value">{{ agenda.leader }}</div>
                     </section>
@@ -172,7 +139,8 @@ export default {
       activeAgenda: "",
       userInfo: null,
       activeDepart: '',
-      activeUser: ''
+      activeUser: '',
+      isYJJ:true
     };
   },
   props: {},
@@ -184,6 +152,8 @@ export default {
       );
     },
   },
+  computed: {
+  },
   created() {
     this.moduleObject = this.$root.moduleObject;
 
@@ -192,18 +162,19 @@ export default {
     } else {
       this.userInfo = IDM.user.getCurrentUserInfo();
     }
+    this.isYJJ = this.userInfo?.unitInfo?.unitId == '230721170831MRd9nBV4DtzayRaxXaj'
 
     this.initActiveDepartOrUser();
     this.getDepartList();
     this.initAttrToModule();
   },
-  mounted() {},
-  destroyed() {},
+  mounted() { },
+  destroyed() { },
   methods: {
     updateActiveId(item) {
       this.activeDepart = item.deptId;
       this.activeUser = item.userId;
-      if(this.form_data.timeViewType == 'unit') {
+      if (this.form_data.timeViewType == 'unit') {
         this.activeId = `department_${item.deptId}`
       } else {
         this.activeId = `person_${item.userId}`
@@ -269,7 +240,7 @@ export default {
     },
     setUpDepartList(list, first) {
       return list.filter((item) => {
-        item.open = first && item?.children?.every(j=>j.type==4||j.type==5)
+        item.open = first && item?.children?.every(j => j.type == 4 || j.type == 5)
         if (item.children && item.children.length) {
           item.children = this.setUpDepartList(item.children);
         }
@@ -308,8 +279,8 @@ export default {
       }
       const themeNamePrefix =
         IDM.setting &&
-        IDM.setting.applications &&
-        IDM.setting.applications.themeNamePrefix
+          IDM.setting.applications &&
+          IDM.setting.applications.themeNamePrefix
           ? IDM.setting.applications.themeNamePrefix
           : "idm-theme-";
       for (var i = 0; i < themeList.length; i++) {
@@ -321,11 +292,11 @@ export default {
         }
         IDM.setStyleToPageHead(
           "." +
-            themeNamePrefix +
-            item.key +
-            " #" +
-            (this.moduleObject.packageid || "module_demo") +
-            " .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active",
+          themeNamePrefix +
+          item.key +
+          " #" +
+          (this.moduleObject.packageid || "module_demo") +
+          " .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active",
           {
             color: item.mainColor
               ? IDM.hex8ToRgbaString(item.mainColor.hex8)
@@ -337,7 +308,7 @@ export default {
     /**
      * 加载基本属性到组件中
      */
-    initBaseAttrToModule() {},
+    initBaseAttrToModule() { },
     /**
      * 提供父级组件调用的刷新prop数据组件
      */
@@ -354,12 +325,12 @@ export default {
         styleObject["background-size"] =
           (this.propData.bgSizeWidth
             ? this.propData.bgSizeWidth.inputVal +
-              this.propData.bgSizeWidth.selectVal
+            this.propData.bgSizeWidth.selectVal
             : "auto") +
           " " +
           (this.propData.bgSizeHeight
             ? this.propData.bgSizeHeight.inputVal +
-              this.propData.bgSizeHeight.selectVal
+            this.propData.bgSizeHeight.selectVal
             : "auto");
       } else if (this.propData.bgSize) {
         styleObject["background-size"] = this.propData.bgSize;
@@ -469,7 +440,7 @@ export default {
           endTime: this.weekList[this.weekList.length - 1],
           searchText: this.form_data.searchVal,
         };
-        
+
         IDM.http
           .get("ctrl/deptScheduleList/queryWeekData", params)
           .then((res) => {
@@ -527,7 +498,7 @@ export default {
               expressData: _defaultVal,
               interfaceData: resultData,
             });
-        } catch (error) {}
+        } catch (error) { }
         _defaultVal = resValue;
       }
 
@@ -563,7 +534,7 @@ export default {
         if (messageData.badgeType && arr.includes(messageData.badgeType)) {
           this.reload();
         }
-      } 
+      }
     },
     /**
      * 组件通信：发送消息的方法
@@ -603,6 +574,7 @@ export default {
   border: 1px solid rgba(230, 230, 230, 1);
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.07);
   color: #333;
+
   .idm-unit-leader-agenda-container {
     height: 100%;
     overflow-y: auto;
@@ -613,10 +585,12 @@ export default {
     display: flex;
     justify-content: space-between;
     height: calc(100% - 115px);
+
     .depart-list {
       height: 100%;
       width: 300px;
       border: 1px solid rgba(230, 230, 230, 1);
+
       .depart-list-title {
         height: 48px;
         line-height: 48px;
@@ -626,6 +600,7 @@ export default {
         font-size: 16px;
         color: #333333;
       }
+
       .depart-list-content {
         height: calc(100% - 48px);
         overflow-y: auto;
@@ -638,15 +613,19 @@ export default {
       overflow-y: auto;
       padding: 0 10px;
       margin: 0 -10px;
+
       .agenda-day {
         display: flex;
         margin-bottom: 20px;
+
         &:last-child {
           margin-bottom: 0;
         }
-        & > div {
+
+        &>div {
           width: 50%;
         }
+
         .agenda-day-info {
           background: #f9fcfe;
           border: 1px solid rgba(230, 230, 230, 1);
@@ -654,11 +633,14 @@ export default {
           line-height: 48px;
           padding: 0 27px;
         }
+
         .agenda-day-morning {
           border-right: 1px solid rgba(230, 230, 230, 1);
+
           .agenda-day-info {
             display: flex;
             border-right: none;
+
             span:last-child {
               flex: 1;
               text-align: center;
@@ -669,6 +651,7 @@ export default {
             margin-right: 30px;
           }
         }
+
         .agenda-day-afternoon {
           .agenda-day-info {
             border-left: none;
@@ -684,39 +667,49 @@ export default {
             margin-bottom: 20px;
             transition: all 0.6s cubic-bezier(0.075, 0.82, 0.165, 1);
             cursor: pointer;
+
             &:last-child {
               margin-bottom: 0;
             }
+
             &.active {
               box-shadow: 0px 0px 6px 5px rgba(173, 173, 173, 0.5);
+
               .agenda-day-item-right section .item-value {
                 line-clamp: 2;
                 -webkit-line-clamp: 2;
               }
             }
+
             &.type2 {
               .agenda-day-item-right {
                 background: rgba(68, 215, 182, 0.12);
               }
+
               .agenda-day-item-right {
                 border-color: #44d7b6;
               }
             }
+
             &.type3 {
               .agenda-day-item-right {
                 background: #fff3e1;
               }
+
               .agenda-day-item-right {
                 border-color: #f7ac00;
               }
             }
+
             .agenda-day-item-left {
               width: 100px;
               text-align: center;
-              & > div {
+
+              &>div {
                 margin-top: 20px;
               }
             }
+
             .agenda-day-item-right {
               width: calc(100% - 100px);
               background: #e3f7ff;
@@ -736,6 +729,7 @@ export default {
                   display: inline-block;
                   text-align-last: justify;
                 }
+
                 .item-value {
                   width: calc(100% - 60px);
                   display: -webkit-box;
@@ -758,9 +752,11 @@ export default {
   width: 6px;
   height: 8px;
 }
+
 .scroll_block::-webkit-scrollbar-thumb {
   background-color: #ccc;
 }
+
 .scroll_block::-webkit-scrollbar-thumb {
   min-height: 18px;
   border-radius: 4px;

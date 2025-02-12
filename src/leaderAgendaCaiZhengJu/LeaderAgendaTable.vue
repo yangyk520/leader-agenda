@@ -262,9 +262,9 @@ export default {
 </script>
 <style lang="scss" scoped>
 .LeaderActiveEdit_app {
-  // height: calc(100% - 120px);
-  // margin-top: 18px;
-  // padding-bottom: 25px;
+  height: calc(100% - 120px);
+  margin-top: 18px;
+  padding-bottom: 25px;
   flex: 1;
   .week_table{
     .table_body_row{

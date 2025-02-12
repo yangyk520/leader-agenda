@@ -34,9 +34,9 @@
     </div>
     <div class="agenda-header-main-operation">
       <div class="operation-search flex_start">
-        <!-- <template v-if="propData.showWeekPicker && timeViewType === 'week'">
+        <template v-if="propData.showWeekPicker && timeViewType === 'week'">
           <a-week-picker :value="week_picker" placeholder="选择开始周" @change="onChangeDatePicker" />
-        </template> -->
+        </template>
       </div>
       <div v-if="propData.operateList && propData.operateList.length" class="operation-btns">
         <!-- <span v-if="!isView" @click="handleAdd" class="operation-btn primary">新增</span>

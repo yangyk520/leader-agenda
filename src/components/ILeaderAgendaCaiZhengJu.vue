@@ -2,10 +2,10 @@
   <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IWorkStatistics_app"> 
     <LeaderAgendaHeader :ref="moduleObject.id" :moduleObject="moduleObject" :propData="propData" @updateHeadParams="updateHeadParams" :isView="isView">
     </LeaderAgendaHeader>
-    <div class="IWorkStatistics_app_middle">
+    <!-- <div class="IWorkStatistics_app_middle">
       <Calendar></Calendar>
-      <LeaderAgendaTable :propData="propData" :header_list="header_list" :data_list_table="data_list" @updateTableDate="updateTableDate"></LeaderAgendaTable>
-    </div>
+    </div> -->
+    <LeaderAgendaTable :propData="propData" :header_list="header_list" :data_list_table="data_list" @updateTableDate="updateTableDate"></LeaderAgendaTable>
     <AgendaFooter :setting_data="setting_data" :propData="propData"></AgendaFooter>
   </div>
 </template>
@@ -13,14 +13,14 @@
 import LeaderAgendaHeader from "@/leaderAgendaCaiZhengJu/AgendaHeader.vue"
 import LeaderAgendaTable from "@/leaderAgendaCaiZhengJu/LeaderAgendaTable.vue"
 import AgendaFooter from "@/leaderAgendaCaiZhengJu/AgendaFooter.vue"
-import Calendar from "@/leaderAgendaCaiZhengJu/Calendar.vue"
+// import Calendar from "@/leaderAgendaCaiZhengJu/Calendar.vue"
 export default {
   name: 'IWorkStatistics',
   components:{
     LeaderAgendaHeader,
     LeaderAgendaTable,
     AgendaFooter,
-    Calendar
+    // Calendar
   },
   data() {
     return {
