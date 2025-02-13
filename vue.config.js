@@ -50,6 +50,7 @@ module.exports = {
     publicPath:"./",
     assetsDir:assetsDir,
     transpileDependencies: [
+        /[/\\]node_modules[/\\](.+?)?vuedraggable(.*)/,
         /[/\\]node_modules[/\\](.+?)?sockjs-client(.*)/,
         /[/\\]node_modules[/\\](.+?)?ant-design_colors(.*)[/\\]colors/,
     ],

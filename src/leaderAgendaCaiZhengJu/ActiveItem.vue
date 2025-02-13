@@ -1,28 +1,35 @@
 <template>
 <div class="ActiveItem_app">
-  <div class="row flex_start time_name_row" :style="getStyleData(item2)">
+  <div class="row flex_start" :style="getStyleData(item2)">
     <div class="svg_box flex_center">
       <SvgIcon icon-class="agenda-colorful"></SvgIcon>
     </div>
-    <div>
-      <!-- <span class="time">{{ `${item2.time} ${ item2.endTime && getShowStatus('-1',item2) ? '-' : '' } ${item2.endTime && getShowStatus('-1',item2) ? item2.endTime : ''}`  }}</span> -->
-      <span class="name">{{ item2.title }}</span>
-    </div>
+    <a-tooltip>
+      <template slot="title">
+        <div class="tooltip_box">
+          <div class="list">
+            <span class="label">参加局领导：</span>
+            <span class="value">{{ item2.range }}</span>
+          </div>
+          <div class="list">
+            <span class="label">会议主题：</span>
+            <span class="value">{{ item2.title }}</span>
+          </div>
+          <div class="list">
+            <span class="label">会议地点：</span>
+            <span class="value">{{ item2.place }}</span>
+          </div>
+          <div class="list">
+            <span class="label">联系人：</span>
+            <span class="value">{{ item2.contacts }}</span>
+          </div>
+        </div>
+      </template>
+      <div class="flex_start time_name_box">
+        <span class="name">{{ item2.title }}</span>
+      </div>
+    </a-tooltip>
   </div>
-  <!-- <div v-if="item2.place" class="row flex_start address_block">
-    <div class="svg_box flex_center">
-      <SvgIcon icon-class="address"></SvgIcon>
-    </div>
-    <span class="address">
-      <span>{{ item2.place }}</span>
-    </span>
-  </div> -->
-  <!-- <div class="row flex_start" v-if="item2.range">
-    <div class="svg_box flex_center">
-      <SvgIcon icon-class="participants"></SvgIcon>
-    </div>
-    <span class="address"> {{ item2.range }} </span>
-  </div> -->
 </div>
 </template>
 

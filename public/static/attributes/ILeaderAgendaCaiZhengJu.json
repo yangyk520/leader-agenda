@@ -43,6 +43,25 @@
               "type": "radio",
               "styleType": "radio",
               "layoutType": "inline",
+              "text": "选择领导",
+              "desc":"是否显示领导筛选",
+              "bindKey": "showLeaderFilter",
+              "default": true,
+              "dictionary": [
+                  {
+                      "label": "是",
+                      "value": true
+                  },
+                  {
+                      "label": "否",
+                      "value": false
+                  }
+              ]
+            },
+            {
+              "type": "radio",
+              "styleType": "radio",
+              "layoutType": "inline",
               "text": "斑马线",
               "desc":"是否显示斑马线",
               "bindKey": "stripe",

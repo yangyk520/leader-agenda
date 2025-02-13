@@ -3,7 +3,15 @@
     <div class="table">
       <div class="table_header flex_between">
         <div v-for="(item,index) in header_list" :key="index" :style="getCellStyle(item)" class="cell">
-          {{ item.label }}
+          <template v-if="item.key == 'type'">
+            {{ item.label }}
+          </template>
+          <template v-else>
+            <div>
+              <div>{{ item.label }}</div>
+              <div>{{ week_number[index - 1] }}</div>
+            </div>
+          </template>
         </div>
       </div>
       <div v-if="data_list_table && data_list_table.length" class="table_body">
@@ -15,11 +23,17 @@
               </template>
               <template v-else>
                 <div v-if="item[item1.key]?.length" class="active_block">
-                  <div @click="editActive(item2)" v-for="(item2,index2) in item[item1.key]" :key="index2" class="active_list" :style="getStyleDataCancel(item2)">
-                    <ActiveItem :item2="item2"></ActiveItem>
-                  </div>
+                  <draggable v-model="item[item1.key]"  
+                  @change="e => onChangeSort(e, item[item1.key])"
+                    tag="div"
+                    :forceFallback="true" 
+                  >
+                    <div @click="editActive(item2)" v-for="(item2,index2) in item[item1.key]" :key="index2" class="active_list ActiveItem_app" :style="getStyleDataCancel(item2)">
+                      <ActiveItem :item2="item2"></ActiveItem>
+                    </div>
+                  </draggable>
                 </div>
-                <div class="btn-add" @click="addHanlder(item1.key,item.type)"><svg-icon icon-class="add-new"></svg-icon></div>
+                <div v-if="!isView" class="btn-add" @click="addHanlder(item1.key,item.type)"><svg-icon icon-class="add-new"></svg-icon></div>
               </template>
             </div>
           </div>
@@ -35,11 +49,16 @@
 <script>
 import ActiveItem from './ActiveItem.vue'
 import mixins from "@/mixins/index.js";
+import draggable from 'vuedraggable';
+import SvgIcon from '../icons/SvgIcon.vue';
+
 export default {
   name: "LeaderAgendaTable",
   mixins: [mixins],
   components: {
-    ActiveItem
+    ActiveItem,
+    draggable,
+    SvgIcon
   },
   props: {
     propData: {
@@ -65,6 +84,12 @@ export default {
       default() {
         return []
       }
+    },
+    isView: {
+      type: Boolean,
+      default() {
+        return true
+      }
     }
   },
   watch: {
@@ -79,13 +104,35 @@ export default {
   data() {
     return {
       id: IDM.UUID(),
-      week_number: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
+      week_number: ['周一','周二','周三','周四','周五','周六','周日'],
     };
   },
   created() {
 
   },
   methods: {
+    onStartSort(e, list) {
+      console.log("onStartSort", e)
+      console.log("onStartSort", list)
+    },
+    onEnd(e) {
+      console.log("onEndSort", e)
+    },
+    onChangeSort(e, list) {
+      console.log("onChangeSort", e)
+      console.log("onChangeSort", list)
+      let listCopy = JSON.parse(JSON.stringify(list))
+      let ids = listCopy.map((item) => {
+        return item.id
+      })?.join(',')
+      IDM.http.post("ctrl/czjWorkPlan/changeOrder", {
+        ids: ids
+      }).then((res) => {
+        if (res.data.type == 'success') {
+          this.$emit('updateTableDate')
+        } 
+      });
+    },
     addHanlder(date,now){
       IDM.layer.open({
         type: 2,
@@ -283,11 +330,15 @@ export default {
       border-bottom: 1px solid rgba(230, 230, 230, 1);
       .cell {
         width: 100%;
-        height: 48px;
-        line-height: 48px;
+        height: 60px;
+        // line-height: 48px;
         flex-grow: 2;
         flex-shrink: 1;
         box-sizing: border-box;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
         font-size: 16px;
         color: #333333;
         letter-spacing: 0;
@@ -295,7 +346,7 @@ export default {
         border-left: 1px solid rgba(230, 230, 230, 1);
         overflow: hidden;
         &:nth-child(1) {
-          width: 152px;
+          width: 100px;
           flex-grow: 0;
           flex-shrink: 0;
         }
@@ -320,7 +371,7 @@ export default {
           border-left: 1px solid rgba(230, 230, 230, 1);
           min-height: 132px;
           &:nth-child(1) {
-            width: 152px;
+            width: 100px;
             flex-grow: 0;
             flex-shrink: 0;
             display: flex;
@@ -331,7 +382,7 @@ export default {
           }
           .active_block{
             .active_list{
-              cursor: pointer;
+              // cursor: pointer;
               margin-bottom: 16px;
               padding-bottom: 16px;
               border-bottom: 1px dotted #979797;
@@ -366,6 +417,71 @@ export default {
     padding: 100px 0;
     border: 1px solid #e6e6e6;
     border-top: none;
+  }
+}
+.ActiveItem_app {
+  text-align: left;
+
+  .time_name_row {
+    .svg-icon {
+      font-size: 14px;
+      margin-right: 5px;
+    }
+  }
+
+  &>.row {
+    align-items: flex-start;
+  }
+
+  .address_block {
+    align-items: flex-start;
+
+    .address_img {
+      flex-shrink: 0;
+      position: relative;
+      top: 3px;
+    }
+  }
+
+  .busy_block {
+    margin-top: 1px;
+  }
+
+  .time {
+    margin-right: 20px;
+  }
+
+  .svg_box {
+    width: 20px;
+    height: 20px;
+    margin-right: 5px;
+    flex-shrink: 0;
+
+    .svg-icon {
+      font-size: 16px;
+      margin: 0;
+    }
+  }
+
+  .time,
+  .name,
+  .address,
+  .busy {
+    font-size: 16px;
+    line-height: 22px;
+    font-weight: 400;
+    word-wrap: break-word;
+    word-break: break-all;
+  }
+
+  .address {
+    span {
+      margin-left: 30px;
+
+      &:nth-child(1) {
+        margin-left: 0;
+      }
+    }
   }
 }
 </style>

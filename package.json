@@ -18,6 +18,7 @@
     "monent": "0.0.2-security",
     "sass-loader": "^8.0.2",
     "vue": "^2.6.11",
+    "vuedraggable": "^2.24.3",
     "vuescroll": "^4.17.3"
   },
   "devDependencies": {

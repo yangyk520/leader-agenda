@@ -34,9 +34,14 @@
     </div>
     <div class="agenda-header-main-operation">
       <div class="operation-search flex_start">
-        <template v-if="propData.showWeekPicker && timeViewType === 'week'">
+        <div v-if="propData.showWeekPicker && timeViewType === 'week'" class="form_list">
           <a-week-picker :value="week_picker" placeholder="选择开始周" @change="onChangeDatePicker" />
-        </template>
+        </div>
+        <div v-if="propData.showLeaderFilter" class="select_box form_list">
+          <a-select v-model="selectLeader" @change="onChangeSelectLeader" labelInValue style="width: 120px" placeholder="请选择领导" allowClear>
+            <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
+          </a-select>
+        </div>
       </div>
       <div v-if="propData.operateList && propData.operateList.length" class="operation-btns">
         <!-- <span v-if="!isView" @click="handleAdd" class="operation-btn primary">新增</span>
@@ -93,7 +98,7 @@ export default {
       weekCn: ["一", "二", "三", "四", "五", "六", "日"],
       // 领导列表
       leaderList: [],
-      selected_leader: [],
+      selectLeader: undefined,
       departList: [],
       selected_depart: [],
       print_date: [],
@@ -108,6 +113,7 @@ export default {
   created() {
     this.initTime(moment());
     this.sendHeadParams();
+    this.getLeaderList()
     this.$eventBus.$on("updateDate", (dates) => {
       if(this.timeViewType==='day'){
         this.initTime(moment(dates, "YYYY-MM-DD"))
@@ -118,6 +124,19 @@ export default {
     });
   },
   methods: {
+    getLeaderList() {
+      IDM.http.get("/ctrl/leaderScheduleApi/getLeaderUserInfoForMobile",{
+
+      }).then((res) => {
+        if(res.data?.type == 'success') {
+          this.leaderList = res.data?.data || []
+        }
+      })
+    },
+    onChangeSelectLeader(e) {
+      console.log(e)
+      this.sendHeadParams();
+    },
     /**
      * 时间视图切换
      */
@@ -228,15 +247,14 @@ export default {
      */
     sendHeadParams(isEventBus = true) {
       const params = { 
-        timeViewType: this.timeViewType
+        timeViewType: this.timeViewType,
+        leaderId: this.selectLeader?.key,
+        leaderName: this.selectLeader?.label
       };
       if (this.timeViewType === "day") {
         params.dates = this.curDate;
       } else {
         params.dates = this.weekList.map((item) => item.date).join(",");
-      }
-      if(this.selected_leader && this.selected_leader.length) {
-        params.leaderId = this.selected_leader.join(",");
       }
       params.deptId = this.selected_depart;
       this.$emit("updateHeadParams", params);
@@ -523,6 +541,9 @@ export default {
         .label{
           font-size: 14px;
         }
+      }
+      .select_box{
+        width: 120px;
       }
     }
   }
