@@ -26,7 +26,7 @@
       <vue-scroll :ops="scrollOps">
         <div v-if="table_data_leader && table_data_leader.length" class="table_body_block flex_start">
           <div v-for="(item,index) in table_data_leader" @click="clickItem(item,1)" :key="index" class="list flex_start">
-            <div class="status" :class="item.updateStatus == 1 ? 'active' : ''"></div>
+            <div class="status" :class="getStatusClassName(item.updateStatus)"></div>
             <div class="name">{{ item.bt }}</div>
           </div>
         </div>
@@ -48,7 +48,7 @@
         <vue-scroll :ops="scrollOps">
           <div v-if="table_data_depart && table_data_depart.length" class="table_body_block flex_start">
             <div v-for="(item,index) in table_data_depart" @click="clickItem(item,2)" :key="index" class="list flex_start">
-              <div class="status" :class="item.updateStatus == 1 ? 'active' : ''"></div>
+              <div class="status" :class="getStatusClassName(item.updateStatus)"></div>
               <div class="name">{{ item.bt }}</div>
             </div>
           </div>
@@ -69,7 +69,7 @@
         <vue-scroll :ops="scrollOps">
           <div v-if="table_data_unit && table_data_unit.length" class="table_body_block flex_start">
             <div v-for="(item,index) in table_data_unit" @click="clickItem(item,3)" :key="index" class="list flex_start">
-              <div class="status" :class="item.updateStatus == 1 ? 'active' : ''"></div>
+              <div class="status" :class="getStatusClassName(item.updateStatus)"></div>
               <div class="name">{{ item.bt }}</div>
             </div>
           </div>
@@ -121,6 +121,20 @@ export default {
   },
   destroyed() {},
   methods: {
+    getStatusClassName(status) {
+      switch (status) {
+        case "1":
+          return "active";
+        case "2":
+          return "";
+        case "0":
+          return "warning";
+        case "-1":
+          return "danger";
+        default:
+          return "";
+      }
+    },
     getDefaultValue() {
       let value = IDM.url.queryString("value");
       if(value && value != 'undefined') {
@@ -425,6 +439,12 @@ export default {
         background: #D8D8D8;
         &.active{
           background: #78E530;
+        }
+        &.danger{
+          background: #E30000;
+        }
+        &.warning{
+          background: #FFB800;
         }
       }
       .name{
