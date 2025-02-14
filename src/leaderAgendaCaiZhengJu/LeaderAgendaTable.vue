@@ -23,8 +23,9 @@
               </template>
               <template v-else>
                 <div v-if="item[item1.key]?.length" class="active_block">
-                  <draggable v-model="item[item1.key]" 
-                    :draggable="isView" 
+                  <draggable 
+                    v-model="item[item1.key]" 
+                    :disabled="isView"
                     @change="e => onChangeSort(e, item[item1.key])"
                     tag="div"
                     :forceFallback="true" 
