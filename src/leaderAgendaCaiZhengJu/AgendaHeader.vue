@@ -37,7 +37,7 @@
         <div v-if="propData.showWeekPicker && timeViewType === 'week'" class="form_list">
           <a-week-picker :value="week_picker" placeholder="选择开始周" @change="onChangeDatePicker" />
         </div>
-        <div v-if="propData.showLeaderFilter" class="select_box form_list">
+        <div v-if="propData.showLeaderFilter && !hideLeaderFilter" class="select_box form_list">
           <a-select v-model="selectLeader" @change="onChangeSelectLeader" labelInValue style="width: 120px" placeholder="请选择领导" allowClear>
             <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
@@ -73,6 +73,10 @@ export default {
     isView: {
       type: Boolean,
       default: false,
+    },
+    hideLeaderFilter: {
+      type: Boolean,
+      default: false
     }
   },
   data() {
@@ -188,7 +192,7 @@ export default {
         startDate: this.weekList[0].date,
         endDate: this.weekList[this.weekList.length - 1].date
       };
-      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${this.isView}`;
+      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${this.isView}&isAll=${!this.hideLeaderFilter}`;
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "download");

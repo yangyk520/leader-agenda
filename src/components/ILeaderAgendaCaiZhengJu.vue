@@ -1,6 +1,11 @@
 <template>
 <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="IWorkStatistics_app">
-  <LeaderAgendaHeader :ref="moduleObject.id" :moduleObject="moduleObject" :propData="propData" @updateHeadParams="updateHeadParams" :isView="isView">
+  <LeaderAgendaHeader :ref="moduleObject.id" :moduleObject="moduleObject" 
+    :propData="propData" 
+    @updateHeadParams="updateHeadParams" 
+    :isView="isView"
+    :hideLeaderFilter="hideLeaderFilter"
+  >
   </LeaderAgendaHeader>
   <!-- <div class="IWorkStatistics_app_middle">
       <Calendar></Calendar>
@@ -34,6 +39,7 @@ export default {
         }]
       },
       isView: false,
+      hideLeaderFilter: false,// 是否隐藏领导下拉选择-根据url参数显示
       form_data: {},
       header_list: [],
       data_list: [],
@@ -44,6 +50,11 @@ export default {
   created() {
     this.moduleObject = this.$root.moduleObject;
     this.isView = IDM.url.queryString("isView") == '1' ? true : false;
+    if(this.isView && IDM.url.queryString("isAll") != '1') {
+      this.hideLeaderFilter = true
+    } else {
+      this.hideLeaderFilter = false
+    }
     this.initAttrToModule();
   },
   mounted() {
