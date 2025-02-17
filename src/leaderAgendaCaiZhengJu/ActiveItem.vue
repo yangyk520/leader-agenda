@@ -149,6 +149,7 @@ export default {
     display: -webkit-box;
     -webkit-line-clamp: 2;
     -webkit-box-orient: vertical;
+    user-select: none;
   }
   .address {
     span {
