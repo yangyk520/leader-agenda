@@ -140,7 +140,7 @@ export default {
       userInfo: null,
       activeDepart: '',
       activeUser: '',
-      isYJJ:true
+      isYJJ: true
     };
   },
   props: {},
@@ -442,7 +442,7 @@ export default {
         };
 
         IDM.http
-          .get("ctrl/deptScheduleList/queryWeekData", params)
+          .get("ctrl/ythScheduleCustom/queryDeptScheduleWeekData", params)
           .then((res) => {
             console.log("单位领导日程数据", res);
             if (res.data.code == "200") {
