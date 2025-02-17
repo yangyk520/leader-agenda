@@ -37,7 +37,7 @@
         <div v-if="propData.showWeekPicker && timeViewType === 'week'" class="form_list">
           <a-week-picker :value="week_picker" placeholder="选择开始周" @change="onChangeDatePicker" />
         </div>
-        <div v-if="propData.showLeaderFilter && !hideLeaderFilter" class="select_box form_list">
+        <div v-if="propData.showLeaderFilter && ((isView && isAll) || !isView)" class="select_box form_list">
           <a-select v-model="selectLeader" @change="onChangeSelectLeader" labelInValue style="width: 120px" placeholder="请选择领导" allowClear>
             <a-select-option v-for="(item,index) in leaderList" :key="index" :value="item.id">{{ item.name }}</a-select-option>
           </a-select>
@@ -74,7 +74,7 @@ export default {
       type: Boolean,
       default: false,
     },
-    hideLeaderFilter: {
+    isAll: {
       type: Boolean,
       default: false
     }
@@ -192,7 +192,7 @@ export default {
         startDate: this.weekList[0].date,
         endDate: this.weekList[this.weekList.length - 1].date
       };
-      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${this.isView}&isAll=${!this.hideLeaderFilter}`;
+      const url = `/ctrl/czjWorkPlan/czjExport?startDate=${params.startDate}&endDate=${params.endDate}&isView=${this.isView}&isAll=${this.isAll}`;
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "download");
@@ -202,17 +202,31 @@ export default {
       document.body.removeChild(a);
     },
     handleSearch(){
-      IDM.layer.open({
-        type: 2,
-        title: ["单位领导活动检索", "font-size:18px;"],
-        area: ["1200px", "90%"],
-        content: IDM.url.getWebPath( "ctrl/list/241024163322cjgQJSoi7PjQGXOXc65?moduleId=240821173209i4sYjb4HrBVwcsEbRmm" ),
-        success: (layero, index) => {
-          top.close = () => {
-            IDM.layer.close(index);
-          };
-        }
-      });
+      if(this.isView && !this.isAll) {
+        IDM.layer.open({
+          type: 2,
+          title: ["单位领导活动检索", "font-size:18px;"],
+          area: ["1200px", "90%"],
+          content: IDM.url.getWebPath( "ctrl/list/250217154851rJW8nmOKB4UPhHLCvG1?moduleId=240821173209i4sYjb4HrBVwcsEbRmm" ),
+          success: (layero, index) => {
+            top.close = () => {
+              IDM.layer.close(index);
+            };
+          }
+        });
+      } else {
+        IDM.layer.open({
+          type: 2,
+          title: ["单位领导活动检索", "font-size:18px;"],
+          area: ["1200px", "90%"],
+          content: IDM.url.getWebPath( "ctrl/list/241024163322cjgQJSoi7PjQGXOXc65?moduleId=240821173209i4sYjb4HrBVwcsEbRmm" ),
+          success: (layero, index) => {
+            top.close = () => {
+              IDM.layer.close(index);
+            };
+          }
+        });
+      }
     },
     onChangeDatePicker(date) {
       this.week_picker = date

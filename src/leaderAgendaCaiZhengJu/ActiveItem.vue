@@ -143,7 +143,13 @@ export default {
     word-wrap: break-word;
     word-break: break-all;
   }
-
+  .name{
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+  }
   .address {
     span {
       margin-left: 30px;

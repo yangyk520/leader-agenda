@@ -4,7 +4,7 @@
     :propData="propData" 
     @updateHeadParams="updateHeadParams" 
     :isView="isView"
-    :hideLeaderFilter="hideLeaderFilter"
+    :isAll="isAll"
   >
   </LeaderAgendaHeader>
   <!-- <div class="IWorkStatistics_app_middle">
@@ -39,7 +39,7 @@ export default {
         }]
       },
       isView: false,
-      hideLeaderFilter: false,// 是否隐藏领导下拉选择-根据url参数显示
+      isAll: false,// 是否隐藏领导下拉选择-根据url参数显示
       form_data: {},
       header_list: [],
       data_list: [],
@@ -50,10 +50,10 @@ export default {
   created() {
     this.moduleObject = this.$root.moduleObject;
     this.isView = IDM.url.queryString("isView") == '1' ? true : false;
-    if(this.isView && IDM.url.queryString("isAll") != '1') {
-      this.hideLeaderFilter = true
+    if(this.isView && IDM.url.queryString("isAll") == '1') {
+      this.isAll = true
     } else {
-      this.hideLeaderFilter = false
+      this.isAll = false
     }
     this.initAttrToModule();
   },
@@ -139,7 +139,8 @@ export default {
           endDate,
           leaderId: this.form_data?.leaderId,
           leaderName: this.form_data?.leaderName,
-          isView: this.isView
+          isView: this.isView,
+          isAll: this.isAll
         }).then((res) => {
           console.log(res)
           this.data_list = res.data.data
