@@ -444,7 +444,7 @@ export default {
           background: #E30000;
         }
         &.warning{
-          background: #FFB800;
+          background: #3389e0;
         }
       }
       .name{
