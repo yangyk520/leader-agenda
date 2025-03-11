@@ -14,6 +14,24 @@
         </a-select>
       </div>
     </div>
+    <div class="color_block flex_start">
+      <div class="color_list flex_start">
+        <div class="status"></div>
+        <div class="label">
+          {{ propData.showWld ? '周五中午12点至下周一下午6点之前填报' : '25号中午12点至下个月5号填报' }}
+        </div>
+      </div>
+      <div class="color_list flex_start">
+        <div class="status"></div>
+        <div class="label">
+          {{ propData.showWld ? '周一下午6点至周五中午12点填报' : '下个月6号-15号填报' }}
+        </div>
+      </div>
+      <div class="color_list flex_start">
+        <div class="status"></div>
+        <div class="label">未填报</div>
+      </div>
+    </div>
   </div>
   <div v-if="propData.showWld" class="table leader_table">
     <div class="table_header flex_between">
@@ -391,6 +409,39 @@ export default {
       width: 300px;
       .ant-select{
         width: 100%;
+      }
+    }
+    .color_block{
+      margin-left: 20px;
+      .color_list{
+        margin-left: 20px;
+        &:nth-child(1){
+          margin-left: 0;
+        }
+        .status{
+          width: 10px;
+          height: 10px;
+          flex-shrink: 0;
+          flex-grow: 0;
+          margin-right: 10px;
+          border-radius: 50%;
+        }
+        &:nth-child(1){
+          .status{
+            background: #78E530;
+          }
+        }
+        &:nth-child(2){
+          .status{
+            background: #3389e0;
+          }
+        }
+        &:nth-child(3){
+          .status{
+            background: #D8D8D8;
+          }
+        }
+        
       }
     }
   }
