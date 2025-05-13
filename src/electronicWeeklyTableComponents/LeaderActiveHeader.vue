@@ -36,6 +36,9 @@
               <a-button @click="exportData()" :loading="exportData_loading" type="primary">
                 导出
               </a-button>
+              <a-button @click="handleSubmitRemark"  type="primary">
+                保存备注
+              </a-button>
             </div>
           </div>
         </template>
@@ -164,7 +167,7 @@ export default {
             : this.weekList[this.weekList.length - 1].date,
       };
       
-      const url = `ctrl/leader/listExport?startDate=${params.startDate}&endDate=${params.endDate}&userIds=${params.leaders}&content=${params.content}`;
+      const url = (this.props.exportDataUrl || 'ctrl/leader/listExport' )+ `?startDate=${params.startDate}&endDate=${params.endDate}&userIds=${params.leaders}&content=${params.content}`;
 
       const a = document.createElement("a");
       a.style.display = "none";
@@ -173,6 +176,10 @@ export default {
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
+    },
+
+    handleSubmitRemark(){
+      this.$emit("handleSubmitRemark")
     },
     /**
      * 向父组件发送参数
