@@ -2,20 +2,22 @@
   <div class="LeaderActiveEdit_app">
     <div class="table">
       <div class="table_header flex_between">
-        <div v-for="(item,index) in header_list" :key="index" class="cell">
+        <div v-for="(item, index) in header_list" :key="index" class="cell">
           {{ item.name }}
         </div>
       </div>
       <div v-if="data_list_table && data_list_table.length" class="table_body">
         <vue-scroll :ops="scrollOps">
-          <div v-for="(item,index) in data_list_table" :key="index" class="row table_body_row flex_between">
-            <div v-for="(item1,index1) in header_list" :key="index1" class="cell">
+          <div v-for="(item, index) in data_list_table" :key="index" class="row table_body_row flex_between">
+            <div v-for="(item1, index1) in header_list" :key="index1" class="cell">
               <div class="day_active_block" v-if="item1.key == 'dateStr'">
                 <div>{{ week_number[index] }}</div>
                 <div>{{ item[item1.key] }}</div>
               </div>
               <div v-else>
-                <div v-for="(item2,index2) in item[item1.key]" :key="index2">
+                <div v-if="viewModel == 2" class="add-btn" @click="handleAddClick(item.dateStr, item1.key,item)"><svg-icon
+                    iconClass="add"></svg-icon></div>
+                <div v-for="(item2, index2) in item[item1.key]" :key="index2">
                   {{ item2 }}
                 </div>
               </div>
@@ -26,9 +28,9 @@
               <span>备注</span>
             </div>
             <div class="cell">
-              <div v-for="(item3,index3) in remark" :key="index3">
-                {{ item3 }}
-              </div>
+              <span v-if="viewModel == 1">{{ nowRemark }}</span>
+              <a-textarea v-else v-model="nowRemark"
+                :auto-size="{ minRows: 3, maxRows: 5 }" />
             </div>
           </div>
         </vue-scroll>
@@ -67,9 +69,13 @@ export default {
       }
     },
     remark: {
-      type: Array,
-      default: () => []
-    }
+      type: String,
+      default: ""
+    },
+    viewModel: {
+      type: String,
+      default: '1',// 1标识预览
+    },
   },
   watch: {
     propData: {
@@ -78,6 +84,12 @@ export default {
       },
       immediate: true,
       deep: true,
+    },
+    remark:{
+      immediate: true,
+      handler: function () {
+        this.nowRemark = this.remark
+      },
     }
   },
   data() {
@@ -96,12 +108,16 @@ export default {
           key: 'pm'
         }
       ],
-      week_number: ['星期一','星期二','星期三','星期四','星期五','星期六','星期日'],
+      week_number: ['星期一', '星期二', '星期三', '星期四', '星期五', '星期六', '星期日'],
     };
   },
   created() {
   },
   methods: {
+    handleAddClick(dateStr, key,a) {
+      console.log(dateStr, key,a)
+      window.open(IDM.url.getContextWebUrl(`ctrl/formControl/form?moduleId=250507111213XaMsadKRqwoVIe1TJrP&date=${dateStr}&ampm=${key}`))
+    },
     getUserPhoto(item) {
       if (item.photo) {
         return IDM.url.getWebPath(item.photo);
@@ -170,7 +186,7 @@ export default {
       );
       window.IDM.setStyleToPageHead(
         this.moduleObject.id +
-          " .AgendaTableVertical_app .table .table_header .cell",
+        " .AgendaTableVertical_app .table .table_header .cell",
         styleObjectCell
       );
       window.IDM.setStyleToPageHead(
@@ -179,7 +195,7 @@ export default {
       );
       window.IDM.setStyleToPageHead(
         this.moduleObject.id +
-          " .AgendaTableVertical_app .table .table_body .row:nth-child(2n)",
+        " .AgendaTableVertical_app .table .table_body .row:nth-child(2n)",
         styleObjectBodyRow
       );
     },
@@ -196,13 +212,16 @@ export default {
 <style lang="scss" scoped>
 .LeaderActiveEdit_app {
   height: calc(100% - 88px);
-  .week_table{
-    .table_body_row{
+
+  .week_table {
+    .table_body_row {
       background: #FFFCF2;
     }
   }
+
   .table {
     height: 100%;
+
     .table_header {
       // height: 48px;
       padding-right: 8px;
@@ -211,6 +230,7 @@ export default {
       border-top: 1px solid rgba(230, 230, 230, 1);
       border-right: 1px solid rgba(230, 230, 230, 1);
       border-bottom: 1px solid rgba(230, 230, 230, 1);
+
       .cell {
         width: 100%;
         height: 48px;
@@ -224,6 +244,7 @@ export default {
         font-weight: 500;
         border-left: 1px solid rgba(230, 230, 230, 1);
         overflow: hidden;
+
         &:nth-child(1) {
           width: 152px;
           flex-grow: 0;
@@ -232,14 +253,18 @@ export default {
         }
       }
     }
+
     .table_body {
       height: calc(100% - 48px);
+
       .table_body_row {
         padding-right: 8px;
         align-items: stretch;
         border-bottom: 1px solid rgba(230, 230, 230, 1);
         border-right: 1px solid rgba(230, 230, 230, 1);
+
         .cell {
+          position: relative;
           width: 100%;
           flex-grow: 2;
           flex-shrink: 1;
@@ -248,6 +273,7 @@ export default {
           word-break: break-all;
           font-size: 14px;
           border-left: 1px solid rgba(230, 230, 230, 1);
+
           &:nth-child(1) {
             width: 152px;
             flex-grow: 0;
@@ -258,22 +284,32 @@ export default {
             text-align: center;
             text-align: center;
           }
+
+          .add-btn {
+            position: absolute;
+            right: 4px;
+            top: 4px;
+            cursor: pointer;
+          }
         }
-        .day_active_block{
-          
+
+        .day_active_block {
+
           background: white;
         }
       }
-      .note{
-        .cell{
-          &:nth-child(1){
+
+      .note {
+        .cell {
+          &:nth-child(1) {
             background: gainsboro;
           }
         }
       }
     }
   }
-  .empty_blcok{
+
+  .empty_blcok {
     padding: 100px 0;
     border: 1px solid #e6e6e6;
     border-top: none;

@@ -3,17 +3,18 @@
     <div class="scroll_block">
       <LeaderActiveHeader :ref="moduleObject.id" :moduleObject="moduleObject" :scheduleType="scheduleType" :viewModel="viewModel" 
         @updateHeadParams="updateHeadParams" 
-        @exportData="exportData" >
+        @exportData="exportData"
+        @handleSubmitRemark="handleSubmitRemark" >
       </LeaderActiveHeader>
       <template>
-        <LeaderActiveEdit :data_list_table="data_list" :remark="remark"></LeaderActiveEdit>
+        <LeaderActiveEdit ref="leaderActiveEdit" :data_list_table="data_list" :remark="remark" :viewModel="viewModel" ></LeaderActiveEdit>
       </template>
     </div>
   </div>
 </template>
 
 <script>
-const mock = []
+import mock from "@/mock/IElectronicWeeklyTable.js"
 import LeaderActiveHeader from "@/electronicWeeklyTableComponents/LeaderActiveHeader.vue"
 import LeaderActiveEdit from "@/electronicWeeklyTableComponents/LeaderActiveEdit.vue"
 export default {
@@ -26,13 +27,14 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
+        viewModel:"2"
       },
       scheduleType: 2, // 1标识day
       viewModel: '1',// 1标识预览；2标识编辑
       form_data: {},
       
       data_list: [],
-      remark: [],
+      remark: "",
     }
   },
   props: {
@@ -44,6 +46,24 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    handleSubmitRemark(){
+      let days_arr = this.form_data.dates.split(',');
+      let startDate = days_arr[0];
+      let endDate = days_arr[days_arr.length - 1];
+      IDM.http.get(this.propData.saveRemarkDataUrl || 'ctrl/sjjggzdwCustom/saveRemark',{
+        startTime: startDate,
+        endTime: endDate,
+        remark:this.$refs.leaderActiveEdit.nowRemark
+      }).then((res) => {
+        if(res.data && res.data.type == 'success') {
+          this.$message.success("保存成功")
+        } else {
+          this.$message.error(res.data.message)
+        }
+      }).catch((err) => {
+        console.log(err)
+      })
+    },
     exportData() {
       this.$refs[this.moduleObject.id][`exportData_loading`] = true;
 
@@ -87,6 +107,8 @@ export default {
      * 对属性设置进行初始化
      */
     initAttrToModule() {
+      this.viewModel = this.propData.viewModel
+
       this.convertAttrToStyleObject();
       this.convertThemeListAttrToStyleObject();
     },
@@ -228,23 +250,28 @@ export default {
       this.getWeekInitData()
     },
     getWeekInitData() {
-      let days_arr = this.form_data.dates.split(',');
-      let startDate = days_arr[0];
-      let endDate = days_arr[days_arr.length - 1];
-      IDM.http.get('/ctrl/sfzyjzxcustom/dzzb',{
-        startTime: startDate,
-        endTime: endDate,
-      }).then((res) => {
-        if(res.data && res.data.type == 'success') {
-          this.data_list = res.data.data.list;
-          this.remark = res.data.data.remark;
-        } else {
-          this.data_list = [];
-          this.remark = [];
-        }
-      }).catch((err) => {
-        console.log(err)
-      })
+      if (!this.moduleObject.env || this.moduleObject.env == "develop") {
+        this.data_list = mock.data.list;
+        this.remark = Array.isArray(mock.data.remark) ? mock.data.remark.join(",") : '' ;
+      }else{
+        let days_arr = this.form_data.dates.split(',');
+        let startDate = days_arr[0];
+        let endDate = days_arr[days_arr.length - 1];
+        IDM.http.get(this.propData.requestDataUrl || '/ctrl/sfzyjzxcustom/dzzb',{
+          startTime: startDate,
+          endTime: endDate,
+        }).then((res) => {
+          if(res.data && res.data.type == 'success') {
+            this.data_list = res.data.data.list;
+            this.remark = Array.isArray(mock.data.remark) ? mock.data.remark.join(",") : '' ;
+          } else {
+            this.data_list = [];
+            this.remark = '';
+          }
+        }).catch((err) => {
+          console.log(err)
+        })
+      }
     },
     /**
      * 通用的获取表达式匹配后的结果

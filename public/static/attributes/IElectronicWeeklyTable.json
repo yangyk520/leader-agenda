@@ -473,6 +473,37 @@
             "display": "@[key]"
           }
         ]
+      },
+      {
+        "type": "group",
+        "text": "高级设置",
+        "desc": "点击？查看高级设置用法指南",
+        "children": [
+          {
+            "type": "input",
+            "layoutType": "block",
+            "text": "查询接口",
+            "desc": "查询电子周历数据接口",
+            "bindKey": "requestDataUrl",
+            "default": "ctrl/sfzyjzxcustom/dzzb"
+          },
+          {
+            "type": "input",
+            "layoutType": "block",
+            "text": "导出接口",
+            "desc": "导出电子周历接口",
+            "bindKey": "exportDataUrl",
+            "default": "ctrl/leader/listExport"
+          },
+          {
+            "type": "input",
+            "layoutType": "block",
+            "text": "保存备注接口",
+            "desc": "保存备注数据接口",
+            "bindKey": "saveRemarkDataUrl",
+            "default": "ctrl/sjjggzdwCustom/saveRemark"
+          }
+        ]
       }
   ]
 }
