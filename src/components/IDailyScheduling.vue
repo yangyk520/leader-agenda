@@ -26,6 +26,10 @@
         </div>
         <div class="right flex_end">
           <div v-if="queryObject.showScheduling == '1'" class="button_box scheduling" @click="scheduling()">综合排班</div>
+          <a-upload v-if="queryObject.showImportFile == '1'"  name="file"  :multiple="false" :showUploadList="false" :customRequest="doImport" accept=".xls,.xlsx" >
+            <div class="button_box scheduling" style="width:80px">导入</div>
+          </a-upload>
+          <div v-if="queryObject.showTemplateDownload == '1'" class="button_box export" @click="doDownloadTemplate()" style="width:100px">模板下载</div>
           <div v-if="queryObject.showExport == '1'" class="button_box export" @click="doExport()">导出</div>
           <div v-if="queryObject.showHolidayExport == '1'" class="button_box holidy_export" @click="doExportHoliday()">节假日导出</div>
           <div v-if="queryObject.showReset == '1'" class="button_box reset" @click="reset()">重置</div>
@@ -58,7 +62,7 @@
                 <template v-if="item[item1.value].leaderDuty && item[item1.value].leaderDuty.length">
                   <div class="leader_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].leaderDuty)">
                     <div class="left flex_start">
-                      <div v-for="(item3,index3) in item[item1.value].leaderDuty" :key="index3" class="person_list flex_start">
+                      <div v-for="(item3,index3) in item[item1.value].leaderDuty" :key="index3" class="person_list flex_start" @click="jumpToFormPage(item[item1.value],item3)">
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
@@ -89,7 +93,7 @@
                       </div>
                     </div>
                     <div class="right">
-                      <img v-if="item[item1.value].holidayType == 2" :src="getAssetsImg('zhiban')" alt="">
+                      <img v-if="item[item1.value].holidayType == 2" :src="getAssetsImg(propData.leaderAllIcon ? 'quantian' : 'zhiban')" alt="">
                       <img v-else :src="getAssetsImg('leader')" alt="">
                     </div>
                   </div>
@@ -97,7 +101,7 @@
                 <template v-if="item[item1.value].dayDuty && item[item1.value].dayDuty.length">
                   <div class="day_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].dayDuty)">
                     <div class="left flex_start">
-                      <div v-for="(item3,index3) in item[item1.value].dayDuty" :key="index3" class="person_list flex_start">
+                      <div v-for="(item3,index3) in item[item1.value].dayDuty" :key="index3" class="person_list flex_start" @click="jumpToFormPage(item[item1.value],item3)">
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
@@ -135,7 +139,7 @@
                 <template v-if="item[item1.value].nightDuty && item[item1.value].nightDuty.length">
                   <div class="night_duty duty_list flex_between" :class="getDutyListClassName(item[item1.value].nightDuty)">
                     <div class="left flex_start">
-                      <div v-for="(item3,index3) in item[item1.value].nightDuty" :key="index3" class="person_list flex_start">
+                      <div v-for="(item3,index3) in item[item1.value].nightDuty" :key="index3" class="person_list flex_start" @click="jumpToFormPage(item[item1.value],item3)">
                         <a-popover overlayClassName="person_list_pop" trigger="hover">
                           <template slot="content">
                             <div class="person_list_pop_row">
@@ -424,6 +428,23 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    jumpToFormPage(day,person){
+      //对结果进行再次函数自定义
+      if(this.propData.customFunction&&this.propData.customFunction.length>0){
+        var params = this.commonParam();
+        try {
+          window[this.propData.customFunction[0].name]&&window[this.propData.customFunction[0].name].call(this,{
+            ...params,
+            ...this.propData.customFunction[0].param,
+            moduleObject: this.moduleObject,
+            day: day,
+            person: person
+          });
+        } catch (error) {
+        }
+      }
+    },
+
     makeDefaultData() {
       let queryObject = IDM.url.queryObject();
       this.queryObject = queryObject;
@@ -442,6 +463,36 @@ export default {
         },
         onCancel() {},
       });
+    },
+    // 导入
+    doImport(info){
+      let that = this;
+      var loading = layer.load(1, {
+          shadeClose: false,
+          title: '上传中..',
+          shade: [0.8,'#fff'] //0.1透明度的白色背景
+      });
+      IDM.http.upload(`ctrl/newSchedule/importExcleRyap`,info.file).then((res) => {
+        that.schedulingReset()
+        layer.close(loading);
+      }).catch((err) => {
+        layer.close(loading);
+        console.log(err)
+      })
+    },
+    // 下载模板
+    doDownloadTemplate(){
+      IDM.http.get(`ctrl/newSchedule/templateDownload`,{
+        year: this.select_year,
+        month: this.select_month
+      },{
+        responseType: 'blob'
+      }).then((res) => {
+        let name = `${this.select_year}年${this.select_month}月排班表模板.xls`;
+        this.downloadFile(res.data,name)
+      }).catch((err) => {
+        console.log(err)
+      })
     },
     doExport() {
       IDM.http.get(`ctrl/dutyScheduleCtrl/generate`,{
@@ -629,9 +680,14 @@ export default {
       return IDM.dateFormat(value,"d日");
     },
     getInitData() {
-      IDM.http.get('/ctrl/newSchedule/GetFgwSchedule',{
+      let month = this.select_month;
+      if (month < 10) {
+        month = "0" + month
+      }
+      IDM.http.get(this.propData.queryUrl || '/ctrl/newSchedule/GetFgwSchedule',{
         year: this.select_year,
-        month: this.select_month
+        month: this.select_month,
+        time: this.select_year + "-" + month
       }).then((res) => {
         if ( res.data.code == '200' ) {
           this.data_list = res.data.data;
@@ -762,6 +818,14 @@ export default {
               break;
           }
         }
+      }
+      if (this.propData.customFunction && this.propData.customFunction.length>0) {
+        window.IDM.setStyleToPageHead(
+          this.moduleObject.id + " .person_list",
+          {
+            cursor:"pointer"
+          }
+        );
       }
       window.IDM.setStyleToPageHead(this.moduleObject.id,styleObject);
     },

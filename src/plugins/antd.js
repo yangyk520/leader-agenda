@@ -15,9 +15,10 @@ import 'ant-design-vue/lib/popover/style/css';
 import 'ant-design-vue/lib/modal/style/css';
 import 'ant-design-vue/lib/button/style/css';
 import 'ant-design-vue/lib/tooltip/style/css';
+import 'ant-design-vue/lib/upload/style/css';
 
 import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm,Select,Popover,Modal,Button,DatePicker,
-  Tooltip
+  Tooltip,Upload
  } from 'ant-design-vue'
 
 /* v1.1.3+ registration methods */
@@ -34,5 +35,6 @@ Vue.use(Modal)
 Vue.use(Button)
 Vue.use(DatePicker)
 Vue.use(Tooltip)
+Vue.use(Upload)
 Vue.prototype.$confirm = Modal.confirm
 
