@@ -94,7 +94,7 @@
                     </div>
                     <div class="right">
                       <img v-if="item[item1.value].holidayType == 2" :src="getAssetsImg(propData.leaderAllIcon ? 'quantian' : 'zhiban')" alt="">
-                      <img v-else :src="getAssetsImg('leader')" alt="">
+                      <img v-else :src="getAssetsImg(propData.leaderAllIcon ? 'quantian' : 'leader')" alt="">
                     </div>
                   </div>
                 </template>
@@ -473,8 +473,12 @@ export default {
           shade: [0.8,'#fff'] //0.1透明度的白色背景
       });
       IDM.http.upload(`ctrl/newSchedule/importExcleRyap`,info.file).then((res) => {
-        that.schedulingReset()
         layer.close(loading);
+        if (res.data.code == '200') {
+          that.getInitData()
+        }else if (res.data.code == '500'){
+          IDM.layer.alert(res.data.message)
+        }
       }).catch((err) => {
         layer.close(loading);
         console.log(err)
