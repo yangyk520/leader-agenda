@@ -27,7 +27,7 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel:"1"
+        viewModel:"2"
       },
       scheduleType: 2, // 1标识day
       viewModel: '1',// 1标识预览；2标识编辑
@@ -43,7 +43,11 @@ export default {
     this.moduleObject = this.$root.moduleObject;
     this.initAttrToModule();
   },
-  mounted() {},
+  mounted() {
+    window.idmPageReload = () => {
+      this.reload()
+    }
+  },
   destroyed() {},
   methods:{
     handleSubmitRemark(){
@@ -56,9 +60,9 @@ export default {
         remark:this.$refs.leaderActiveEdit.nowRemark
       }).then((res) => {
         if(res.data.type=="success") {
-          this.$message.success("保存成功")
+          IDM.message.success("保存成功！");
         } else {
-          this.$message.error(res.data.message)
+          IDM.message.error(res.data.message)
         }
       }).catch((err) => {
         console.log(err)

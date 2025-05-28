@@ -16,6 +16,7 @@ import 'ant-design-vue/lib/modal/style/css';
 import 'ant-design-vue/lib/button/style/css';
 import 'ant-design-vue/lib/tooltip/style/css';
 import 'ant-design-vue/lib/upload/style/css';
+import 'ant-design-vue/lib/message/style/css';
 
 import { Radio,Input,Checkbox,TimePicker,Empty,Popconfirm,Select,Popover,Modal,Button,DatePicker,
   Tooltip,Upload
