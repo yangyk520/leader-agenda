@@ -36,7 +36,7 @@
               <a-button @click="exportData()" :loading="exportData_loading" type="primary">
                 导出
               </a-button>
-              <a-button @click="handleSubmitRemark"  type="primary">
+              <a-button v-if="viewModel==2" @click="handleSubmitRemark"  type="primary">
                 保存备注
               </a-button>
             </div>

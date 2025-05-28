@@ -27,7 +27,7 @@ export default {
     return {
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
-        viewModel:"2"
+        viewModel:"1"
       },
       scheduleType: 2, // 1标识day
       viewModel: '1',// 1标识预览；2标识编辑
@@ -55,7 +55,7 @@ export default {
         endTime: endDate,
         remark:this.$refs.leaderActiveEdit.nowRemark
       }).then((res) => {
-        if(res.data && res.data.type == 'success') {
+        if(res.data.type=="success") {
           this.$message.success("保存成功")
         } else {
           this.$message.error(res.data.message)
@@ -263,7 +263,7 @@ export default {
         }).then((res) => {
           if(res.data && res.data.type == 'success') {
             this.data_list = res.data.data.list;
-            this.remark = Array.isArray(mock.data.remark) ? mock.data.remark.join(",") : '' ;
+            this.remark = Array.isArray(res.data.data.remark) ? res.data.data.remark.join(",") : '' ;
           } else {
             this.data_list = [];
             this.remark = '';
