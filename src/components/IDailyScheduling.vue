@@ -132,7 +132,7 @@
                       </div>
                     </div>
                     <div class="right">
-                      <img :src="getAssetsImg('dayduty')" alt="">
+                      <img :src="getAssetsImg(propData.leaderAllIcon ? 'daily':'dayduty')" alt="">
                     </div>
                   </div>
                 </template>
@@ -170,7 +170,7 @@
                       </div>
                     </div>
                     <div class="right">
-                      <img :src="getAssetsImg('nightduty')" alt="">
+                      <img :src="getAssetsImg(propData.leaderAllIcon ? 'night' : 'nightduty')" alt="">
                     </div>
                   </div>
                 </template>
@@ -953,6 +953,9 @@ export default {
     height: 100%;
     overflow-y: auto;
     padding: 20px 20px 32px 20px;
+  }
+   .row .cell:nth-of-type(6), .row .cell:nth-of-type(7) {
+    background: #efefef;
   }
   .IDailyScheduling_header{
     .button_box{

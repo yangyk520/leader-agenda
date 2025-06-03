@@ -23,7 +23,7 @@
             {
                 "type": "switch",
                 "layoutType": "inline",
-                "text": "领导显示全图标",
+                "text": "显示文字图标",
                 "bindKey": "leaderAllIcon",
                 "desc": "开启后领导排班将显示（全）字样图标",
                 "default": false
