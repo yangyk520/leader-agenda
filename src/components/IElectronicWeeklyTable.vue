@@ -43,7 +43,11 @@ export default {
     this.moduleObject = this.$root.moduleObject;
     this.initAttrToModule();
   },
-  mounted() {},
+  mounted() {
+    window.idmPageReload = () => {
+      this.reload()
+    }
+  },
   destroyed() {},
   methods:{
     handleSubmitRemark(){
@@ -55,10 +59,10 @@ export default {
         endTime: endDate,
         remark:this.$refs.leaderActiveEdit.nowRemark
       }).then((res) => {
-        if(res.data && res.data.type == 'success') {
-          this.$message.success("保存成功")
+        if(res.data.type=="success") {
+          IDM.message.success("保存成功！");
         } else {
-          this.$message.error(res.data.message)
+          IDM.message.error(res.data.message)
         }
       }).catch((err) => {
         console.log(err)
@@ -263,7 +267,7 @@ export default {
         }).then((res) => {
           if(res.data && res.data.type == 'success') {
             this.data_list = res.data.data.list;
-            this.remark = Array.isArray(mock.data.remark) ? mock.data.remark.join(",") : '' ;
+            this.remark = Array.isArray(res.data.data.remark) ? res.data.data.remark.join(",") : '' ;
           } else {
             this.data_list = [];
             this.remark = '';

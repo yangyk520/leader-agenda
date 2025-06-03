@@ -17,8 +17,8 @@
               <div v-else>
                 <div v-if="viewModel == 2" class="add-btn" @click="handleAddClick(item.dateStr, item1.key,item)"><svg-icon
                     iconClass="add"></svg-icon></div>
-                <div v-for="(item2, index2) in item[item1.key]" :key="index2">
-                  {{ item2 }}
+                <div v-for="(item2, index2) in item[item1.key]" :key="index2" @click="handleOpen(item2)">
+                  {{ item2.content || item2.content }}
                 </div>
               </div>
             </div>
@@ -114,6 +114,12 @@ export default {
   created() {
   },
   methods: {
+    handleOpen(item){
+      console.log(item.id)
+      if(item.id){
+        window.open(IDM.url.getContextWebUrl(`ctrl/formControl/sysForm?moduleId=250507111213XaMsadKRqwoVIe1TJrP&nodeId=${this.viewModel=='1'?-1:-2}&pk=${item.id}`))
+      }
+    },
     handleAddClick(dateStr, key,a) {
       console.log(dateStr, key,a)
       window.open(IDM.url.getContextWebUrl(`ctrl/formControl/form?moduleId=250507111213XaMsadKRqwoVIe1TJrP&date=${dateStr}&ampm=${key}`))
