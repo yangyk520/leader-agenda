@@ -180,10 +180,25 @@
         </div>
       </div>
     </div>
+    <div ref="timePicker" style="display:none">
+      <div class="timePicker">
+        <span>开始日期：</span>
+        <a-locale-provider :locale="zhCN">
+          <a-date-picker v-model="startTime" placeholder="请选择开始日期" @change="headerStartDatePickerChange" ></a-date-picker>
+        </a-locale-provider>
+      </div>
+      <div class="timePicker">
+        <span>截至日期：</span>
+        <a-locale-provider :locale="zhCN">
+          <a-date-picker v-model="endTime" placeholder="请选择截至日期" @change="headerEndDatePickerChange"></a-date-picker>
+        </a-locale-provider>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import zhCN from "ant-design-vue/es/locale/zh_CN";
 import LunarCalendar from "lunar-calendar" //获取二十四节气和农历日期
 // import calendar from 'js-calendar-converter'
 export default {
@@ -193,6 +208,7 @@ export default {
   },
   data(){
     return {
+      zhCN:zhCN,
       moduleObject:{},
       propData:this.$root.propData.compositeAttr||{
         startYear: 2000,
@@ -200,6 +216,8 @@ export default {
         defaultYear: 2024,
         defaultMonth: 10
       },
+      startTime: '',
+      endTime: '',
       select_year: '',
       select_month: '',
       table_header: [
@@ -421,6 +439,7 @@ export default {
   },
   created() {
     this.moduleObject = this.$root.moduleObject;
+    this.setDefaultTime();
     this.makeDefaultData()
     this.convertAttrToStyleObject();
     this.getInitData()
@@ -428,6 +447,24 @@ export default {
   mounted() {},
   destroyed() {},
   methods:{
+    setDefaultTime(){
+      // 获取当前月份的第一天
+      let firstDayOfMonth = new Date();
+      firstDayOfMonth.setDate(1);
+      firstDayOfMonth.setHours(0, 0, 0, 0); // 可选，确保时间为00:00:00
+      this.startTime = IDM.dateFormat(firstDayOfMonth,"Y-m-d")
+      // 获取当前月份的最后一天
+      let lastDayOfMonth = new Date();
+      lastDayOfMonth.setMonth(lastDayOfMonth.getMonth() + 1, 0); // 设置下个月的第一天的前一天
+      lastDayOfMonth.setHours(23, 59, 59, 999); // 可选，确保时间为23:59:59.999
+      this.endTime = IDM.dateFormat(lastDayOfMonth,"Y-m-d")
+    },
+    headerStartDatePickerChange(date, dateString) {
+      this.startTime = dateString;
+    },
+    headerEndDatePickerChange(date, dateString) {
+      this.endTime = dateString;
+    },
     jumpToFormPage(day,person){
       //对结果进行再次函数自定义
       if(this.propData.customFunction&&this.propData.customFunction.length>0){
@@ -467,20 +504,20 @@ export default {
     // 导入
     doImport(info){
       let that = this;
-      var loading = layer.load(1, {
+      var loading = window.layer.load(1, {
           shadeClose: false,
           title: '上传中..',
           shade: [0.8,'#fff'] //0.1透明度的白色背景
       });
       IDM.http.upload(`ctrl/newSchedule/importExcleRyap`,info.file).then((res) => {
-        layer.close(loading);
+        window.layer.close(loading);
         if (res.data.code == '200') {
           that.getInitData()
         }else if (res.data.code == '500'){
           IDM.layer.alert(res.data.message)
         }
       }).catch((err) => {
-        layer.close(loading);
+        window.layer.close(loading);
         console.log(err)
       })
     },
@@ -499,17 +536,41 @@ export default {
       })
     },
     doExport() {
-      IDM.http.get(`ctrl/dutyScheduleCtrl/generate`,{
-        year: this.select_year,
-        month: this.select_month
-      },{
-        responseType: 'blob'
-      }).then((res) => {
-        let name = `${this.select_year}年${this.select_month}月排班表.xlsx`;
-        this.downloadFile(res.data,name)
-      }).catch((err) => {
-        console.log(err)
-      })
+      var that = this;
+      IDM.layer.open({
+        type: 1, // 类型为1时，表示页面层
+        title: '请选择导出日期范围',
+        content: $(this.$refs.timePicker),
+        area: ['340px', '220px'],
+        btn:['确认'],
+        success: function(layero, index) {
+            var mask = $(".idm-layer-shade");
+            mask.appendTo(layero.parent()); // 将遮罩层移动到弹出层的父节点下
+        },
+        yes:function (index,layero) {
+          IDM.layer.msg("请稍等，正在执行导出...");
+          IDM.layer.close(index);
+          var year = new Date(that.startTime).getFullYear();
+          var month = new Date(that.startTime).getMonth() + 1;
+          IDM.http.get(`ctrl/dutyScheduleCtrl/generate`,{
+            year: year,
+            month: month,
+            startTime:that.startTime,
+            endTime:that.endTime
+          },{
+            responseType: 'blob'
+          }).then((res) => {
+            let name = `${year}年${month}月排班表.xlsx`;
+            that.downloadFile(res.data,name)
+          }).catch((err) => {
+            console.log(err)
+            err.response.data.text().then(function(res){
+              IDM.layer.alert(res);
+            })
+          })
+        }
+      });
+      
     },
     doExportHoliday() {
       IDM.layer.open({
@@ -941,6 +1002,11 @@ export default {
   }
 }
 </script>
+<style>
+.ant-calendar-picker-container{
+  z-index: 99999999;
+}
+</style>
 <style scoped lang="scss">
 .IDailyScheduling_app {
   position: relative;
@@ -949,6 +1015,9 @@ export default {
   background: #FFFFFF;
   overflow-y: auto;
   font-family: SourceHanSansCN-Regular;
+  .timePicker{
+    padding: 10px 30px;
+  }
   .scroll_block{
     height: 100%;
     overflow-y: auto;
