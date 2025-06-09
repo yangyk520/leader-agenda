@@ -61,6 +61,13 @@
       "comLangue": "vue"
     },
     {
+      "classId": "idm.component.leaderAgenda.iworkschedulingquzheng",
+      "comName": "工作安排区政处",
+      "className": "IWorkSchedulingQuzheng",
+      "comType": "common",
+      "comLangue": "vue"
+    },
+    {
       "classId": "idm.component.leaderAgenda.ielectronicweeklytable",
       "comName": "电子周表",
       "className": "IElectronicWeeklyTable",
