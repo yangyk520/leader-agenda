@@ -18,7 +18,7 @@
                 <div v-if="viewModel == 2" class="add-btn" @click="handleAddClick(item.dateStr, item1.key,item)"><svg-icon
                     iconClass="add"></svg-icon></div>
                 <div v-for="(item2, index2) in item[item1.key]" :key="index2" @click="handleOpen(item2)">
-                  {{ item2.content || item2.content }}
+                  {{ item2.content || item2 }}
                 </div>
               </div>
             </div>
