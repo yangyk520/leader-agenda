@@ -475,7 +475,8 @@ export default {
             ...this.propData.customFunction[0].param,
             moduleObject: this.moduleObject,
             day: day,
-            person: person
+            person: person,
+            _this:this
           });
         } catch (error) {
         }
