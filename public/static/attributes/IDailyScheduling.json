@@ -29,6 +29,14 @@
                 "default": false
             },
             {
+                "type": "switch",
+                "layoutType": "inline",
+                "text": "显示左右按钮",
+                "bindKey": "prevnextBtn",
+                "desc": "开启后会显示上月下月的切换按钮",
+                "default": false
+            },
+            {
                 
                 "type": "input",
                 "layoutType": "inline",
