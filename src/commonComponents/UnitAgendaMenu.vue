@@ -59,7 +59,7 @@ export default {
         this.$emit("updateActiveId", {
           deptId: item.attrs.idValue
         });
-      } else if (this.type === "person" && item.type == 1) {
+      } else if ((this.type === "person" || this.type === "leader") && item.type == 1) {
         this.$emit("updateActiveId", {
           userId: item.attrs.idValue,
           deptId: item.attrs.deptId

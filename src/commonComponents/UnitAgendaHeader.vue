@@ -27,6 +27,12 @@
       </div>
       <div class="top-view">
         <span
+          v-if="showLeader"
+          :class="{ active: timeViewType === 'leader' }"
+          @click="timeViewToggle('leader')"
+          >领导</span
+        >
+        <span
           :class="{ active: timeViewType === 'unit' }"
           @click="timeViewToggle('unit')"
           >部门</span
@@ -97,10 +103,16 @@ export default {
       weeksInYear: "",
       // 搜索项
       searchVal: "",
+      showLeader: false,//是否显示领导
     };
   },
   watch: {},
   created() {
+    //领导日程需展示的部门ID
+    if(IDM.url.queryString("tswLeaderDeptId") == "240228110905cCi7EaR0bC99sbnGQyP") {
+      console.log("显示领导");
+      this.showLeader = true;
+    }
     this.initTime(moment());
     this.sendHeadParams();
   },
@@ -155,7 +167,7 @@ export default {
         type: 2,
         title: ["新增日程", "font-size:18px;"],
         area: ["1200px", "90%"],
-        content: IDM.url.getWebPath(
+         content: IDM.url.getWebPath(
           "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo"
         ),
         success: (layero, index) => {

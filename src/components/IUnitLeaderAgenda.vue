@@ -12,7 +12,7 @@
       <div class="agenda-main">
         <div class="depart-list">
           <div class="depart-list-title">
-            {{ form_data.timeViewType === "person" ? "个人" : "部门" }}日程
+            {{ form_data.timeViewType === "person" ? "个人" : (form_data.timeViewType === "unit" ? "部门" : "领导") }}日程
           </div>
           <div class="depart-list-content scroll_block">
             <UnitAgendaMenu :menuData="departList" :activeId="activeId" :type="form_data.timeViewType"
@@ -244,9 +244,18 @@ export default {
         if (item.children && item.children.length) {
           item.children = this.setUpDepartList(item.children);
         }
-        return this.form_data.timeViewType === "unit"
-          ? item.type == 4 || item.type == 5
-          : true;
+        //是否是团市委
+        var isTsw = item.id.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP" || item.pid.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP";
+        var bol = true;
+        //部门
+        if(this.form_data.timeViewType === "unit"){
+          bol = item.type == 4 || item.type == 5;
+        }
+        //领导
+        if(this.form_data.timeViewType === "leader"){
+          bol = isTsw;
+        }
+        return bol;
       });
     },
     /**
