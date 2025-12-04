@@ -53,7 +53,7 @@
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd">新增</span>
+        <span class="operation-btn primary" @click="handleAdd" v-if="showAddBtn">新增</span>
         <span class="operation-btn" @click="handleExport">导出</span>
       </div>
     </div>
@@ -72,11 +72,11 @@ export default {
     },
     activeDepart: {
       type: String,
-      default:'',
+      default: "",
     },
     activeUser: {
       type: String,
-      default:'',
+      default: "",
     },
   },
   data() {
@@ -103,15 +103,32 @@ export default {
       weeksInYear: "",
       // 搜索项
       searchVal: "",
-      showLeader: false,//是否显示领导
+      showLeader: false, //是否显示领导
+      showAddBtn: true, //是否显示新增按钮
     };
   },
   watch: {},
   created() {
     //领导日程需展示的部门ID
-    if(IDM.url.queryString("tswLeaderDeptId") == "240228110905cCi7EaR0bC99sbnGQyP") {
+    if (
+      IDM.url.queryString("tswLeaderDeptId") ==
+      "240228110905cCi7EaR0bC99sbnGQyP"
+    ) {
       console.log("显示领导");
       this.showLeader = true;
+    }
+    //团市委加新增按钮权限控制
+    if (IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65") {
+      IDM.http
+        .get("ctrl/tswCustom/getUserRoles")
+        .done((res) => {
+          if (res.type == "success" && res.code == "200") {
+            this.showAddBtn = res.data.isDeptScheduleAdmin;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     }
     this.initTime(moment());
     this.sendHeadParams();
@@ -145,10 +162,12 @@ export default {
         startTime: this.weekList[0].date,
         endTime: this.weekList[this.weekList.length - 1].date,
         searchText: this.searchVal,
-        deptId:this.activeDepart,
-        userId:this.timeViewType === "person" ? this.activeUser : ""
+        deptId: this.activeDepart,
+        userId: this.timeViewType === "person" ? this.activeUser : "",
       };
-      const url = `ctrl/deptScheduleList/exportWeekData?${IDM.url.stringify(params)}`;
+      const url = `ctrl/deptScheduleList/exportWeekData?${IDM.url.stringify(
+        params
+      )}`;
 
       const a = document.createElement("a");
       a.style.display = "none";
@@ -167,7 +186,7 @@ export default {
         type: 2,
         title: ["新增日程", "font-size:18px;"],
         area: ["1200px", "90%"],
-         content: IDM.url.getWebPath(
+        content: IDM.url.getWebPath(
           "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo"
         ),
         success: (layero, index) => {
