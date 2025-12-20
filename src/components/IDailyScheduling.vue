@@ -834,6 +834,7 @@ export default {
           const result = `${formattedStart}-${formattedEnd}`;
           const year = new Date(that.startTime).getFullYear();
           const month = new Date(that.startTime).getMonth() + 1;
+
           IDM.http
             .get(
               `ctrl/dutyScheduleCtrl/generate`,
@@ -848,8 +849,9 @@ export default {
               }
             )
             .then((res) => {
-              let name = `市农委值班数据(${result}).xlsx`;
-              that.downloadFile(res.data, name);
+              // let name = `市农委值班数据(${result}).xlsx`;
+              let name = `${result}排班表.xlsx`;
+              that.downloadFile(res.data, name); 
             })
             .catch((err) => {
               console.log(err);
