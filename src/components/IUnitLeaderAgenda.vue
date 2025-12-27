@@ -5,18 +5,37 @@
     id：使用moduleObject.id，如果id不使用这个将会被idm-ctrl-id属性替换
     idm-ctrl-id：组件的id，这个必须不能为空
   -->
-  <div idm-ctrl="idm_module" :id="moduleObject.id" :idm-ctrl-id="moduleObject.id" class="idm-unit-leader-agenda-outer">
+  <div
+    idm-ctrl="idm_module"
+    :id="moduleObject.id"
+    :idm-ctrl-id="moduleObject.id"
+    class="idm-unit-leader-agenda-outer"
+  >
     <div class="idm-unit-leader-agenda-container scroll_block">
-      <AgendaHeader :moduleObject="moduleObject" :activeDepart="activeDepart" :activeUser="activeUser"
-        @updateHeadParams="updateHeadParams" />
+      <AgendaHeader
+        :moduleObject="moduleObject"
+        :activeDepart="activeDepart"
+        :activeUser="activeUser"
+        @updateHeadParams="updateHeadParams"
+      />
       <div class="agenda-main">
         <div class="depart-list">
           <div class="depart-list-title">
-            {{ form_data.timeViewType === "person" ? "个人" : (form_data.timeViewType === "unit" ? "部门" : "领导") }}日程
+            {{
+              form_data.timeViewType === "person"
+                ? "个人"
+                : form_data.timeViewType === "unit"
+                ? "部门"
+                : "领导"
+            }}日程
           </div>
           <div class="depart-list-content scroll_block">
-            <UnitAgendaMenu :menuData="departList" :activeId="activeId" :type="form_data.timeViewType"
-              @updateActiveId="updateActiveId"></UnitAgendaMenu>
+            <UnitAgendaMenu
+              :menuData="departList"
+              :activeId="activeId"
+              :type="form_data.timeViewType"
+              @updateActiveId="updateActiveId"
+            ></UnitAgendaMenu>
           </div>
         </div>
         <div class="agenda-main-box scroll_block">
@@ -26,18 +45,31 @@
                 <span>{{ day }} 周{{ weekCn[index] }}</span>
                 <span>上午</span>
               </div>
-              <div v-if="agendaList[index] && agendaList[index].morningList" class="agenda-day-list">
-                <div class="agenda-day-item" v-for="(agenda, a) in agendaList[index].morningList" :key="a" :class="{
-                  active: agenda.id === activeAgenda,
-                  type1: agenda.agendaType == 300,
-                  type2: agenda.agendaType == 301,
-                  type3: agenda.agendaType != 300 && agenda.agendaType != 301,
-                }" @mouseenter="() => (activeAgenda = agenda.id)" @click="agendaHander(agenda)">
+              <div
+                v-if="agendaList[index] && agendaList[index].morningList"
+                class="agenda-day-list"
+              >
+                <div
+                  class="agenda-day-item"
+                  v-for="(agenda, a) in agendaList[index].morningList"
+                  :key="a"
+                  :class="{
+                    active: agenda.id === activeAgenda,
+                    type1: agenda.agendaType == 300,
+                    type2: agenda.agendaType == 301,
+                    type3: agenda.agendaType != 300 && agenda.agendaType != 301,
+                  }"
+                  @mouseenter="() => (activeAgenda = agenda.id)"
+                  @click="agendaHander(agenda)"
+                >
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
                     <div>{{ agenda.endTime }}</div>
                   </div>
-                  <div class="agenda-day-item-right">
+                  <div
+                    class="agenda-day-item-right"
+                    :class="isTsw ? 'isTsw' : ''"
+                  >
                     <section>
                       <div class="item-label">内容</div>
                       ：
@@ -49,7 +81,11 @@
                       <div class="item-value">{{ agenda.place }}</div>
                     </section>
                     <section>
-                      <div class="item-label">{{ isYJJ ? '局领导' : '中心领导' }}</div>
+                      <div class="item-label">
+                        {{
+                          isYJJ ? "局领导" : isTsw ? "团市委领导" : "中心领导"
+                        }}
+                      </div>
                       ：
                       <div class="item-value">{{ agenda.leader }}</div>
                     </section>
@@ -64,18 +100,31 @@
             </div>
             <div class="agenda-day-afternoon">
               <div class="agenda-day-info">下午</div>
-              <div v-if="agendaList[index] && agendaList[index].afternoonList" class="agenda-day-list">
-                <div class="agenda-day-item" v-for="(agenda, a) in agendaList[index].afternoonList" :key="a" :class="{
-                  active: agenda.id === activeAgenda,
-                  type1: agenda.agendaType == 300,
-                  type2: agenda.agendaType == 301,
-                  type3: agenda.agendaType != 300 && agenda.agendaType != 301,
-                }" @mouseenter="() => (activeAgenda = agenda.id)" @click="agendaHander(agenda)">
+              <div
+                v-if="agendaList[index] && agendaList[index].afternoonList"
+                class="agenda-day-list"
+              >
+                <div
+                  class="agenda-day-item"
+                  v-for="(agenda, a) in agendaList[index].afternoonList"
+                  :key="a"
+                  :class="{
+                    active: agenda.id === activeAgenda,
+                    type1: agenda.agendaType == 300,
+                    type2: agenda.agendaType == 301,
+                    type3: agenda.agendaType != 300 && agenda.agendaType != 301,
+                  }"
+                  @mouseenter="() => (activeAgenda = agenda.id)"
+                  @click="agendaHander(agenda)"
+                >
                   <div class="agenda-day-item-left">
                     <div>{{ agenda.startTime }}</div>
                     <div>{{ agenda.endTime }}</div>
                   </div>
-                  <div class="agenda-day-item-right">
+                  <div
+                    class="agenda-day-item-right"
+                    :class="isTsw ? 'isTsw' : ''"
+                  >
                     <section>
                       <div class="item-label">内容</div>
                       ：
@@ -87,7 +136,11 @@
                       <div class="item-value">{{ agenda.place }}</div>
                     </section>
                     <section>
-                      <div class="item-label">{{ isYJJ ? '局领导' : '中心领导' }}</div>
+                      <div class="item-label">
+                        {{
+                          isYJJ ? "局领导" : isTsw ? "团市委领导" : "中心领导"
+                        }}
+                      </div>
                       ：
                       <div class="item-value">{{ agenda.leader }}</div>
                     </section>
@@ -138,9 +191,10 @@ export default {
       agendaList: [],
       activeAgenda: "",
       userInfo: null,
-      activeDepart: '',
-      activeUser: '',
-      isYJJ: true
+      activeDepart: "",
+      activeUser: "",
+      isYJJ: true,
+      isTsw: false, //是否是团市委
     };
   },
   props: {},
@@ -152,8 +206,7 @@ export default {
       );
     },
   },
-  computed: {
-  },
+  computed: {},
   created() {
     this.moduleObject = this.$root.moduleObject;
 
@@ -162,22 +215,26 @@ export default {
     } else {
       this.userInfo = IDM.user.getCurrentUserInfo();
     }
-    this.isYJJ = this.userInfo?.unitInfo?.unitId == '230721170831MRd9nBV4DtzayRaxXaj'
+    this.isYJJ =
+      this.userInfo?.unitInfo?.unitId == "230721170831MRd9nBV4DtzayRaxXaj";
+
+    this.isTsw =
+      IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65";
 
     this.initActiveDepartOrUser();
     this.getDepartList();
     this.initAttrToModule();
   },
-  mounted() { },
-  destroyed() { },
+  mounted() {},
+  destroyed() {},
   methods: {
     updateActiveId(item) {
       this.activeDepart = item.deptId;
       this.activeUser = item.userId;
-      if (this.form_data.timeViewType == 'unit') {
-        this.activeId = `department_${item.deptId}`
+      if (this.form_data.timeViewType == "unit") {
+        this.activeId = `department_${item.deptId}`;
       } else {
-        this.activeId = `person_${item.userId}`
+        this.activeId = `person_${item.userId}`;
       }
       this.initData();
     },
@@ -195,7 +252,7 @@ export default {
         title: ["我的日程", "font-size:18px;"],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(
-          `ctrl/formControl/form?listId=1807311741357weRO9ArLPr1orXgSB8&method=info&moduleId=180719094152MnF6C2hEPtqIvhjJIxo&pk=${todo.id}`
+          `ctrl/formControl/form?listId=1807311741357weRO9ArLPr1orXgSB8&method=info&moduleId=180719094152MnF6C2hEPtqIvhjJIxo&pk=${todo.id}&editType=${this.form_data.timeViewType}`
         ),
         success: function (layero, index) {
           top.close = function () {
@@ -208,9 +265,14 @@ export default {
       });
     },
     initActiveDepartOrUser(type = "unit") {
+      var userOrgId = this.userInfo.userOrgId;
+      //团市委
+      if (this.isTsw) {
+        userOrgId = "240228110905cCi7EaR0bC99sbnGQyP";
+      }
       this.activeId =
         type === "unit"
-          ? "department_" + this.userInfo.userOrgId
+          ? "department_" + userOrgId
           : "person_" + this.userInfo.userid;
     },
     getDepartList() {
@@ -240,20 +302,40 @@ export default {
     },
     setUpDepartList(list, first) {
       return list.filter((item) => {
-        item.open = first && item?.children?.every(j => j.type == 4 || j.type == 5)
+        item.open =
+          first && item?.children?.every((j) => j.type == 4 || j.type == 5);
         if (item.children && item.children.length) {
           item.children = this.setUpDepartList(item.children);
         }
-        //是否是团市委
-        var isTsw = item.id.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP" || item.pid.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP";
         var bol = true;
+
+        // //是否是团市委
+        // var tsw_leader =
+        //   item.id.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP" ||
+        //   item.pid.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP";
+
+        // //领导
+        // if (this.form_data.timeViewType === "leader") {
+        //   bol = tsw_leader;
+        // }
+
         //部门
-        if(this.form_data.timeViewType === "unit"){
-          bol = item.type == 4 || item.type == 5;
+        if (this.form_data.timeViewType === "unit") {
+          //团市委（只显示团市委领导部门）
+          if (this.isTsw) {
+            bol =
+              (item.type == 4 || item.type == 5) &&
+              item.id == `department_240228110905cCi7EaR0bC99sbnGQyP`;
+          } else {
+            bol = item.type == 4 || item.type == 5;
+          }
         }
-        //领导
-        if(this.form_data.timeViewType === "leader"){
-          bol = isTsw;
+
+        //个人  团市委（排除团市委领导部门）
+        if (this.form_data.timeViewType === "person" && this.isTsw) {
+          bol =
+            item.id != `department_240228110905cCi7EaR0bC99sbnGQyP` &&
+            item.pid != `department_240228110905cCi7EaR0bC99sbnGQyP`;
         }
         return bol;
       });
@@ -288,8 +370,8 @@ export default {
       }
       const themeNamePrefix =
         IDM.setting &&
-          IDM.setting.applications &&
-          IDM.setting.applications.themeNamePrefix
+        IDM.setting.applications &&
+        IDM.setting.applications.themeNamePrefix
           ? IDM.setting.applications.themeNamePrefix
           : "idm-theme-";
       for (var i = 0; i < themeList.length; i++) {
@@ -301,11 +383,11 @@ export default {
         }
         IDM.setStyleToPageHead(
           "." +
-          themeNamePrefix +
-          item.key +
-          " #" +
-          (this.moduleObject.packageid || "module_demo") +
-          " .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active",
+            themeNamePrefix +
+            item.key +
+            " #" +
+            (this.moduleObject.packageid || "module_demo") +
+            " .ant-tabs-nav .ant-tabs-tab.ant-tabs-tab-active",
           {
             color: item.mainColor
               ? IDM.hex8ToRgbaString(item.mainColor.hex8)
@@ -317,7 +399,7 @@ export default {
     /**
      * 加载基本属性到组件中
      */
-    initBaseAttrToModule() { },
+    initBaseAttrToModule() {},
     /**
      * 提供父级组件调用的刷新prop数据组件
      */
@@ -334,12 +416,12 @@ export default {
         styleObject["background-size"] =
           (this.propData.bgSizeWidth
             ? this.propData.bgSizeWidth.inputVal +
-            this.propData.bgSizeWidth.selectVal
+              this.propData.bgSizeWidth.selectVal
             : "auto") +
           " " +
           (this.propData.bgSizeHeight
             ? this.propData.bgSizeHeight.inputVal +
-            this.propData.bgSizeHeight.selectVal
+              this.propData.bgSizeHeight.selectVal
             : "auto");
       } else if (this.propData.bgSize) {
         styleObject["background-size"] = this.propData.bgSize;
@@ -443,8 +525,8 @@ export default {
         this.agendaList = result;
       } else {
         const params = {
-          deptId: this.activeDepart || '',
-          userId: this.activeUser || '',
+          deptId: this.activeDepart || "",
+          userId: this.activeUser || "",
           startTime: this.weekList[0],
           endTime: this.weekList[this.weekList.length - 1],
           searchText: this.form_data.searchVal,
@@ -507,7 +589,7 @@ export default {
               expressData: _defaultVal,
               interfaceData: resultData,
             });
-        } catch (error) { }
+        } catch (error) {}
         _defaultVal = resValue;
       }
 
@@ -631,7 +713,7 @@ export default {
           margin-bottom: 0;
         }
 
-        &>div {
+        & > div {
           width: 50%;
         }
 
@@ -714,7 +796,7 @@ export default {
               width: 100px;
               text-align: center;
 
-              &>div {
+              & > div {
                 margin-top: 20px;
               }
             }
@@ -746,6 +828,18 @@ export default {
                   -webkit-box-orient: vertical;
                   line-clamp: 1;
                   -webkit-line-clamp: 1;
+                }
+              }
+
+              &.isTsw {
+                section {
+                  .item-label {
+                    width: 75px;
+                  }
+
+                  .item-value {
+                    width: calc(100% - 75px);
+                  }
                 }
               }
             }

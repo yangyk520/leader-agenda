@@ -26,12 +26,12 @@
         <span class="calendar-btn" @click="curDayWeekHandle">本周</span>
       </div>
       <div class="top-view">
-        <span
+        <!-- <span
           v-if="showLeader"
           :class="{ active: timeViewType === 'leader' }"
           @click="timeViewToggle('leader')"
           >领导</span
-        >
+        > -->
         <span
           :class="{ active: timeViewType === 'unit' }"
           @click="timeViewToggle('unit')"
@@ -53,7 +53,9 @@
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd" v-if="showAddBtn">新增</span>
+        <span class="operation-btn primary" @click="handleAdd" v-if="showAddBtn"
+          >新增</span
+        >
         <span class="operation-btn" @click="handleExport">导出</span>
       </div>
     </div>
@@ -187,7 +189,8 @@ export default {
         title: ["新增日程", "font-size:18px;"],
         area: ["1200px", "90%"],
         content: IDM.url.getWebPath(
-          "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo"
+          "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo&editType=" +
+            this.timeViewType
         ),
         success: (layero, index) => {
           top.close = () => {
