@@ -53,7 +53,7 @@
         <span class="operation-btn" @click="hanldeReset">重置</span>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd" v-if="showAddBtn"
+        <span class="operation-btn primary" @click="handleAdd" v-if="showAddBtn || timeViewType === 'person'"
           >新增</span
         >
         <span class="operation-btn" @click="handleExport">导出</span>
