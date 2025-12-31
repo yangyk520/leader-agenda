@@ -268,7 +268,7 @@ export default {
       var userOrgId = this.userInfo.userOrgId;
       //团市委
       if (this.isTsw) {
-        userOrgId = "240228110905cCi7EaR0bC99sbnGQyP";
+        userOrgId = IDM.url.queryString("tswLeaderDeptId");
       }
       this.activeId =
         type === "unit"
@@ -325,7 +325,7 @@ export default {
           if (this.isTsw) {
             bol =
               (item.type == 4 || item.type == 5) &&
-              item.id == `department_240228110905cCi7EaR0bC99sbnGQyP`;
+              item.id == `department_${IDM.url.queryString("tswLeaderDeptId")}`;
           } else {
             bol = item.type == 4 || item.type == 5;
           }
@@ -334,8 +334,8 @@ export default {
         //个人  团市委（排除团市委领导部门）
         if (this.form_data.timeViewType === "person" && this.isTsw) {
           bol =
-            item.id != `department_240228110905cCi7EaR0bC99sbnGQyP` &&
-            item.pid != `department_240228110905cCi7EaR0bC99sbnGQyP`;
+            item.id != `department_${IDM.url.queryString("tswLeaderDeptId")}` &&
+            item.pid != `department_${IDM.url.queryString("tswLeaderDeptId")}`;
         }
         return bol;
       });
