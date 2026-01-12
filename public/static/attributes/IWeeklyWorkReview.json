@@ -92,6 +92,14 @@
               "bindKey": "showWld",
               "desc":"是否显示委领导一周工作安排",
               "default": true
+            },
+            {
+              "type": "switch",
+              "layoutType": "block",
+              "text": "兼容下属机构",
+              "bindKey": "showSubordinate",
+              "desc":"是否兼容下属机构",
+              "default": false
             }
           ]
       },

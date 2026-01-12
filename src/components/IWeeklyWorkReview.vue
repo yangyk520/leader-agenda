@@ -37,7 +37,7 @@
     <div class="table_header flex_between">
       <div class="table_header_left flex_start">
         <div class="icon"></div>
-        <div class="text">委领导{{weekOrMonth}}</div>
+        <div class="text">{{propData.showSubordinate?'':'委'}}领导{{weekOrMonth}}</div>
       </div>
     </div>
     <div class="table_body">
@@ -55,11 +55,11 @@
     </div>
   </div>
   <div class="footer_block flex_between" :style="`height:calc(100vh - ${propData.showWld ? 343 : 141 }px)`">
-    <div class="table depart_table">
+    <div class="table depart_table" :style="`width:${propData.showSubordinate ? '100%' : '50%'}`">
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
-          <div class="text">机关处室{{weekOrMonth}}</div>
+          <div class="text">{{propData.showSubordinate?'科室':'机关处室'}}{{weekOrMonth}}</div>
         </div>
       </div>
       <div class="table_body">
@@ -76,7 +76,7 @@
         </vue-scroll>
       </div>
     </div>
-    <div class="table unit_table">
+    <div class="table unit_table" v-if="!propData.showSubordinate">
       <div class="table_header flex_between">
         <div class="table_header_left flex_start">
           <div class="icon"></div>
@@ -113,7 +113,8 @@ export default {
       propData: this.$root.propData.compositeAttr || {
         fontContent: "Hello Word",
         showWld:false,
-        scheduleType:'2'
+        scheduleType:'2',
+        showSubordinate:false
       },
       leader: '',
       leaderList: [],
