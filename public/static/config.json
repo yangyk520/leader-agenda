@@ -94,6 +94,13 @@
       "className": "ILeaderAgendaCaiZhengJu",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.iweeklyworkschedule",
+      "comName": "市科委一周工作安排",
+      "className": "IWeeklyWorkSchedule",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
