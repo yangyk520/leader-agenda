@@ -19,7 +19,7 @@
         @updateHeadParams="updateHeadParams"
       />
       <div class="agenda-main">
-        <div class="depart-list">
+        <div class="depart-list" v-show="!isTsw">
           <div class="depart-list-title">
             {{
               form_data.timeViewType === "person"
@@ -38,7 +38,10 @@
             ></UnitAgendaMenu>
           </div>
         </div>
-        <div class="agenda-main-box scroll_block">
+        <div
+          class="agenda-main-box scroll_block"
+          v-if="!(form_data.timeViewType === 'unit' && isTsw)"
+        >
           <div class="agenda-day" v-for="(day, index) in weekList" :key="day">
             <div class="agenda-day-morning">
               <div class="agenda-day-info">
@@ -155,6 +158,67 @@
             </div>
           </div>
         </div>
+        <div
+          class="tsw-agenda"
+          v-if="form_data.timeViewType === 'unit' && isTsw"
+        >
+          <div class="table-header">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th width="130">领导</th>
+                  <th width="80">时间</th>
+                  <th v-for="(day, index) in weekList" :key="day">
+                    {{ day }}<br />周{{ weekCn[index] }}
+                  </th>
+                </tr>
+              </thead>
+            </table>
+          </div>
+          <div class="table-body scroll_block">
+            <table class="table">
+              <tbody>
+                <template v-for="item in agendaList">
+                  <tr :key="item.leader_name">
+                    <td width="130" rowspan="2">{{ item.leader_name }}</td>
+                    <td width="80">上午</td>
+                    <td v-for="d in item.weekly_schedule" :key="d.date">
+                      <div
+                        class="cell"
+                        v-for="(m, index) in d.morningList"
+                        :key="index"
+                        @click="agendaHander(m)"
+                      >
+                        <span class="startTime">{{ m.startTime }}</span>
+                        <span class="bt">{{ m.bt }}</span>
+                        <span class="place" v-if="m.place"
+                          >【{{ m.place }}】</span
+                        >
+                      </div>
+                    </td>
+                  </tr>
+                  <tr :key="item">
+                    <td>下午</td>
+                    <td v-for="d in item.weekly_schedule" :key="d.date">
+                      <div
+                        class="cell"
+                        v-for="(m, index) in d.afternoonList"
+                        :key="index"
+                        @click="agendaHander(m)"
+                      >
+                        <span class="startTime">{{ m.startTime }}</span>
+                        <span class="bt">{{ m.bt }}</span>
+                        <span class="place" v-if="m.place"
+                          >【{{ m.place }}】</span
+                        >
+                      </div>
+                    </td>
+                  </tr>
+                </template>
+              </tbody>
+            </table>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -239,6 +303,7 @@ export default {
       this.initData();
     },
     agendaHander(todo) {
+      console.log(todo);
       if (todo.url) {
         top.window.simpleWin(this, {
           url: IDM.url.getWebPath(todo.url),
@@ -266,14 +331,13 @@ export default {
     },
     initActiveDepartOrUser(type = "unit") {
       var userOrgId = this.userInfo.userOrgId;
-      //团市委
-      if (this.isTsw) {
-        userOrgId = IDM.url.queryString("tswLeaderDeptId");
-      }
+      var userid = this.userInfo.userid;
       this.activeId =
-        type === "unit"
-          ? "department_" + userOrgId
-          : "person_" + this.userInfo.userid;
+        type === "unit" ? "department_" + userOrgId : "person_" + userid;
+
+      if (this.isTsw) {
+        this.activeDepart = IDM.url.queryString("tswLeaderDeptId");
+      }
     },
     getDepartList() {
       if (!this.moduleObject.env || this.moduleObject.env == "develop") {
@@ -308,37 +372,111 @@ export default {
           item.children = this.setUpDepartList(item.children);
         }
         var bol = true;
-
-        // //是否是团市委
-        // var tsw_leader =
-        //   item.id.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP" ||
-        //   item.pid.split("_")[1] == "240228110905cCi7EaR0bC99sbnGQyP";
-
-        // //领导
-        // if (this.form_data.timeViewType === "leader") {
-        //   bol = tsw_leader;
-        // }
-
         //部门
         if (this.form_data.timeViewType === "unit") {
-          //团市委（只显示团市委领导部门）
-          if (this.isTsw) {
-            bol =
-              (item.type == 4 || item.type == 5) &&
-              item.id == `department_${IDM.url.queryString("tswLeaderDeptId")}`;
-          } else {
-            bol = item.type == 4 || item.type == 5;
-          }
-        }
-
-        //个人  团市委（排除团市委领导部门）
-        if (this.form_data.timeViewType === "person" && this.isTsw) {
-          bol =
-            item.id != `department_${IDM.url.queryString("tswLeaderDeptId")}` &&
-            item.pid != `department_${IDM.url.queryString("tswLeaderDeptId")}`;
+          bol = item.type == 4 || item.type == 5;
         }
         return bol;
       });
+    },
+    changeTableWidth() {
+      $(".tsw-agenda .table-header").width(
+        $(".tsw-agenda .table-body table").width()
+      );
+      window.onresize = () => {
+        $(".tsw-agenda .table-header").width(
+          $(".tsw-agenda .table-body table").width()
+        );
+      };
+    },
+    //团市委重置数据
+    resetData(data) {
+      // 1. 提取所有日期并排序
+      const allDates = data.map((item) => item.date).sort();
+
+      // 2. 提取所有不重复的领导姓名
+      const allLeaders = new Set();
+      data.forEach((dayItem) => {
+        dayItem.list.forEach((schedule) => {
+          let leader = schedule.leader || "";
+          const leaders = leader.split(",").map((leader) => leader.trim());
+          leaders.forEach((leader) => allLeaders.add(leader));
+        });
+      });
+      // 转换为有序数组
+      const leaderList = Array.from(allLeaders).sort();
+
+      // 3. 构建日期到日程的映射（方便快速查找）
+      const dateScheduleMap = {};
+      data.forEach((item) => {
+        dateScheduleMap[item.date] = item.list;
+      });
+
+      // 4. 为每个领导构建完整的周度日程
+      const leaderSchedules = [];
+      leaderList.forEach((leader) => {
+        const weeklySchedule = allDates.map((date) => {
+          // 筛选当前日期下该领导的所有日程
+          const leaderDailySchedule = (dateScheduleMap[date] || []).filter(
+            (schedule) => {
+              const scheduleLeaders = schedule.leader
+                .split(",")
+                .map((l) => l.trim());
+              return scheduleLeaders.includes(leader);
+            }
+          );
+
+          return {
+            date: date,
+            list: leaderDailySchedule, // 无日程则为空数组
+          };
+        });
+
+        leaderSchedules.push({
+          leader_name: leader,
+          weekly_schedule: weeklySchedule,
+        });
+      });
+
+      // 分上下午
+      leaderSchedules.forEach((leader) => {
+        leader.weekly_schedule.forEach((item) => {
+          item.morningList = item.list.filter(
+            (inner) => inner.porid === "morning"
+          );
+          item.afternoonList = item.list.filter(
+            (inner) => inner.porid === "afternoon"
+          );
+          item.morningList = this.sortScheduleByStartTime(item.morningList);
+          item.afternoonList = this.sortScheduleByStartTime(item.afternoonList);
+        });
+      });
+
+      console.log(leaderSchedules);
+      this.agendaList = leaderSchedules;
+      this.$nextTick(() => {
+        this.changeTableWidth();
+      });
+    },
+    //根据开始时间排序
+    sortScheduleByStartTime(data) {
+      const copyData = JSON.parse(JSON.stringify(data));
+      copyData.sort((a, b) => {
+        const timeA = a.startTime || "24:00"; // 空值默认排最后
+        const timeB = b.startTime || "24:00";
+
+        // 将时间字符串（HH:MM）转换为分钟数
+        const [hourA, minuteA] = timeA.split(":").map(Number);
+        const [hourB, minuteB] = timeB.split(":").map(Number);
+
+        const totalMinutesA = hourA * 60 + minuteA;
+        const totalMinutesB = hourB * 60 + minuteB;
+
+        // 升序排列
+        return totalMinutesA - totalMinutesB;
+      });
+
+      return copyData;
     },
     /**
      * 更新头部组件参数
@@ -350,6 +488,17 @@ export default {
       }
       this.weekList = params.dates.split(",");
       this.form_data = params;
+      //团市委
+      if (this.isTsw) {
+        if (this.form_data.timeViewType === "unit") {
+          this.activeDepart = IDM.url.queryString("tswLeaderDeptId");
+          this.activeUser = "";
+        }
+        if (this.form_data.timeViewType === "person") {
+          this.activeDepart = this.userInfo.userOrgId;
+          this.activeUser = this.userInfo.userid;
+        }
+      }
       this.initData();
     },
     /**
@@ -514,15 +663,19 @@ export default {
       console.log("加载数据");
       if (!this.moduleObject.env || this.moduleObject.env == "develop") {
         const result = agendaListMock.data;
-        result.forEach((item) => {
-          item.morningList = item.list.filter(
-            (inner) => inner.porid === "morning"
-          );
-          item.afternoonList = item.list.filter(
-            (inner) => inner.porid === "afternoon"
-          );
-        });
-        this.agendaList = result;
+        if (this.isTsw && this.form_data.timeViewType === "unit") {
+          this.resetData(result);
+        } else {
+          result.forEach((item) => {
+            item.morningList = item.list.filter(
+              (inner) => inner.porid === "morning"
+            );
+            item.afternoonList = item.list.filter(
+              (inner) => inner.porid === "afternoon"
+            );
+          });
+          this.agendaList = result;
+        }
       } else {
         const params = {
           deptId: this.activeDepart || "",
@@ -538,15 +691,19 @@ export default {
             console.log("单位领导日程数据", res);
             if (res.data.code == "200") {
               const result = res.data.data;
-              result.forEach((item) => {
-                item.morningList = item.list.filter(
-                  (inner) => inner.porid === "morning"
-                );
-                item.afternoonList = item.list.filter(
-                  (inner) => inner.porid === "afternoon"
-                );
-              });
-              this.agendaList = result;
+              if (this.isTsw && this.form_data.timeViewType === "unit") {
+                this.resetData(result);
+              } else {
+                result.forEach((item) => {
+                  item.morningList = item.list.filter(
+                    (inner) => inner.porid === "morning"
+                  );
+                  item.afternoonList = item.list.filter(
+                    (inner) => inner.porid === "afternoon"
+                  );
+                });
+                this.agendaList = result;
+              }
             }
           })
           .catch((err) => {
@@ -681,6 +838,7 @@ export default {
       height: 100%;
       width: 300px;
       border: 1px solid rgba(230, 230, 230, 1);
+      margin-right: 15px;
 
       .depart-list-title {
         height: 48px;
@@ -699,7 +857,8 @@ export default {
     }
 
     .agenda-main-box {
-      width: calc(100% - 314px);
+      // width: calc(100% - 314px);
+      flex: 1;
       height: 100%;
       overflow-y: auto;
       padding: 0 10px;
@@ -841,6 +1000,59 @@ export default {
                     width: calc(100% - 75px);
                   }
                 }
+              }
+            }
+          }
+        }
+      }
+    }
+
+    .tsw-agenda {
+      flex: 1;
+      height: 100%;
+      position: relative;
+      padding-top: 50px;
+      .table-header {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: calc(100% - 8px);
+      }
+      .table-body {
+        height: 100%;
+        overflow-y: auto;
+        padding: 0 10px;
+        margin: -1px -10px 0 -10px;
+      }
+      .table {
+        width: 100%;
+        border-collapse: collapse;
+        table-layout: fixed;
+        tr {
+          th,
+          td {
+            border: 1px solid #e6e6e6;
+            text-align: center;
+          }
+          th {
+            background: #f9fcfe;
+            font-weight: 500;
+            height: 50px;
+          }
+          td {
+            padding: 8px;
+            .cell {
+              border-bottom: 1px dashed #ddd;
+              padding: 8px 0;
+              cursor: pointer;
+              .bt {
+                margin-left: 5px;
+              }
+              &:last-child {
+                border-bottom: none;
+              }
+              &:hover {
+                color: #0086d9;
               }
             }
           }

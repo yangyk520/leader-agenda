@@ -26,13 +26,14 @@
         <span class="calendar-btn" @click="curDayWeekHandle">本周</span>
       </div>
       <div class="top-view">
-        <!-- <span
-          v-if="showLeader"
-          :class="{ active: timeViewType === 'leader' }"
-          @click="timeViewToggle('leader')"
-          >领导</span
-        > -->
         <span
+          v-if="isTsw"
+          :class="{ active: timeViewType === 'unit' }"
+          @click="timeViewToggle('unit')"
+          >领导</span
+        >
+        <span
+          v-if="!isTsw"
           :class="{ active: timeViewType === 'unit' }"
           @click="timeViewToggle('unit')"
           >部门</span
@@ -105,22 +106,17 @@ export default {
       weeksInYear: "",
       // 搜索项
       searchVal: "",
-      showLeader: false, //是否显示领导
+      isTsw: false, //是否是团市委
       showAddBtn: true, //是否显示新增按钮
     };
   },
   watch: {},
   created() {
-    //领导日程需展示的部门ID
-    if (
-      IDM.url.queryString("tswLeaderDeptId") ==
-      "240228110905cCi7EaR0bC99sbnGQyP"
-    ) {
-      console.log("显示领导");
-      this.showLeader = true;
-    }
+    //团市委
+    this.isTsw = IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65";
+
     //团市委加新增按钮权限控制
-    if (IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65") {
+    if (this.isTsw) {
       IDM.http
         .get("ctrl/tswCustom/getUserRoles")
         .done((res) => {
