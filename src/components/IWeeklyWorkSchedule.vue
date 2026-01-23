@@ -112,18 +112,6 @@ export default {
   },
   destroyed() {},
   methods: {
-    clickItem(item, type) {
-      this.propData.clickFunction &&
-        this.propData.clickFunction.length &&
-        IDM.invokeCustomFunctions.apply(this, [
-          this.propData.clickFunction,
-          {
-            item: item,
-            type: type,
-            _this: this,
-          },
-        ]);
-    },
     getData() {
       var params = {
         startTime: this.startTime,
@@ -131,8 +119,8 @@ export default {
       };
       IDM.http.get("ctrl/skwWorkPlan/queryWorkPlan",params).done((res) => {
         if (res.type == "success" && res.code == "200") {
-          var data = res.data || [];
-          this.updateTime = res.serverTime;
+          var data = res.data.workPlanList || [];
+          this.updateTime = res.data.lastUpdateTime;
           this.currentDate = res.serverTime.split(" ")[0];
           this.fullData = data;
           this.dateArr = data.map((item) => {
@@ -150,137 +138,6 @@ export default {
       }).catch((err) => {
           console.log(err)
       })
-
-      // var res = {
-      //   code: "200",
-      //   type: "success",
-      //   message: "操作成功",
-      //   metadata: null,
-      //   token: "",
-      //   data: [
-      //     {
-      //       date: "2026-01-19",
-      //       workPlan: [
-      //         {
-      //           week: "星期一",
-      //           pcUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/ctrl/formControl/sysForm?moduleId=240731121534LBCbaMUlj548yFfp4Tm&nodeId=-1&pk=260119102046HuwTGZe7NudjCcFUuji",
-      //           sData: "1月19日",
-      //           range: "王宇、思然",
-      //           releaseTypeText: "已发布",
-      //           content: "111111",
-      //           dayTime: "上午",
-      //           releaseType: 1,
-      //           rcsd: 1,
-      //           rcsdText: "",
-      //           id: "260119102046HuwTGZe7NudjCcFUuji",
-      //           place: "111111",
-      //           mobileUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/dist/index.html#/commonForm/240731121534LBCbaMUlj548yFfp4Tm/260119102046HuwTGZe7NudjCcFUuji?listId=240731122244hywNDEwILcvyJuDtZG3&validateByList=1&method=view",
-      //         },
-      //         {
-      //           week: "星期一",
-      //           pcUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/ctrl/formControl/sysForm?moduleId=240731121534LBCbaMUlj548yFfp4Tm&nodeId=-1&pk=260119102106n3XW236eV3xINw6Idtv",
-      //           sData: "1月19日",
-      //           range: "王宇",
-      //           releaseTypeText: "已发布",
-      //           content: "2222",
-      //           dayTime: "下午",
-      //           releaseType: 1,
-      //           rcsd: 1,
-      //           rcsdText: "",
-      //           id: "260119102106n3XW236eV3xINw6Idtv",
-      //           place: "2222",
-      //           mobileUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/dist/index.html#/commonForm/240731121534LBCbaMUlj548yFfp4Tm/260119102106n3XW236eV3xINw6Idtv?listId=240731122244hywNDEwILcvyJuDtZG3&validateByList=1&method=view",
-      //         },
-      //       ],
-      //       dateWeek: "1/19星期一",
-      //     },
-      //     {
-      //       date: "2026-01-20",
-      //       dateWeek: "1/20星期二",
-      //     },
-      //     {
-      //       date: "2026-01-21",
-      //       dateWeek: "1/21星期三",
-      //     },
-      //     {
-      //       date: "2026-01-22",
-      //       workPlan: [
-      //         {
-      //           week: "星期四",
-      //           pcUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/ctrl/formControl/sysForm?moduleId=240731121534LBCbaMUlj548yFfp4Tm&nodeId=-1&pk=260119102135Rzblz3FLsMPaURfX43x",
-      //           sData: "1月22日",
-      //           range: "王宇",
-      //           releaseTypeText: "已发布",
-      //           content: "33333",
-      //           dayTime: "上午",
-      //           releaseType: 1,
-      //           rcsd: 1,
-      //           rcsdText: "",
-      //           id: "260119102135Rzblz3FLsMPaURfX43x",
-      //           place: "333",
-      //           mobileUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/dist/index.html#/commonForm/240731121534LBCbaMUlj548yFfp4Tm/260119102135Rzblz3FLsMPaURfX43x?listId=240731122244hywNDEwILcvyJuDtZG3&validateByList=1&method=view",
-      //         },
-      //       ],
-      //       dateWeek: "1/22星期四",
-      //     },
-      //     {
-      //       date: "2026-01-23",
-      //       dateWeek: "1/23星期五",
-      //     },
-      //     {
-      //       date: "2026-01-24",
-      //       dateWeek: "1/24星期六",
-      //     },
-      //     {
-      //       date: "2026-01-25",
-      //       workPlan: [
-      //         {
-      //           week: "星期日",
-      //           pcUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/ctrl/formControl/sysForm?moduleId=240731121534LBCbaMUlj548yFfp4Tm&nodeId=-1&pk=260119105238JbACKy92pqVzq57KSpI",
-      //           sData: "1月25日",
-      //           range: "王宇",
-      //           releaseTypeText: "已发布",
-      //           content: "44444",
-      //           dayTime: "上午",
-      //           releaseType: 1,
-      //           rcsd: 1,
-      //           rcsdText: "",
-      //           id: "260119105238JbACKy92pqVzq57KSpI",
-      //           place: "44444",
-      //           mobileUrl:
-      //             "http://10.1.28.103:9022/DreamWeb/dist/index.html#/commonForm/240731121534LBCbaMUlj548yFfp4Tm/260119105238JbACKy92pqVzq57KSpI?listId=240731122244hywNDEwILcvyJuDtZG3&validateByList=1&method=view",
-      //         },
-      //       ],
-      //       dateWeek: "1/25星期日",
-      //     },
-      //   ],
-      //   serverTime: "2026-01-20 11:06:00",
-      // };
-      // console.log(res);
-      // if (res.type == "success" && res.code == "200") {
-      //   var data = res.data || [];
-      //   this.updateTime = res.serverTime;
-      //   this.currentDate = res.serverTime.split(" ")[0];
-      //   this.fullData = data;
-      //   this.dateArr = data.map((item) => {
-      //     return {
-      //       date: item.date,
-      //       dateWeek: item.dateWeek,
-      //     };
-      //   });
-      //   this.fullData.filter((item) => {
-      //     if (item.date == this.currentDate) {
-      //       this.workPlan = item.workPlan || [];
-      //     }
-      //   });
-      // }
     },
     changeDate(d){
       this.currentDate = d.date;
@@ -426,7 +283,7 @@ export default {
      * 重新加载
      */
     reload() {
-      this.getTableData();
+      this.getData();
     },
     /**
      * 通用的获取表达式匹配后的结果
