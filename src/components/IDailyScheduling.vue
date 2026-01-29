@@ -15,11 +15,13 @@
           <div class="prevMonth" v-if="propData.prevnextBtn">
             <a-button @click="toggleMonth('prev')">
               <img
-                style="width: 20px;"
-                :src="IDM.url.getModuleAssetsWebPath(
-                        require('../assets/left.png'),
-                        moduleObject
-                      )"
+                style="width: 20px"
+                :src="
+                  IDM.url.getModuleAssetsWebPath(
+                    require('../assets/left.png'),
+                    moduleObject
+                  )
+                "
               />
             </a-button>
           </div>
@@ -52,15 +54,24 @@
           <div class="nextMonth" v-if="propData.prevnextBtn">
             <a-button @click="toggleMonth('next')"
               ><img
-              style="width: 20px;"
-                :src="IDM.url.getModuleAssetsWebPath(
-                        require('../assets/right.png'),
-                        moduleObject
-                      )"
-              /></a-button>
+                style="width: 20px"
+                :src="
+                  IDM.url.getModuleAssetsWebPath(
+                    require('../assets/right.png'),
+                    moduleObject
+                  )
+                "
+            /></a-button>
           </div>
         </div>
         <div class="right flex_end">
+          <div
+            v-if="queryObject.showPublish == '1'"
+            class="button_box export"
+            @click="publishHandle()"
+          >
+            发布
+          </div>
           <div
             v-if="queryObject.showScheduling == '1'"
             class="button_box scheduling"
@@ -757,6 +768,38 @@ export default {
         onCancel() {},
       });
     },
+    //发布
+    publishHandle() {
+      let that = this;
+      this.$confirm({
+        title: "提示",
+        content: "是否确认发布？",
+        cancelText: "取消",
+        okText: "确定",
+        onOk() {
+          var loading = window.layer.load(1, {
+            shadeClose: false,
+            title: "发布中..",
+            shade: [0.8, "#fff"], //0.1透明度的白色背景
+          });
+          var time = that.select_year + "-" + (that.select_month < 10 ? "0" + that.select_month : that.select_month);
+          IDM.http
+            .get(`ctrl/skwDutyCustom/publishduty`, { time: time })
+            .then((res) => {
+              window.layer.close(loading);
+              if (res.data.code == "200") {
+                IDM.message.success("发布成功");
+              } else if (res.data.code == "500") {
+                IDM.layer.alert(res.data.message);
+              }
+            })
+            .catch((err) => {
+              window.layer.close(loading);
+            });
+        },
+        onCancel() {},
+      });
+    },
     // 导入
     doImport(info) {
       let that = this;
@@ -851,7 +894,7 @@ export default {
             .then((res) => {
               // let name = `市农委值班数据(${result}).xlsx`;
               let name = `${result}排班表.xlsx`;
-              that.downloadFile(res.data, name); 
+              that.downloadFile(res.data, name);
             })
             .catch((err) => {
               console.log(err);
