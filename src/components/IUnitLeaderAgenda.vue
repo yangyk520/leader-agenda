@@ -391,53 +391,7 @@ export default {
     },
     //团市委重置数据
     resetData(data) {
-      // 1. 提取所有日期并排序
-      const allDates = data.map((item) => item.date).sort();
-
-      // 2. 提取所有不重复的领导姓名
-      const allLeaders = new Set();
-      data.forEach((dayItem) => {
-        dayItem.list.forEach((schedule) => {
-          let leader = schedule.leader || "";
-          const leaders = leader.split(",").map((leader) => leader.trim());
-          leaders.forEach((leader) => allLeaders.add(leader));
-        });
-      });
-      // 转换为有序数组
-      const leaderList = Array.from(allLeaders).sort();
-
-      // 3. 构建日期到日程的映射（方便快速查找）
-      const dateScheduleMap = {};
-      data.forEach((item) => {
-        dateScheduleMap[item.date] = item.list;
-      });
-
-      // 4. 为每个领导构建完整的周度日程
-      const leaderSchedules = [];
-      leaderList.forEach((leader) => {
-        const weeklySchedule = allDates.map((date) => {
-          // 筛选当前日期下该领导的所有日程
-          const leaderDailySchedule = (dateScheduleMap[date] || []).filter(
-            (schedule) => {
-              const scheduleLeaders = schedule.leader
-                .split(",")
-                .map((l) => l.trim());
-              return scheduleLeaders.includes(leader);
-            }
-          );
-
-          return {
-            date: date,
-            list: leaderDailySchedule, // 无日程则为空数组
-          };
-        });
-
-        leaderSchedules.push({
-          leader_name: leader,
-          weekly_schedule: weeklySchedule,
-        });
-      });
-
+      let leaderSchedules = data || [];
       // 分上下午
       leaderSchedules.forEach((leader) => {
         leader.weekly_schedule.forEach((item) => {
