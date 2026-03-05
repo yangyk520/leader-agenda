@@ -244,6 +244,7 @@ export default {
     },
     //打印
     handlePrint() {
+      /* eslint-disable no-undef */
       const params = {
         startTime: this.weekList[0].date,
         endTime: this.weekList[this.weekList.length - 1].date,
