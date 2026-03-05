@@ -257,6 +257,7 @@
                     </div>
                   </div>
                 </template>
+                <!-- 早 -->
                 <template
                   v-if="
                     item[item1.value].dayDuty &&
@@ -336,14 +337,109 @@
                       <img
                         :src="
                           getAssetsImg(
+                            propData.leaderAllIcon ? 'morning' : 'dayduty'
+                          )
+                        "
+                        alt=""
+                        v-if="isskw"
+                      />
+                      <img
+                        :src="
+                          getAssetsImg(
                             propData.leaderAllIcon ? 'daily' : 'dayduty'
                           )
                         "
+                        alt=""
+                        v-else
+                      />
+                    </div>
+                  </div>
+                </template>
+                <!-- 中 -->
+                <template
+                  v-if="
+                    item[item1.value].noonduty &&
+                    item[item1.value].noonduty.length
+                  "
+                >
+                  <div
+                    class="noon_duty duty_list flex_between"
+                    :class="getDutyListClassName(item[item1.value].noonduty)"
+                  >
+                    <div class="left flex_start">
+                      <div
+                        v-for="(item3, index3) in item[item1.value].noonduty"
+                        :key="index3"
+                        class="person_list flex_start"
+                        @click="jumpToFormPage(item[item1.value], item3)"
+                      >
+                        <a-popover
+                          overlayClassName="person_list_pop"
+                          trigger="hover"
+                        >
+                          <template slot="content">
+                            <div class="person_list_pop_row">
+                              值班组：{{ item3.dutyGroup }}
+                            </div>
+                            <div class="person_list_pop_row">
+                              <div>值班时间：</div>
+                              <div>{{ item3.dutyTime }}</div>
+                            </div>
+                            <div
+                              v-if="item3.shiftChangesType"
+                              class="person_list_pop_row"
+                            >
+                              <div>
+                                {{
+                                  item3.shiftChangesType == "1"
+                                    ? "换班"
+                                    : "替班"
+                                }}：
+                              </div>
+                              <div
+                                v-for="(item4, index4) in item3.shiftChanges"
+                                :key="index4"
+                              >
+                                <div>{{ item4.date }}</div>
+                                <div>{{ item4.info }}</div>
+                              </div>
+                            </div>
+                            <div v-if="item3.phone" class="person_list_pop_row">
+                              电话：{{ item3.phone }}
+                            </div>
+                          </template>
+                          <span>{{ item3.name }}</span>
+                          <img
+                            v-if="item3.gender"
+                            :src="
+                              getAssetsImg(item3.gender == 1 ? 'man' : 'woman')
+                            "
+                            alt=""
+                          />
+                          <template v-if="item3.shiftChangesType">
+                            <img
+                              v-if="item3.shiftChangesType == 1"
+                              :src="getAssetsImg('change')"
+                              alt=""
+                            />
+                            <img
+                              v-if="item3.shiftChangesType == 2"
+                              :src="getAssetsImg('replace')"
+                              alt=""
+                            />
+                          </template>
+                        </a-popover>
+                      </div>
+                    </div>
+                    <div class="right">
+                      <img
+                        :src="getAssetsImg('noon')"
                         alt=""
                       />
                     </div>
                   </div>
                 </template>
+                <!-- 夜 -->
                 <template
                   v-if="
                     item[item1.value].nightDuty &&
@@ -514,194 +610,17 @@ export default {
           value: "Sunday",
         },
       ],
-      data_list: [
-        // {
-        //   Sunday: {
-        //     dayDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '王翔',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '李煜',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ],
-        //     nightDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ],
-        //     leaderDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ]
-        //   },
-        //   Monday: {
-        //     dayDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '王翔',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '李煜',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ],
-        //     nightDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ],
-        //     leaderDuty: [
-        //       {
-        //         person: [
-        //           {
-        //             name: '李军',
-        //             sex: 1
-        //           },
-        //           {
-        //             name: '王楠',
-        //             sex: 2
-        //           },
-        //           {
-        //             name: '费玉清',
-        //             sex: 2
-        //           }
-        //         ]
-        //       }
-        //     ]
-        //   },
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // },
-        // {
-        //   Sunday: {},
-        //   Monday: {},
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // },
-        // {
-        //   Sunday: {},
-        //   Monday: {},
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // },
-        // {
-        //   Sunday: {},
-        //   Monday: {},
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // },
-        // {
-        //   Sunday: {},
-        //   Monday: {},
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // },
-        // {
-        //   Sunday: {},
-        //   Monday: {},
-        //   Tuesday: {},
-        //   Wednesday: {},
-        //   Thursday: {},
-        //   Friday: {},
-        //   Saturday: {},
-        // }
-      ],
+      data_list: [],
       queryObject: {},
+      userInfo: null,
+      isskw: false,//是否是市科委
     };
   },
   props: {},
   created() {
     this.moduleObject = this.$root.moduleObject;
+    this.userInfo = IDM.user.getCurrentUserInfo(); //获取当前用户信息
+    this.isskw = this.userInfo && this.userInfo.unitInfo.unitId == "230424161728pPZBCJguw1MRdzLdkGp";//是否是市科委
     this.setDefaultTime();
     this.makeDefaultData();
     this.convertAttrToStyleObject();
@@ -1103,7 +1022,6 @@ export default {
         return "";
       }
       let obj = LunarCalendar.solarToLunar(year, month, day);
-      console.log(obj);
       let result = obj.lunarMonthName + obj.lunarDayName;
       return {
         value: result,
@@ -1632,6 +1550,9 @@ export default {
             }
             .day_duty {
               background: #fffdf2;
+            }
+            .noon_duty {
+              background: #e7f9dc;
             }
             .night_duty {
               background: #ebf4ff;
