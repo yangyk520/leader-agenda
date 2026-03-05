@@ -17,6 +17,7 @@
         :activeDepart="activeDepart"
         :activeUser="activeUser"
         @updateHeadParams="updateHeadParams"
+        @updateShowType="updateShowType"
       />
       <div class="agenda-main">
         <div class="depart-list" v-show="!isTsw">
@@ -158,67 +159,126 @@
             </div>
           </div>
         </div>
-        <div
-          class="tsw-agenda"
-          v-if="form_data.timeViewType === 'unit' && isTsw"
-        >
-          <div class="table-header">
-            <table class="table">
-              <thead>
-                <tr>
-                  <th width="130">领导</th>
-                  <th width="80">时间</th>
-                  <th v-for="(day, index) in weekList" :key="day">
-                    {{ day }}<br />周{{ weekCn[index] }}
-                  </th>
-                </tr>
-              </thead>
-            </table>
-          </div>
-          <div class="table-body scroll_block">
-            <table class="table">
-              <tbody>
-                <template v-for="item in agendaList">
-                  <tr :key="item.leader_name">
-                    <td width="130" rowspan="2">{{ item.leader_name }}</td>
-                    <td width="80">上午</td>
-                    <td v-for="d in item.weekly_schedule" :key="d.date">
-                      <div
-                        class="cell"
-                        v-for="(m, index) in d.morningList"
-                        :key="index"
-                        @click="agendaHander(m)"
-                      >
-                        <span class="startTime">{{ m.startTime }}</span>
-                        <span class="bt">{{ m.bt }}</span>
-                        <span class="place" v-if="m.place"
-                          >【{{ m.place }}】</span
-                        >
-                      </div>
-                    </td>
+        <template v-if="form_data.timeViewType === 'unit' && isTsw">
+          <div class="tsw-agenda" v-if="showType == 1">
+            <div class="table-header">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th width="130">领导</th>
+                    <th width="80">时间</th>
+                    <th v-for="(day, index) in weekList" :key="day">
+                      {{ day }}<br />周{{ weekCn[index] }}
+                    </th>
                   </tr>
-                  <tr :key="item">
-                    <td>下午</td>
-                    <td v-for="d in item.weekly_schedule" :key="d.date">
-                      <div
-                        class="cell"
-                        v-for="(m, index) in d.afternoonList"
-                        :key="index"
-                        @click="agendaHander(m)"
-                      >
-                        <span class="startTime">{{ m.startTime }}</span>
-                        <span class="bt">{{ m.bt }}</span>
-                        <span class="place" v-if="m.place"
-                          >【{{ m.place }}】</span
+                </thead>
+              </table>
+            </div>
+            <div class="table-body scroll_block">
+              <table class="table">
+                <tbody>
+                  <template v-for="item in agendaList">
+                    <tr :key="item.leader_name">
+                      <td width="130" rowspan="2">{{ item.leader_name }}</td>
+                      <td width="80">上午</td>
+                      <td v-for="d in item.weekly_schedule" :key="d.date">
+                        <div
+                          class="cell"
+                          v-for="(m, index) in d.morningList"
+                          :key="index"
+                          @click="agendaHander(m)"
                         >
-                      </div>
-                    </td>
-                  </tr>
-                </template>
-              </tbody>
-            </table>
+                          <span class="startTime">{{ m.startTime }}</span>
+                          <span class="bt">{{ m.bt }}</span>
+                          <span class="place" v-if="m.place"
+                            >【{{ m.place }}】</span
+                          >
+                        </div>
+                      </td>
+                    </tr>
+                    <tr :key="item">
+                      <td>下午</td>
+                      <td v-for="d in item.weekly_schedule" :key="d.date">
+                        <div
+                          class="cell"
+                          v-for="(m, index) in d.afternoonList"
+                          :key="index"
+                          @click="agendaHander(m)"
+                        >
+                          <span class="startTime">{{ m.startTime }}</span>
+                          <span class="bt">{{ m.bt }}</span>
+                          <span class="place" v-if="m.place"
+                            >【{{ m.place }}】</span
+                          >
+                        </div>
+                      </td>
+                    </tr>
+                  </template>
+                </tbody>
+              </table>
+            </div>
           </div>
-        </div>
+          <div class="tsw-agenda" v-if="showType == 2">
+            <div class="table-header">
+              <table class="table">
+                <thead>
+                  <tr>
+                    <th width="130">时间</th>
+                    <th>上午</th>
+                    <th>下午</th>
+                  </tr>
+                </thead>
+              </table>
+            </div>
+            <div class="table-body scroll_block">
+              <table class="table showAdd">
+                <tbody>
+                  <tr v-for="(item,index) in agendaList" :key="item.date">
+                      <td width="130">
+                        星期{{ weekCn[index] }}
+                        <div :class="{'istoday': judgeToday(item.date)}">
+                          {{ item.date }}
+                          <div v-if="judgeToday(item.date)">(今天)</div>  
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="cell"
+                          v-for="(m, index) in item.morningList"
+                          :key="index"
+                          @click="agendaHander(m)"
+                        >
+                          <span class="startTime">{{ m.startTime }}</span>
+                          <span class="bt">{{ m.bt }}</span>
+                          <span class="place">【{{ m.leader }}<span v-if="m.place"> - {{ m.place }}</span>】</span
+                          >
+                        </div>
+                        <div class="add" :class="{'hasContent': item.morningList && item.morningList.length > 0}">
+                          <div class="icon" @click="iconAddHandle(item,'morning')"><svg-icon iconClass="add"></svg-icon></div>
+                        </div>
+                      </td>
+                      <td>
+                        <div
+                          class="cell"
+                          v-for="(m, index) in item.afternoonList"
+                          :key="index"
+                          @click="agendaHander(m)"
+                        >
+                          <span class="startTime">{{ m.startTime }}</span>
+                          <span class="bt">{{ m.bt }}</span>
+                          <span class="place">【{{ m.leader }}<span v-if="m.place"> - {{ m.place }}</span>】</span
+                          >
+                        </div>
+                        <div class="add" :class="{'hasContent': item.afternoonList && item.afternoonList.length > 0}">
+                          <div class="icon" @click="iconAddHandle(item,'afternoon')"><svg-icon iconClass="add"></svg-icon></div>
+                        </div>
+                      </td>
+                    </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </template>
       </div>
     </div>
   </div>
@@ -259,6 +319,7 @@ export default {
       activeUser: "",
       isYJJ: true,
       isTsw: false, //是否是团市委
+      showType: 1,//1 默认模式  2 新模式
     };
   },
   props: {},
@@ -282,8 +343,8 @@ export default {
     this.isYJJ =
       this.userInfo?.unitInfo?.unitId == "230721170831MRd9nBV4DtzayRaxXaj";
 
-    this.isTsw =
-      IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65";
+    this.isTsw = IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65";
+    // this.isTsw = true;
 
     this.initActiveDepartOrUser();
     this.getDepartList();
@@ -292,6 +353,38 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
+    //切换
+    updateShowType(type){
+      this.showType = type;
+      this.initData();
+    },
+    //判断是不是今天
+    judgeToday(date){
+      let today = IDM.dateFormat(new Date(),"Y-m-d");
+      return date == today;
+    },
+    //加号小图标点击事件
+    iconAddHandle(item,wb){
+      let date = item.date;
+      console.log(date,wb);
+      IDM.layer.open({
+        type: 2,
+        title: ["新增日程", "font-size:18px;"],
+        area: ["1200px", "90%"],
+        content: IDM.url.getWebPath(
+          "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo&editType=" + this.form_data.timeViewType
+        ),
+        success: (layero, index) => {
+          top.close = () => {
+            IDM.layer.close(index);
+            this.initData();
+          };
+        },
+        end: () => {
+          this.initData();
+        },
+      });
+    },
     updateActiveId(item) {
       this.activeDepart = item.deptId;
       this.activeUser = item.userId;
@@ -607,8 +700,6 @@ export default {
      * 重新加载
      */
     reload() {
-      //请求数据源
-      this.initData();
     },
     /**
      * 加载动态数据
@@ -616,10 +707,26 @@ export default {
     initData() {
       console.log("加载数据");
       if (!this.moduleObject.env || this.moduleObject.env == "develop") {
-        const result = agendaListMock.data;
         if (this.isTsw && this.form_data.timeViewType === "unit") {
-          this.resetData(result);
+          if(this.showType == 1){
+            const result = agendaListMock.data2;
+            this.resetData(result);
+          }
+          if(this.showType == 2){
+            const result = agendaListMock.data;
+            result.forEach((item) => {
+              item.morningList = item.list.filter(
+                (inner) => inner.porid === "morning"
+              );
+              item.afternoonList = item.list.filter(
+                (inner) => inner.porid === "afternoon"
+              );
+            });
+            this.agendaList = result;
+            console.log("日程数据", result);
+          }
         } else {
+          const result = agendaListMock.data;
           result.forEach((item) => {
             item.morningList = item.list.filter(
               (inner) => inner.porid === "morning"
@@ -630,6 +737,11 @@ export default {
           });
           this.agendaList = result;
         }
+        this.$nextTick(() => {
+          $(".tsw-agenda .table-header").width(
+            $(".tsw-agenda .table-body table").width()
+          );
+        });
       } else {
         const params = {
           deptId: this.activeDepart || "",
@@ -638,7 +750,9 @@ export default {
           endTime: this.weekList[this.weekList.length - 1],
           searchText: this.form_data.searchVal,
         };
-
+        if(this.isTsw){
+          params.showType = this.showType == 1 ? 'byleader' : 'byDate'; //byleader（按领导展示）/byDate（按时间展示）
+        }
         IDM.http
           .get("ctrl/ythScheduleCustom/queryDeptScheduleWeekData", params)
           .then((res) => {
@@ -646,7 +760,20 @@ export default {
             if (res.data.code == "200") {
               const result = res.data.data;
               if (this.isTsw && this.form_data.timeViewType === "unit") {
-                this.resetData(result);
+                if(this.showType == 1){
+                  this.resetData(result);
+                }
+                if(this.showType == 2){
+                  result.forEach((item) => {
+                    item.morningList = item.list.filter(
+                      (inner) => inner.porid === "morning"
+                    );
+                    item.afternoonList = item.list.filter(
+                      (inner) => inner.porid === "afternoon"
+                    );
+                  });
+                  this.agendaList = result;
+                }
               } else {
                 result.forEach((item) => {
                   item.morningList = item.list.filter(
@@ -658,6 +785,12 @@ export default {
                 });
                 this.agendaList = result;
               }
+
+              this.$nextTick(() => {
+                $(".tsw-agenda .table-header").width(
+                  $(".tsw-agenda .table-body table").width()
+                );
+              });
             }
           })
           .catch((err) => {
@@ -1002,14 +1135,41 @@ export default {
               .bt {
                 margin-left: 5px;
               }
-              &:last-child {
+              &:last-child{
                 border-bottom: none;
               }
               &:hover {
                 color: #0086d9;
               }
             }
+            // .cell:nth-last-child(1 of .cell) {
+            //   border-bottom: none !important;
+            // }
           }
+        }
+
+        &.showAdd {
+          td {
+            position: relative;
+            .add {
+              position: absolute;
+              right: 0;
+              bottom: 0;
+              cursor: pointer;
+              .icon {
+                padding: 5px;
+              }
+              &.hasContent {
+                position: static;
+                display: flex;
+                justify-content: flex-end;
+                margin: 5px -8px -8px 0;
+              }
+            }
+          }
+        }
+        .istoday {
+          color: red;
         }
       }
     }

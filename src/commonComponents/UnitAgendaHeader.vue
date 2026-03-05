@@ -24,6 +24,7 @@
           <svg-icon iconClass="rectangle_right"></svg-icon>
         </div>
         <span class="calendar-btn" @click="curDayWeekHandle">本周</span>
+        <span class="calendar-btn" @click="tabShowType" v-if="isTsw && timeViewType == 'unit'">切换</span>
       </div>
       <div class="top-view">
         <span
@@ -108,12 +109,15 @@ export default {
       searchVal: "",
       isTsw: false, //是否是团市委
       showAddBtn: true, //是否显示新增按钮
+      showType: 1,//1 默认模式  2 新模式
     };
   },
   watch: {},
   created() {
     //团市委
     this.isTsw = IDM.url.queryString("tswUnitId") == "230426153026kSH07mN5WNg3grdZw65";
+
+    //  this.isTsw = true;
 
     //团市委加新增按钮权限控制
     if (this.isTsw) {
@@ -132,6 +136,11 @@ export default {
     this.sendHeadParams();
   },
   methods: {
+    //团市委切换展示方式
+    tabShowType(){
+      this.showType = this.showType == 1 ? 2 : 1;
+      this.$emit("updateShowType", this.showType);
+    },
     /**
      * 今天、本周切换
      */
