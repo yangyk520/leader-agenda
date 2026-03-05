@@ -101,6 +101,13 @@
       "className": "IWeeklyWorkSchedule",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.iweeklyworkplan",
+      "comName": "上海化工区一周工作安排",
+      "className": "IWeeklyWorkPlan",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
