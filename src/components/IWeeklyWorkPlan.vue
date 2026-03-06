@@ -89,7 +89,7 @@
                   <td width="200"></td>
               </tr>
               <template v-for="item in tableData">
-                <tr :key="item.date">
+                <tr :key="item.date" :class="{'istoday':judgeToday(item.date)}">
                   <td :rowspan="item.list.length > 0 ? (item.list.length + 1) : 1">
                     {{item.date}}
                     <div>{{item.weekDay}}</div>
@@ -101,7 +101,7 @@
                   <td :class="{'ishidden': item.list.length > 0}"></td>
                 </tr>
                 <template v-if="item.list.length > 0">
-                  <tr v-for="sitem in item.list" :key="sitem.id">
+                  <tr v-for="sitem in item.list" :key="sitem.id" :class="{'istoday':judgeToday(item.date)}">
                     <td>{{sitem.time}}</td>
                     <td>
                       <div class="text-left ellipsis cursor" :title="sitem.title" @click="detailsHandle(sitem)">{{sitem.title}}</div>
@@ -207,28 +207,31 @@ export default {
     },
     //新增
     handleAdd() {
-      IDM.layer.open({
-        type: 2,
-        title: ["新增", "font-size:18px;"],
-        area: ["1200px", "90%"],
-        content: IDM.url.getWebPath("ctrl/formControl/form?moduleId=260123171126HVw7nF6Spwv7eZMQIyl"),
-        success: (layero, index) => {
-          top.close = () => {
-            IDM.layer.close(index);
-            this.initData();
-          };
-        },
-        end: () => {
-          this.initData();
-        },
-      });
+      // IDM.layer.open({
+      //   type: 2,
+      //   title: ["新增", "font-size:18px;"],
+      //   area: ["1200px", "90%"],
+      //   content: IDM.url.getWebPath("ctrl/formControl/form?moduleId=260123171126HVw7nF6Spwv7eZMQIyl"),
+      //   success: (layero, index) => {
+      //     top.close = () => {
+      //       IDM.layer.close(index);
+      //       this.initData();
+      //     };
+      //   },
+      //   end: () => {
+      //     this.initData();
+      //   },
+      // }); 
+
+      var url = IDM.url.getWebPath("ctrl/formControl/form?moduleId=260123171126HVw7nF6Spwv7eZMQIyl");
+      window.open(url);
     },
     //导出
     handleExport() {
       const params = {
         startTime: this.weekList[0].date,
         endTime: this.weekList[this.weekList.length - 1].date,
-        conten: this.searchVal,
+        content: this.searchVal,
       };
       const url = `ctrl/weeklyschedule/exportnew?${IDM.url.stringify(
         params
@@ -248,7 +251,7 @@ export default {
       const params = {
         startTime: this.weekList[0].date,
         endTime: this.weekList[this.weekList.length - 1].date,
-        conten: this.searchVal,
+        content: this.searchVal,
       };
       IDM.http
           .get("ctrl/weeklyschedule/printdata", params)
@@ -268,26 +271,32 @@ export default {
       if(item.isEdit == 0) {
         url =  IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}&nodeId=-1`);
       }
-      console.log(url);
-      IDM.layer.open({
-        type: 2,
-        title: ["详情", "font-size:18px;"],
-        area: ["1200px", "90%"],
-        content: url,
-        success: (layero, index) => {
-          top.close = () => {
-            IDM.layer.close(index);
-            if(item.isEdit == 1) {
-              this.initData();
-            }
-          };
-        },
-        end: () => {
-          if(item.isEdit == 1) {
-            this.initData();
-          }
-        },
-      });
+      window.open(url);
+
+      // IDM.layer.open({
+      //   type: 2,
+      //   title: ["详情", "font-size:18px;"],
+      //   area: ["1200px", "90%"],
+      //   content: url,
+      //   success: (layero, index) => {
+      //     top.close = () => {
+      //       IDM.layer.close(index);
+      //       if(item.isEdit == 1) {
+      //         this.initData();
+      //       }
+      //     };
+      //   },
+      //   end: () => {
+      //     if(item.isEdit == 1) {
+      //       this.initData();
+      //     }
+      //   },
+      // });
+    },
+    //判断是不是今天
+    judgeToday(date){
+      let today = IDM.dateFormat(new Date(),"Y-m-d");
+      return date == today;
     },
     changeTableWidth() {
       $(".agenda-main .table-header").width(
@@ -501,7 +510,7 @@ export default {
         const params = {
           startTime: this.weekList[0].date,
           endTime: this.weekList[this.weekList.length - 1].date,
-          conten: this.searchVal,
+          content: this.searchVal,
         };
         IDM.http
           .get("ctrl/weeklyschedule/managementdata", params)
@@ -633,6 +642,7 @@ export default {
   border: 1px solid rgba(230, 230, 230, 1);
   box-shadow: 0px 2px 12px 0px rgba(0, 0, 0, 0.07);
   color: #333;
+  font-size: 16px;
 
   .idm-weekly-work-plan-container {
     height: 100%;
@@ -689,7 +699,7 @@ export default {
           line-height: 26px;
           padding: 0 10px;
           margin-left: 12px;
-          font-size: 12px;
+          font-size: 16px;
           cursor: pointer;
         }
       }
@@ -710,23 +720,13 @@ export default {
         line-height: 30px;
         padding: 0 20px;
         margin-left: 12px;
-        font-size: 12px;
+        font-size: 16px;
         cursor: pointer;
 
         &.primary {
           background: #0086d9;
           border-color: #0086d9;
           color: #fff;
-        }
-      }
-
-      .operation-setting {
-        font-size: 18px;
-        color: #666666;
-        margin-left: 24px;
-        cursor: pointer;
-        .svg-icon {
-          vertical-align: -0.24em;
         }
       }
     }
@@ -789,6 +789,9 @@ export default {
         td {
           padding: 0;
         }
+      }
+      .istoday {
+        background-color: #eaf4fb;
       }
     }
   }
