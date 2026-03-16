@@ -254,7 +254,7 @@
                           >
                         </div>
                         <div class="add" :class="{'hasContent': item.morningList && item.morningList.length > 0}">
-                          <div class="icon" @click="iconAddHandle(item,'morning')"><svg-icon iconClass="add"></svg-icon></div>
+                          <div class="icon" @click="iconAddHandle(item,'AM')"><svg-icon iconClass="add"></svg-icon></div>
                         </div>
                       </td>
                       <td>
@@ -270,7 +270,7 @@
                           >
                         </div>
                         <div class="add" :class="{'hasContent': item.afternoonList && item.afternoonList.length > 0}">
-                          <div class="icon" @click="iconAddHandle(item,'afternoon')"><svg-icon iconClass="add"></svg-icon></div>
+                          <div class="icon" @click="iconAddHandle(item,'PM')"><svg-icon iconClass="add"></svg-icon></div>
                         </div>
                       </td>
                     </tr>
@@ -366,14 +366,13 @@ export default {
     //加号小图标点击事件
     iconAddHandle(item,wb){
       let date = item.date;
-      console.log(date,wb);
+      let url = IDM.url.getWebPath("ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo&editType=" + this.form_data.timeViewType + "&defaultStartDate=" + date + "&defaultPeriod=" + wb);
+      console.log(url);
       IDM.layer.open({
         type: 2,
         title: ["新增日程", "font-size:18px;"],
         area: ["1200px", "90%"],
-        content: IDM.url.getWebPath(
-          "ctrl/formControl/form?moduleId=180719094152MnF6C2hEPtqIvhjJIxo&editType=" + this.form_data.timeViewType
-        ),
+        content: url,
         success: (layero, index) => {
           top.close = () => {
             IDM.layer.close(index);
