@@ -46,6 +46,7 @@
             <a-input
               ref="userNameInput"
               v-model="searchVal"
+              @keyup.enter="hanldeSearch"
               style="width: 206px"
             >
               <svg-icon slot="suffix" icon-class="search" />
@@ -81,39 +82,60 @@
           <table class="table showAdd">
             <tbody>
               <tr class="colgroup">
-                  <td width="130"></td>
-                  <td width="130"></td>
-                  <td></td>
-                  <td width="200"></td>
-                  <td width="150"></td>
-                  <td width="200"></td>
+                <td width="130"></td>
+                <td width="130"></td>
+                <td></td>
+                <td width="200"></td>
+                <td width="150"></td>
+                <td width="200"></td>
               </tr>
               <template v-for="item in tableData">
-                <tr :key="item.date" :class="{'istoday':judgeToday(item.date)}">
-                  <td :rowspan="item.list.length > 0 ? (item.list.length + 1) : 1">
-                    {{item.date}}
-                    <div>{{item.weekDay}}</div>
+                <tr
+                  :key="item.date"
+                  :class="{ istoday: judgeToday(item.date) }"
+                >
+                  <td
+                    :rowspan="item.list.length > 0 ? item.list.length + 1 : 1"
+                  >
+                    {{ item.date }}
+                    <div>{{ item.weekDay }}</div>
                   </td>
-                  <td :class="{'ishidden': item.list.length > 0}"></td>
-                  <td :class="{'ishidden': item.list.length > 0}"></td>
-                  <td :class="{'ishidden': item.list.length > 0}"></td>
-                  <td :class="{'ishidden': item.list.length > 0}"></td>
-                  <td :class="{'ishidden': item.list.length > 0}"></td>
+                  <td :class="{ ishidden: item.list.length > 0 }"></td>
+                  <td :class="{ ishidden: item.list.length > 0 }"></td>
+                  <td :class="{ ishidden: item.list.length > 0 }"></td>
+                  <td :class="{ ishidden: item.list.length > 0 }"></td>
+                  <td :class="{ ishidden: item.list.length > 0 }"></td>
                 </tr>
                 <template v-if="item.list.length > 0">
-                  <tr v-for="sitem in item.list" :key="sitem.id" :class="{'istoday':judgeToday(item.date)}">
-                    <td>{{sitem.time}}</td>
+                  <tr
+                    v-for="sitem in item.list"
+                    :key="sitem.id"
+                    :class="{ istoday: judgeToday(item.date) }"
+                  >
+                    <td>{{ sitem.time }}</td>
                     <td>
-                      <div class="text-left ellipsis cursor" :title="sitem.title" @click="detailsHandle(sitem)">{{sitem.title}}</div>
+                      <div
+                        class="text-left ellipsis cursor"
+                        :title="sitem.title"
+                        @click="detailsHandle(sitem)"
+                      >
+                        {{ sitem.title }}
+                      </div>
                     </td>
                     <td>
-                      <div class="ellipsis" :title="sitem.place">{{sitem.place}}</div>
+                      <div class="ellipsis" :title="sitem.place">
+                        {{ sitem.place }}
+                      </div>
                     </td>
                     <td>
-                      <div class="ellipsis" :title="sitem.host">{{sitem.host}}</div>
+                      <div class="ellipsis" :title="sitem.host">
+                        {{ sitem.host }}
+                      </div>
                     </td>
                     <td>
-                      <div class="ellipsis" :title="sitem.participate">{{sitem.participate}}</div>
+                      <div class="ellipsis" :title="sitem.participate">
+                        {{ sitem.participate }}
+                      </div>
                     </td>
                   </tr>
                 </template>
@@ -148,7 +170,7 @@ export default {
       // 搜索项
       searchVal: "",
       //表格数据
-      tableData: []
+      tableData: [],
     };
   },
   props: {},
@@ -157,6 +179,7 @@ export default {
     this.moduleObject = this.$root.moduleObject;
     this.initTime(moment());
     this.initData();
+    window.$workplan = this;
   },
   mounted() {},
   destroyed() {},
@@ -221,9 +244,11 @@ export default {
       //   end: () => {
       //     this.initData();
       //   },
-      // }); 
+      // });
 
-      var url = IDM.url.getWebPath("ctrl/formControl/form?moduleId=260123171126HVw7nF6Spwv7eZMQIyl");
+      var url = IDM.url.getWebPath(
+        "ctrl/formControl/form?moduleId=260123171126HVw7nF6Spwv7eZMQIyl"
+      );
       window.open(url);
     },
     //导出
@@ -233,9 +258,7 @@ export default {
         endTime: this.weekList[this.weekList.length - 1].date,
         content: this.searchVal,
       };
-      const url = `ctrl/weeklyschedule/exportnew?${IDM.url.stringify(
-        params
-      )}`;
+      const url = `ctrl/weeklyschedule/exportnew?${IDM.url.stringify(params)}`;
       const a = document.createElement("a");
       a.style.display = "none";
       a.setAttribute("target", "_blank");
@@ -254,22 +277,34 @@ export default {
         content: this.searchVal,
       };
       IDM.http
-          .get("ctrl/weeklyschedule/printdata", params)
-          .done((res) => {
-            if (res.code == "200") {
-              Public.officeEdit(res.data.fileName,"0","0",res.data.fileId,"260123171126HVw7nF6Spwv7eZMQIyl",false,{});
-            }
-          })
-          .catch((err) => {
-            console.log(err);
-          });
+        .get("ctrl/weeklyschedule/printdata", params)
+        .done((res) => {
+          if (res.code == "200") {
+            Public.officeEdit(
+              res.data.fileName,
+              "0",
+              "0",
+              res.data.fileId,
+              "260123171126HVw7nF6Spwv7eZMQIyl",
+              false,
+              {}
+            );
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     //查看详情
-    detailsHandle(item){
+    detailsHandle(item) {
       console.log(item);
-      let url = IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}`);
-      if(item.isEdit == 0) {
-        url =  IDM.url.getWebPath(`ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}&nodeId=-1`);
+      let url = IDM.url.getWebPath(
+        `ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}`
+      );
+      if (item.isEdit == 0) {
+        url = IDM.url.getWebPath(
+          `ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}&nodeId=-1`
+        );
       }
       window.open(url);
 
@@ -294,8 +329,8 @@ export default {
       // });
     },
     //判断是不是今天
-    judgeToday(date){
-      let today = IDM.dateFormat(new Date(),"Y-m-d");
+    judgeToday(date) {
+      let today = IDM.dateFormat(new Date(), "Y-m-d");
       return date == today;
     },
     changeTableWidth() {
@@ -310,12 +345,12 @@ export default {
     },
     groupByDate(list) {
       const result = {};
-      list.forEach(item => {
-          const date = item.date;
-          if (!result[date]) {
-              result[date] = { date, weekDay: this.getWeekDay(date), list: [] };
-          }
-          result[date].list.push(item);
+      list.forEach((item) => {
+        const date = item.date;
+        if (!result[date]) {
+          result[date] = { date, weekDay: this.getWeekDay(date), list: [] };
+        }
+        result[date].list.push(item);
       });
       let newArr = this.mergeDateAndMeeting(this.weekList, result);
       return newArr;
@@ -326,17 +361,17 @@ export default {
       return `周${week[day]}`;
     },
     mergeDateAndMeeting(dateList, groupedData) {
-        return dateList.map(item => {
-            const meeting = groupedData[item.date] || {
-                date: item.date,
-                weekDay: this.getWeekDay(item.date),
-                list: [] // 没会议就置空数组
-            };
-            return {
-                ...meeting,
-                monthAndDay: item.monthAndDay
-            };
-        });
+      return dateList.map((item) => {
+        const meeting = groupedData[item.date] || {
+          date: item.date,
+          weekDay: this.getWeekDay(item.date),
+          list: [], // 没会议就置空数组
+        };
+        return {
+          ...meeting,
+          monthAndDay: item.monthAndDay,
+        };
+      });
     },
     /**
      * 对属性设置进行初始化
