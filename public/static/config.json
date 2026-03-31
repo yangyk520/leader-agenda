@@ -108,6 +108,13 @@
       "className": "IWeeklyWorkPlan",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.iholidaydutyschedule",
+      "comName": "农委-法定节假日值班表",
+      "className": "IHolidayDutySchedule",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
