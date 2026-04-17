@@ -125,7 +125,7 @@ export default {
         .get("ctrl/tswCustom/getUserRoles")
         .done((res) => {
           if (res.type == "success" && res.code == "200") {
-            this.showAddBtn = res.data.isDeptScheduleAdmin;
+            this.showAddBtn = res.data.isWjView ? false : res.data.isDeptScheduleAdmin;
           }
         })
         .catch((err) => {
