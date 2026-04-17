@@ -45,9 +45,9 @@
                 查询
               </button>
               <button class="btn-outline" @click="resetSearch">重置</button>
-              <button id="searchBtn" class="btn-primary" @click="addHandle">
+              <!-- <button id="searchBtn" class="btn-primary" @click="addHandle">
                 新建
-              </button>
+              </button>  -->
               <button id="searchBtn" class="btn-primary" @click="exportHandle">
                 导出
               </button>
@@ -74,13 +74,13 @@
                   <th>单位名称</th>
                   <th>日期</th>
                   <th>班次</th>
-                  <th>厅级领导名称</th>
+                  <th>厅局级领导</th>
                   <th>职务</th>
                   <th>手机号</th>
-                  <th>处级领导名称</th>
+                  <th>处级领导</th>
                   <th>职务</th>
                   <th>手机号</th>
-                  <th>值班员</th>
+                  <th>值班人员</th>
                   <th>职务</th>
                   <th>手机号</th>
                 </tr>
