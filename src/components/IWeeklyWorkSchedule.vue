@@ -6,8 +6,23 @@
     class="idm-weekly-work-schedule"
   >
     <div class="weekly-work-schedule-header">
-      <div class="name">一周工作安排</div>
-      <div class="updateTime">更新时间：{{ updateTime }}</div>
+      <div class="tabs">
+        <span :class="{ active: activeTab == 1 }" @click="changeTab('1')"
+          >一周工作安排</span
+        >
+        <span :class="{ active: activeTab == 2 }" @click="changeTab('2')"
+          >会议室使用</span
+        >
+      </div>
+      <div class="right">
+        <div class="updateTime" v-show="activeTab == 1">
+          更新时间：{{ updateTime }}
+        </div>
+        <div class="applyBtn" v-show="activeTab == 2" @click="applyMeeting">
+          申请会议室
+        </div>
+        <div class="more" @click="openMore">查看更多></div>
+      </div>
     </div>
     <div class="weekly-work-schedule-date">
       <div
@@ -20,7 +35,8 @@
         <span>{{ item.dateWeek }}</span>
       </div>
     </div>
-    <div class="weekly-work-schedule-content">
+    <!-- 一周工作安排 -->
+    <div class="weekly-work-schedule-content" v-show="activeTab == 1">
       <div class="table_header">
         <div
           class="name"
@@ -52,6 +68,84 @@
         </div>
       </div>
     </div>
+    <!-- 会议室使用 -->
+    <div class="weekly-work-schedule-content meeting" v-show="activeTab == 2">
+      <div class="table_header">
+        <div
+          class="name"
+          v-for="sitem in meetingTableHeader"
+          :key="sitem.name"
+          :style="{ width: sitem.width }"
+        >
+          {{ sitem.name }}
+        </div>
+      </div>
+      <div class="table_body">
+        <template v-if="meetingData.length > 0">
+          <vue-scroll :ops="scrollOps">
+            <div class="row" v-for="(item, index) in meetingData" :key="index">
+              <div class="cell name" style="width: 19%">
+                {{ item.roomClass }} {{ item.roomName }}
+              </div>
+              <div class="cell" style="width: 27%">
+                <div class="item" v-for="sitem in item.swList" :key="sitem.id">
+                  <i class="icon"></i>
+                  <div class="con">
+                    <span class="time" v-if="sitem.start && sitem.end"
+                      >{{ sitem.start.substring(11, 16) }}-{{
+                        sitem.end.substring(11, 16)
+                      }}</span
+                    >
+                    <span v-if="sitem.leader">{{
+                      sitem.leader.replace(",", "、")
+                    }}</span>
+                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                    <p>{{ sitem.bt }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cell" style="width: 27%">
+                <div class="item" v-for="sitem in item.xwList" :key="sitem.id">
+                  <i class="icon"></i>
+                  <div class="con">
+                    <span class="time" v-if="sitem.start && sitem.end"
+                      >{{ sitem.start.substring(11, 16) }}-{{
+                        sitem.end.substring(11, 16)
+                      }}</span
+                    >
+                    <span v-if="sitem.leader">{{
+                      sitem.leader.replace(",", "、")
+                    }}</span>
+                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                    <p>{{ sitem.bt }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="cell" style="width: 27%">
+                <div class="item" v-for="sitem in item.wsList" :key="sitem.id">
+                  <i class="icon"></i>
+                  <div class="con">
+                    <span class="time" v-if="sitem.start && sitem.end"
+                      >{{ sitem.start.substring(11, 16) }}-{{
+                        sitem.end.substring(11, 16)
+                      }}</span
+                    >
+                    <span v-if="sitem.leader">{{
+                      sitem.leader.replace(",", "、")
+                    }}</span>
+                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                    <p>{{ sitem.bt }}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </vue-scroll>
+        </template>
+        <div class="empty" v-else>
+          <a-empty description="暂无数据" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -69,6 +163,7 @@ export default {
         scheduleType: "2",
         showSubordinate: false,
       },
+      activeTab: "1", // 1 一周工作安排  2 会议室使用
       updateTime: "",
       dateArr: [],
       tableHeader: [
@@ -97,7 +192,27 @@ export default {
       startTime: "",
       endTime: "",
       currentDate: "",
-      fullData: []
+      fullData: [],
+      meetingTableHeader: [
+        {
+          name: "会议室名称",
+          width: "19%",
+        },
+        {
+          name: "上午",
+          width: "27%",
+        },
+        {
+          name: "下午",
+          width: "27%",
+        },
+        {
+          name: "晚上",
+          width: "27%",
+        },
+      ],
+      meetingData: [],
+      isShowBuilding: false, //是否显示会议室类型
     };
   },
   props: {},
@@ -112,41 +227,265 @@ export default {
   },
   destroyed() {},
   methods: {
+    //切换tab
+    changeTab(key) {
+      this.activeTab = key;
+    },
+    //申请会议室
+    applyMeeting() {
+      var url = IDM.url.getWebPath(
+        "ctrl/formControl/form?moduleId=190111184257QgSNR8cW92akDpqeWMA"
+      );
+      window.open(url);
+    },
+    //更多跳转
+    openMore() {
+      let url = "";
+      let name = "";
+      if (this.activeTab == 1) {
+        url =
+          "/ctrl/list/240731122244hywNDEwILcvyJuDtZG3?moduleId=240731121534LBCbaMUlj548yFfp4Tm&isView=1";
+        name = "一周工作安排";
+      }
+      if (this.activeTab == 2) {
+        // url = "/ctrl/meetingNoticeSkw/reserve/reserve?type=apply";
+        url = "/ctrl/meetingNoticeSkw/reserve/main";
+        name = "会议室使用";
+      }
+      // window.open(IDM.url.getWebPath(url));
+
+      var targetObj = {
+        action: IDM.url.getWebPath(url),
+        isTabReload: "-1",
+        name: name,
+        target: "main",
+        parentName: "",
+      };
+      top.window.$$iframeCtrl.addTab(targetObj);
+    },
     getData() {
       var params = {
         startTime: this.startTime,
         endTime: this.endTime,
       };
-      IDM.http.get("ctrl/skwWorkPlan/queryWorkPlan",params).done((res) => {
-        if (res.type == "success" && res.code == "200") {
-          var data = res.data.workPlanList || [];
-          this.updateTime = res.data.lastUpdateTime;
-          this.currentDate = res.serverTime.split(" ")[0];
-          this.fullData = data;
-          this.dateArr = data.map((item) => {
-            return {
-              date: item.date,
-              dateWeek: item.dateWeek,
-            };
-          });
-          this.fullData.filter((item) => {
-            if (item.date == this.currentDate) {
-              this.workPlan = item.workPlan || [];
-            }
-          });
-        }
-      }).catch((err) => {
-          console.log(err)
-      })
+      IDM.http
+        .get("ctrl/skwWorkPlan/queryWorkPlan", params)
+        .done((res) => {
+          if (res.type == "success" && res.code == "200") {
+            var data = res.data.workPlanList || [];
+            this.updateTime = res.data.lastUpdateTime;
+            this.currentDate = res.serverTime.split(" ")[0];
+            this.fullData = data;
+            this.dateArr = data.map((item) => {
+              return {
+                date: item.date,
+                dateWeek: item.dateWeek,
+              };
+            });
+            this.fullData.filter((item) => {
+              if (item.date == this.currentDate) {
+                this.workPlan = item.workPlan || [];
+              }
+            });
+
+            //获取会议数据
+            this.getMeetingData();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
-    changeDate(d){
+    getMeetingData() {
+      var params = {
+        buildingType: "",
+        siteType: "",
+        rnrsValue: "",
+        showTime: this.currentDate,
+      };
+      IDM.http
+        .post("ctrl/meetingNoticeSjw/meetingReplyInfo", params)
+        .done((res) => {
+          if (res.type == "success" && res.code == "200") {
+            var room = res.data.room;
+            var currentDay = res.data.currentDay;
+            var swStartTime = new Date(currentDay + " 06:00").getTime();
+            var swEndTime = new Date(currentDay + " 11:59").getTime();
+            var wsStartTime = new Date(currentDay + " 18:00").getTime();
+            var wsEndTime = new Date(currentDay + " 05:59").getTime();
+            var dayStartTime = new Date(currentDay + " 00:00").getTime();
+            var dayEndTime = new Date(currentDay + " 23:59").getTime();
+            var meetingData = [];
+            room.forEach(function (item) {
+              let obj = item;
+              obj.swList = [];
+              obj.xwList = [];
+              obj.wsList = [];
+              let sqArr = item.sqData || []; //占用集合
+              sqArr.forEach(function (sitem) {
+                var sqStartTime = new Date(sitem.start).getTime();
+                if (swStartTime <= sqStartTime && sqStartTime <= swEndTime) {
+                  obj.swList.push(sitem);
+                } else if (
+                  swEndTime < sqStartTime &&
+                  sqStartTime < wsStartTime
+                ) {
+                  obj.xwList.push(sitem);
+                } else if (
+                  (wsStartTime <= sqStartTime && sqStartTime <= dayEndTime) ||
+                  (dayStartTime <= sqStartTime && sqStartTime <= wsEndTime)
+                ) {
+                  obj.wsList.push(sitem);
+                }
+              });
+              meetingData.push(obj);
+            });
+            console.log(meetingData);
+            this.meetingData = meetingData;
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+
+      // var res = {
+      //   code: "200",
+      //   type: "success",
+      //   message: "操作成功",
+      //   metadata: null,
+      //   token: "",
+      //   data: {
+      //     currentDay: "2026-04-21",
+      //     startTime: "07:30",
+      //     isShowBuilding: false,
+      //     endTime: "19:30",
+      //     room: [
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "240226143155lZDhknBaRerAkNvPxEu",
+      //         roomType: "",
+      //         roomName: "1001会议室",
+      //         sqData: [
+      //           {
+      //             formId: "",
+      //             leader: "",
+      //             createUserId: "240205094444tfgG3YMO3TMm4prJVOw",
+      //             mobile: "",
+      //             start: "2026-04-21 14:12:00.0",
+      //             gkcx: "1",
+      //             hasMine: true,
+      //             isBecheck: "-1",
+      //             createUserName: "",
+      //             dept: "",
+      //             sqid: "260421141152XIClAVefItNG4f9fUUE",
+      //             type: "",
+      //             roomId: "240226143155lZDhknBaRerAkNvPxEu",
+      //             noticeId: "",
+      //             masterId: "260421141204Tt9tZt3LXK9BKTrc0kx",
+      //             bt: "0421测试会议001",
+      //             person: "",
+      //             ngbm: "科委办公室(信访办公室)",
+      //             ngr: "杨怡",
+      //             end: "2026-04-21 16:13:00.0",
+      //             meetingDuring: "2026-04-21 14:12:00.0至2026-04-21 16:13:00.0",
+      //             id: "260421141204Tt9tZt3LXK9BKTrc0kx",
+      //             moduleId: "190111184257QgSNR8cW92akDpqeWMA",
+      //             status: "2",
+      //           },
+      //         ],
+      //         roomClass: "A楼",
+      //       },
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "24022614324419oeOhLggAbsAwdiEmZ",
+      //         roomType: "",
+      //         roomName: "1002会议室",
+      //         sqData: null,
+      //         roomClass: "A楼",
+      //       },
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "240226143319xPrUaaSTsAAkiDvrotn",
+      //         roomType: "",
+      //         roomName: "2001会议室",
+      //         sqData: null,
+      //         roomClass: "B楼",
+      //       },
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "240226143340V5vGxJKxQ2BfD7z4LW2",
+      //         roomType: "",
+      //         roomName: "2002会议室",
+      //         sqData: null,
+      //         roomClass: "B楼",
+      //       },
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "240226143355zomug23jEXSJIUzZXfw",
+      //         roomType: "",
+      //         roomName: "3001会议室",
+      //         sqData: null,
+      //         roomClass: "C楼",
+      //       },
+      //       {
+      //         isRoomManager: false,
+      //         roomId: "240226143414S3VllHaubZwsLUZeX6i",
+      //         roomType: "",
+      //         roomName: "3002会议室",
+      //         sqData: null,
+      //         roomClass: "C楼",
+      //       },
+      //     ],
+      //   },
+      //   serverTime: "2026-04-23 10:48:52",
+      // };
+      // if (res.type == "success" && res.code == "200") {
+      //   this.isShowBuilding = res.data.isShowBuilding;
+      //   var room = res.data.room;
+      //   var currentDay = res.data.currentDay;
+      //   var swStartTime = new Date(currentDay + " 06:00").getTime();
+      //   var swEndTime = new Date(currentDay + " 11:59").getTime();
+      //   var wsStartTime = new Date(currentDay + " 18:00").getTime();
+      //   var wsEndTime = new Date(currentDay + " 05:59").getTime();
+      //   var dayStartTime = new Date(currentDay + " 00:00").getTime();
+      //   var dayEndTime = new Date(currentDay + " 23:59").getTime();
+      //   var meetingData = [];
+      //   room.forEach(function (item) {
+      //     let obj = item;
+      //     obj.swList = [];
+      //     obj.xwList = [];
+      //     obj.wsList = [];
+      //     let sqArr = item.sqData || []; //占用集合
+      //     sqArr.forEach(function (sitem) {
+      //       var sqStartTime = new Date(sitem.start).getTime();
+      //       if (swStartTime <= sqStartTime && sqStartTime <= swEndTime) {
+      //         obj.swList.push(sitem);
+      //       } else if (swEndTime < sqStartTime && sqStartTime < wsStartTime) {
+      //         obj.xwList.push(sitem);
+      //       } else if (
+      //         (wsStartTime <= sqStartTime && sqStartTime <= dayEndTime) ||
+      //         (dayStartTime <= sqStartTime && sqStartTime <= wsEndTime)
+      //       ) {
+      //         obj.wsList.push(sitem);
+      //       }
+      //     });
+      //     meetingData.push(obj);
+      //   });
+      //   console.log(meetingData);
+      //   this.meetingData = meetingData;
+      // }
+    },
+    //切换日期
+    changeDate(d) {
       this.currentDate = d.date;
       this.fullData.filter((item) => {
         if (item.date == this.currentDate) {
           this.workPlan = item.workPlan || [];
         }
       });
-      console.log(this.workPlan);
+
+      //获取会议数据
+      this.getMeetingData();
     },
     getCurrentWeekRange() {
       const today = new Date();
@@ -394,13 +733,45 @@ export default {
   .weekly-work-schedule-header {
     display: flex;
     align-items: center;
+    justify-content: space-between;
     color: #999;
     font-size: 18px;
+    border-bottom: 1px solid #e8e8e8;
     margin-bottom: 10px;
-    .name {
-      font-weight: 600;
-      margin-right: 30px;
-      color: #333;
+    .tabs {
+      display: flex;
+      align-items: flex-end;
+      margin-bottom: -2px;
+      span {
+        padding-bottom: 10px;
+        font-weight: 600;
+        margin-right: 30px;
+        color: #333;
+        border-bottom: 2px solid transparent;
+        cursor: pointer;
+        &.active {
+          color: rgba(0, 115, 202, 1);
+          border-bottom: 2px solid rgba(0, 115, 202, 1);
+        }
+      }
+    }
+    .right {
+      display: flex;
+      align-items: center;
+      margin-top: -10px;
+    }
+    .more {
+      font-size: 14px;
+      margin-left: 20px;
+      cursor: pointer;
+    }
+    .applyBtn {
+      background: rgba(0, 115, 202, 1);
+      border-radius: 4px;
+      padding: 5px 10px;
+      font-size: 16px;
+      color: #fff;
+      cursor: pointer;
     }
   }
   .weekly-work-schedule-date {
@@ -459,13 +830,53 @@ export default {
         .field:first-child {
           color: #3389e0;
         }
-      }
 
-      .empty {
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+        .cell {
+          padding: 0 10px;
+          &.name {
+            text-align: center;
+          }
+          .item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px dashed #eee;
+            // cursor: pointer;
+            &:first-child {
+              border-top: none;
+            }
+            .icon {
+              width: 10px;
+              height: 10px;
+              background: orange;
+              border-radius: 50%;
+            }
+            .con {
+              padding-left: 10px;
+              word-break: break-all;
+              .time {
+                margin-right: 10px;
+              }
+              p {
+                margin: 0;
+              }
+            }
+          }
+        }
+      }
+    }
+    .empty {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    &.meeting {
+      .table_header {
+        .name {
+          text-align: center;
+        }
       }
     }
   }
