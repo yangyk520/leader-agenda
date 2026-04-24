@@ -70,7 +70,111 @@
     </div>
     <!-- 会议室使用 -->
     <div class="weekly-work-schedule-content meeting" v-show="activeTab == 2">
-      <div class="table_header">
+      <template v-if="meetingTableHeader.length > 0 && meetingData.length > 0">
+        <div class="meetingTable">
+          <table>
+            <thead>
+              <tr>
+                <th width="50"></th>
+                <th v-for="item in meetingTableHeader" :key="item.name">
+                  {{ item.name }}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td align="center" class="wb">上午</td>
+                <td
+                  v-for="(item, index) in meetingTableHeader"
+                  :key="'sw' + index"
+                >
+                  <!-- 某个会议室上午的事项 -->
+                  <div
+                    class="item"
+                    v-for="sitem in meetingData[index].swList"
+                    :key="sitem.id"
+                  >
+                    <i class="icon"></i>
+                    <div class="con">
+                      <span class="time" v-if="sitem.start && sitem.end"
+                        >{{ sitem.start.substring(11, 16) }}-{{
+                          sitem.end.substring(11, 16)
+                        }}</span
+                      >
+                      <span v-if="sitem.leader">{{
+                        sitem.leader.replace(",", "、")
+                      }}</span>
+                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                      <p>{{ sitem.bt }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" class="wb">下午</td>
+                <td
+                  v-for="(item, index) in meetingTableHeader"
+                  :key="'xw' + index"
+                >
+                  <!-- 某个会议室下午的事项 -->
+                  <div
+                    class="item"
+                    v-for="sitem in meetingData[index].xwList"
+                    :key="sitem.id"
+                  >
+                    <i class="icon"></i>
+                    <div class="con">
+                      <span class="time" v-if="sitem.start && sitem.end"
+                        >{{ sitem.start.substring(11, 16) }}-{{
+                          sitem.end.substring(11, 16)
+                        }}</span
+                      >
+                      <span v-if="sitem.leader">{{
+                        sitem.leader.replace(",", "、")
+                      }}</span>
+                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                      <p>{{ sitem.bt }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+              <tr>
+                <td align="center" class="wb">晚上</td>
+                <td
+                  v-for="(item, index) in meetingTableHeader"
+                  :key="'ws' + index"
+                >
+                  <!-- 某个会议室晚上的事项 -->
+                  <div
+                    class="item"
+                    v-for="sitem in meetingData[index].wsList"
+                    :key="sitem.id"
+                  >
+                    <i class="icon"></i>
+                    <div class="con">
+                      <span class="time" v-if="sitem.start && sitem.end"
+                        >{{ sitem.start.substring(11, 16) }}-{{
+                          sitem.end.substring(11, 16)
+                        }}</span
+                      >
+                      <span v-if="sitem.leader">{{
+                        sitem.leader.replace(",", "、")
+                      }}</span>
+                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
+                      <p>{{ sitem.bt }}</p>
+                    </div>
+                  </div>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </template>
+      <div class="empty" v-else>
+        <a-empty description="暂无数据" />
+      </div>
+
+      <!-- <div class="table_header">
         <div
           class="name"
           v-for="sitem in meetingTableHeader"
@@ -144,7 +248,7 @@
         <div class="empty" v-else>
           <a-empty description="暂无数据" />
         </div>
-      </div>
+      </div> -->
     </div>
   </div>
 </template>
@@ -193,26 +297,8 @@ export default {
       endTime: "",
       currentDate: "",
       fullData: [],
-      meetingTableHeader: [
-        {
-          name: "会议室名称",
-          width: "19%",
-        },
-        {
-          name: "上午",
-          width: "27%",
-        },
-        {
-          name: "下午",
-          width: "27%",
-        },
-        {
-          name: "晚上",
-          width: "27%",
-        },
-      ],
+      meetingTableHeader: [],
       meetingData: [],
-      isShowBuilding: false, //是否显示会议室类型
     };
   },
   props: {},
@@ -245,7 +331,7 @@ export default {
       if (this.activeTab == 1) {
         url =
           "/ctrl/list/240731122244hywNDEwILcvyJuDtZG3?moduleId=240731121534LBCbaMUlj548yFfp4Tm&isView=1";
-        name = "一周工作安排";
+        name = "一周工作安排查看";
       }
       if (this.activeTab == 2) {
         // url = "/ctrl/meetingNoticeSkw/reserve/reserve?type=apply";
@@ -264,6 +350,8 @@ export default {
       top.window.$$iframeCtrl.addTab(targetObj);
     },
     getData() {
+      // this.getMeetingData();
+
       var params = {
         startTime: this.startTime,
         endTime: this.endTime,
@@ -316,7 +404,12 @@ export default {
             var dayStartTime = new Date(currentDay + " 00:00").getTime();
             var dayEndTime = new Date(currentDay + " 23:59").getTime();
             var meetingData = [];
+            var meetingTableHeader = []; //会议表头
             room.forEach(function (item) {
+              meetingTableHeader.push({
+                name: item.roomName,
+              });
+
               let obj = item;
               obj.swList = [];
               obj.xwList = [];
@@ -342,6 +435,7 @@ export default {
             });
             console.log(meetingData);
             this.meetingData = meetingData;
+            this.meetingTableHeader = meetingTableHeader;
           }
         })
         .catch((err) => {
@@ -439,8 +533,8 @@ export default {
       //   },
       //   serverTime: "2026-04-23 10:48:52",
       // };
+      // console.log(res.data);
       // if (res.type == "success" && res.code == "200") {
-      //   this.isShowBuilding = res.data.isShowBuilding;
       //   var room = res.data.room;
       //   var currentDay = res.data.currentDay;
       //   var swStartTime = new Date(currentDay + " 06:00").getTime();
@@ -450,7 +544,12 @@ export default {
       //   var dayStartTime = new Date(currentDay + " 00:00").getTime();
       //   var dayEndTime = new Date(currentDay + " 23:59").getTime();
       //   var meetingData = [];
+      //   var meetingTableHeader = []; //会议表头
       //   room.forEach(function (item) {
+      //     meetingTableHeader.push({
+      //       name: item.roomName,
+      //     });
+
       //     let obj = item;
       //     obj.swList = [];
       //     obj.xwList = [];
@@ -473,6 +572,7 @@ export default {
       //   });
       //   console.log(meetingData);
       //   this.meetingData = meetingData;
+      //   this.meetingTableHeader = meetingTableHeader;
       // }
     },
     //切换日期
@@ -876,6 +976,59 @@ export default {
       .table_header {
         .name {
           text-align: center;
+        }
+      }
+    }
+
+    .meetingTable {
+      flex: 1;
+      overflow-y: auto;
+      table {
+        width: 100%;
+        table-layout: fixed;
+        border-collapse: collapse;
+        th {
+          text-align: center;
+          border: 1px solid #ddd;
+          padding: 10px 5px;
+          background: #e4f3ff;
+          color: #3389e0;
+        }
+        td {
+          padding: 0 5px;
+          border: 1px solid #ddd;
+          vertical-align: text-top;
+          &.wb {
+            padding: 10px 5px;
+            vertical-align: middle;
+          }
+          .item {
+            display: flex;
+            align-items: center;
+            padding: 10px 0;
+            border-top: 1px dashed #eee;
+            // cursor: pointer;
+            &:first-child {
+              border-top: none;
+            }
+            .icon {
+              width: 10px;
+              height: 10px;
+              background: orange;
+              border-radius: 50%;
+            }
+            .con {
+              flex: 1;
+              padding-left: 10px;
+              word-break: break-all;
+              .time {
+                margin-right: 10px;
+              }
+              p {
+                margin: 0;
+              }
+            }
+          }
         }
       }
     }
