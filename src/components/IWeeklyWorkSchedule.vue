@@ -93,6 +93,7 @@
                     class="item"
                     v-for="sitem in meetingData[index].swList"
                     :key="sitem.id"
+                    @click="openDetail(sitem)"
                   >
                     <i class="icon"></i>
                     <div class="con">
@@ -101,11 +102,7 @@
                           sitem.end.substring(11, 16)
                         }}</span
                       >
-                      <span v-if="sitem.leader">{{
-                        sitem.leader.replace(",", "、")
-                      }}</span>
-                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                      <p>{{ sitem.bt }}</p>
+                      <p>{{ sitem.ngbm }}</p>
                     </div>
                   </div>
                 </td>
@@ -121,6 +118,7 @@
                     class="item"
                     v-for="sitem in meetingData[index].xwList"
                     :key="sitem.id"
+                    @click="openDetail(sitem)"
                   >
                     <i class="icon"></i>
                     <div class="con">
@@ -129,11 +127,7 @@
                           sitem.end.substring(11, 16)
                         }}</span
                       >
-                      <span v-if="sitem.leader">{{
-                        sitem.leader.replace(",", "、")
-                      }}</span>
-                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                      <p>{{ sitem.bt }}</p>
+                      <p>{{ sitem.ngbm }}</p>
                     </div>
                   </div>
                 </td>
@@ -149,6 +143,7 @@
                     class="item"
                     v-for="sitem in meetingData[index].wsList"
                     :key="sitem.id"
+                    @click="openDetail(sitem)"
                   >
                     <i class="icon"></i>
                     <div class="con">
@@ -157,11 +152,7 @@
                           sitem.end.substring(11, 16)
                         }}</span
                       >
-                      <span v-if="sitem.leader">{{
-                        sitem.leader.replace(",", "、")
-                      }}</span>
-                      <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                      <p>{{ sitem.bt }}</p>
+                      <p>{{ sitem.ngbm }}</p>
                     </div>
                   </div>
                 </td>
@@ -173,82 +164,6 @@
       <div class="empty" v-else>
         <a-empty description="暂无数据" />
       </div>
-
-      <!-- <div class="table_header">
-        <div
-          class="name"
-          v-for="sitem in meetingTableHeader"
-          :key="sitem.name"
-          :style="{ width: sitem.width }"
-        >
-          {{ sitem.name }}
-        </div>
-      </div>
-      <div class="table_body">
-        <template v-if="meetingData.length > 0">
-          <vue-scroll :ops="scrollOps">
-            <div class="row" v-for="(item, index) in meetingData" :key="index">
-              <div class="cell name" style="width: 19%">
-                {{ item.roomClass }} {{ item.roomName }}
-              </div>
-              <div class="cell" style="width: 27%">
-                <div class="item" v-for="sitem in item.swList" :key="sitem.id">
-                  <i class="icon"></i>
-                  <div class="con">
-                    <span class="time" v-if="sitem.start && sitem.end"
-                      >{{ sitem.start.substring(11, 16) }}-{{
-                        sitem.end.substring(11, 16)
-                      }}</span
-                    >
-                    <span v-if="sitem.leader">{{
-                      sitem.leader.replace(",", "、")
-                    }}</span>
-                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                    <p>{{ sitem.bt }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="cell" style="width: 27%">
-                <div class="item" v-for="sitem in item.xwList" :key="sitem.id">
-                  <i class="icon"></i>
-                  <div class="con">
-                    <span class="time" v-if="sitem.start && sitem.end"
-                      >{{ sitem.start.substring(11, 16) }}-{{
-                        sitem.end.substring(11, 16)
-                      }}</span
-                    >
-                    <span v-if="sitem.leader">{{
-                      sitem.leader.replace(",", "、")
-                    }}</span>
-                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                    <p>{{ sitem.bt }}</p>
-                  </div>
-                </div>
-              </div>
-              <div class="cell" style="width: 27%">
-                <div class="item" v-for="sitem in item.wsList" :key="sitem.id">
-                  <i class="icon"></i>
-                  <div class="con">
-                    <span class="time" v-if="sitem.start && sitem.end"
-                      >{{ sitem.start.substring(11, 16) }}-{{
-                        sitem.end.substring(11, 16)
-                      }}</span
-                    >
-                    <span v-if="sitem.leader">{{
-                      sitem.leader.replace(",", "、")
-                    }}</span>
-                    <span v-if="sitem.ngbm">{{ sitem.ngbm }}</span>
-                    <p>{{ sitem.bt }}</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </vue-scroll>
-        </template>
-        <div class="empty" v-else>
-          <a-empty description="暂无数据" />
-        </div>
-      </div> -->
     </div>
   </div>
 </template>
@@ -348,6 +263,75 @@ export default {
         parentName: "",
       };
       top.window.$$iframeCtrl.addTab(targetObj);
+    },
+    openDetail(item) {
+      var isRoomManager = "";
+      if (!item["moduleId"]) {
+        return false;
+      }
+      //会议变更需要检查下待办是否是我办理，是的话打开待办
+      if (
+        item["moduleId"] === "200819103404M68aBaOHQCJpEAaAES2" &&
+        item["status"] === "1"
+      ) {
+        IDM.http
+          .get("ctrl/meetingChange/getChangeTodo", { pk: item["sqid"] })
+          .done((res) => {
+            if (res.type == "success" && res.code == "200") {
+              var url = "";
+              if (res.data) {
+                url = IDM.url.getWebPath(
+                  "ctrl/formControl/form?todoId=" +
+                    res.data.pId +
+                    "_" +
+                    res.data.pNId +
+                    "&moduleId=" +
+                    res.data.moduleId +
+                    "&pk=" +
+                    res.data.infoId
+                );
+              } else {
+                url = IDM.url.getWebPath(
+                  "ctrl/formControl/form?listId=210607181937YJxUC5fve4y7q3SH5hJ&mId=" +
+                    item.moduleId +
+                    "&moduleId=" +
+                    item.moduleId +
+                    "&method=pageCheckInfo&validateByList=1&pk=" +
+                    item.sqid +
+                    "&hasMine=" +
+                    item.hasMine +
+                    "&isRoomManager=" +
+                    isRoomManager +
+                    "&occupyStatus=" +
+                    item.status
+                );
+              }
+              window.open(url);
+            }
+          })
+          .catch((err) => {
+            console.log(err);
+          });
+        return;
+      }
+
+      if (item.hasMine || item.gkcx == "1") {
+        var url = IDM.url.getWebPath(
+          "ctrl/formControl/form?listId=210607181937YJxUC5fve4y7q3SH5hJ&mId=" +
+            item.moduleId +
+            "&moduleId=" +
+            item.moduleId +
+            "&method=pageCheckInfo&validateByList=1&pk=" +
+            item.sqid +
+            "&hasMine=" +
+            item.hasMine +
+            "&isRoomManager=" +
+            isRoomManager +
+            "&occupyStatus=" +
+            item.status
+        );
+        window.open(url);
+      }
     },
     getData() {
       // this.getMeetingData();
@@ -985,6 +969,7 @@ export default {
       overflow-y: auto;
       table {
         width: 100%;
+        min-height: 100%;
         table-layout: fixed;
         border-collapse: collapse;
         th {
@@ -1004,10 +989,9 @@ export default {
           }
           .item {
             display: flex;
-            align-items: center;
             padding: 10px 0;
             border-top: 1px dashed #eee;
-            // cursor: pointer;
+            cursor: pointer;
             &:first-child {
               border-top: none;
             }
@@ -1016,13 +1000,15 @@ export default {
               height: 10px;
               background: orange;
               border-radius: 50%;
+              margin-top: 3px;
             }
             .con {
               flex: 1;
-              padding-left: 10px;
+              padding-left: 6px;
               word-break: break-all;
               .time {
                 margin-right: 10px;
+                font-weight: 600;
               }
               p {
                 margin: 0;
