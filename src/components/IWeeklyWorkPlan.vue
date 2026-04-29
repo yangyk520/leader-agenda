@@ -299,11 +299,11 @@ export default {
     detailsHandle(item) {
       console.log(item);
       let url = IDM.url.getWebPath(
-        `ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}`
+        `ctrl/formControl/sysForm?moduleId=${item.moduleId}&pk=${item.id}`
       );
       if (item.isEdit == 0) {
         url = IDM.url.getWebPath(
-          `ctrl/formControl/sysForm?moduleId=${item.moduleId}&formId=${item.formId}&pk=${item.id}&nodeId=-1`
+          `ctrl/formControl/sysForm?moduleId=${item.moduleId}&pk=${item.id}&nodeId=-1`
         );
       }
       window.open(url);
