@@ -21,7 +21,20 @@
         <div class="applyBtn" v-show="activeTab == 2" @click="applyMeeting">
           申请会议室
         </div>
-        <div class="more" @click="openMore">查看更多></div>
+        <div class="more" @click="openMore">
+          <a-tooltip>
+            <template slot="title"> 更多 </template>
+            <img
+              :src="
+                IDM.url.getModuleAssetsWebPath(
+                  require(`../assets/more.svg`),
+                  this.moduleObject
+                )
+              "
+              width="16px"
+            />
+          </a-tooltip>
+        </div>
       </div>
     </div>
     <div class="weekly-work-schedule-date">
@@ -846,7 +859,8 @@ export default {
     }
     .more {
       font-size: 14px;
-      margin-left: 20px;
+      margin-left: 15px;
+      margin-right: 15px;
       cursor: pointer;
     }
     .applyBtn {
