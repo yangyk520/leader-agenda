@@ -91,7 +91,7 @@
                   :key="group.groupKey"
                   :data-group="group.groupKey"
                 >
-                  <tr class="group-header-row" @click="foldRow(group)">
+                  <tr class="group-header-row" @click.stop="foldRow(group)">
                     <td colspan="12" class="group-header-cell">
                       <div class="content">
                         <div class="toggle-icon">
@@ -112,30 +112,76 @@
                         <div class="record-count">
                           共 {{ group.records.length }} 条记录
                         </div>
+                        <div
+                          class="filter-area"
+                          v-if="sortMode == 'unit' && group.canEdit"
+                        >
+                          <div class="search-item">
+                            <label class="tit">值班地址：</label>
+                            <div class="con">
+                              <a-input
+                                v-model="group.zbdz"
+                                placeholder="请输入"
+                                @click.stop
+                                @focus.stop
+                              ></a-input>
+                            </div>
+                          </div>
+                          <div class="search-item">
+                            <label class="tit">值班座机：</label>
+                            <div class="con">
+                              <a-input
+                                v-model="group.zbzj"
+                                placeholder="请输入"
+                                @click.stop
+                                @focus.stop
+                              ></a-input>
+                            </div>
+                          </div>
+                          <div class="search-item">
+                            <label class="tit">值班手机：</label>
+                            <div class="con">
+                              <a-input
+                                v-model="group.zbsj"
+                                placeholder="请输入"
+                                @click.stop
+                                @focus.stop
+                              ></a-input>
+                            </div>
+                          </div>
+                          <button
+                            id="searchBtn"
+                            class="btn-primary"
+                            @click.stop="editZbInfo(group)"
+                          >
+                            保存
+                          </button>
+                        </div>
                       </div>
                     </td>
                   </tr>
-                  <tr
-                    v-for="(item, index) in group.records"
-                    :key="index"
-                    v-show="!group.isfold"
-                    @click="detailsHandle(item)"
-                  >
-                    <td class="unit-cell">
-                      {{ item["260318173354Nuk3etlOXkyyUpXuIk3.text"] }}
-                    </td>
-                    <td>{{ item["260318173545fwnM7nEE9HOhJIrXwez"] }}</td>
-                    <td>{{ item["260318173615MgiM382XZ6lw3NE5xbL"] }}</td>
-                    <td>{{ item["260312155432Neh5oKPYgCezjwuazi7"] }}</td>
-                    <td>{{ item["C-ZB-ZBZ-RY-0005"] }}</td>
-                    <td>{{ item["C-ZB-ZBZ-RY-0008"] }}</td>
-                    <td>{{ item["26031215555258Lb8SGOeuSat1zESJI"] }}</td>
-                    <td>{{ item["260312155703l8a4nWAiDu613mDOnDI"] }}</td>
-                    <td>{{ item["260312160852gsaw0rfy6kRuHtytAQL"] }}</td>
-                    <td>{{ item["C-ZB-ZBZ-RY-0001"] }}</td>
-                    <td>{{ item["260312155847jzXjO2chpBhh5whjlJx"] }}</td>
-                    <td>{{ item["260312160948BG8WcV5IkPQrFhc3via"] }}</td>
-                  </tr>
+                  <template v-if="!group.isfold">
+                    <tr
+                      v-for="item in group.records"
+                      :key="item['A0001']"
+                      @click="detailsHandle(item)"
+                    >
+                      <td class="unit-cell">
+                        {{ item["260318173354Nuk3etlOXkyyUpXuIk3.text"] }}
+                      </td>
+                      <td>{{ item["260318173545fwnM7nEE9HOhJIrXwez"] }}</td>
+                      <td>{{ item["260318173615MgiM382XZ6lw3NE5xbL"] }}</td>
+                      <td>{{ item["260312155432Neh5oKPYgCezjwuazi7"] }}</td>
+                      <td>{{ item["C-ZB-ZBZ-RY-0005"] }}</td>
+                      <td>{{ item["C-ZB-ZBZ-RY-0008"] }}</td>
+                      <td>{{ item["26031215555258Lb8SGOeuSat1zESJI"] }}</td>
+                      <td>{{ item["260312155703l8a4nWAiDu613mDOnDI"] }}</td>
+                      <td>{{ item["260312160852gsaw0rfy6kRuHtytAQL"] }}</td>
+                      <td>{{ item["C-ZB-ZBZ-RY-0001"] }}</td>
+                      <td>{{ item["260312155847jzXjO2chpBhh5whjlJx"] }}</td>
+                      <td>{{ item["260312160948BG8WcV5IkPQrFhc3via"] }}</td>
+                    </tr>
+                  </template>
                 </tbody>
               </template>
               <template v-if="!isloading && defaultData.length == 0">
@@ -224,6 +270,29 @@ export default {
       this.endDate = "";
       this.initData();
     },
+    editZbInfo(item) {
+      console.log(item);
+      let params = {
+        zbdw: item.zbdw,
+        fid: item.fid,
+        zbdz: item.zbdz,
+        zbzj: item.zbzj,
+        zbsj: item.zbsj,
+      };
+      console.log(params);
+      IDM.http
+        .get("ctrl/holidayduty/editZbInfo", params)
+        .done((res) => {
+          if (res.type == "success" && res.code == "200") {
+            IDM.message.success("保存成功！");
+          } else {
+            IDM.message.error(res.message);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    },
     //新建
     addHandle() {
       var url = IDM.url.getWebPath(
@@ -240,9 +309,13 @@ export default {
       );
       if (this.searchUnit) {
         url += "&query_260318173354Nuk3etlOXkyyUpXuIk3=" + this.searchUnit;
-      } 
+      }
       if (this.startDate && this.endDate) {
-        url += "&query_260318173545fwnM7nEE9HOhJIrXwez=" + (this.startDate) + " - " + (this.endDate);
+        url +=
+          "&query_260318173545fwnM7nEE9HOhJIrXwez=" +
+          this.startDate +
+          " - " +
+          this.endDate;
       }
       console.log("export url: ", url);
       window.location.href = encodeURI(url);
@@ -263,8 +336,9 @@ export default {
     // 按单位分组
     groupByUnit(data) {
       const groups = new Map();
+      console.log(data);
       data.forEach((item) => {
-        const unit = item["260318173354Nuk3etlOXkyyUpXuIk3.text"];
+        const unit = item["260318173354Nuk3etlOXkyyUpXuIk3.text"]; //单位
         if (!groups.has(unit)) groups.set(unit, []);
         groups.get(unit).push(item);
       });
@@ -272,7 +346,26 @@ export default {
       const sortedUnits = Array.from(groups.keys());
       const result = [];
       for (let unit of sortedUnits) {
-        result.push({ groupKey: unit, records: groups.get(unit) });
+        let records = groups.get(unit);
+        result.push({
+          groupKey: unit,
+          records: records,
+          isfold: false,
+          zbdw: records[0]
+            ? records[0]["260318173354Nuk3etlOXkyyUpXuIk3.value"]
+            : "",
+          fid: records[0] ? records[0]["A0031"] : "",
+          zbdz: records[0]
+            ? records[0]["260513163207TRiHna8BFDSbygoFvRZ.value"]
+            : "",
+          zbzj: records[0]
+            ? records[0]["260513163237CnVmhhV9O7UhrUiH4QE.value"]
+            : "",
+          zbsj: records[0]
+            ? records[0]["260513163257H8F1I2owuRDnjgHYXv8.value"]
+            : "",
+          canEdit: records[0] ? records[0]["canEdit"] : "",
+        });
       }
       return result;
     },
@@ -280,14 +373,18 @@ export default {
     groupByDate(data) {
       const groups = new Map();
       data.forEach((item) => {
-        const date = item["260318173545fwnM7nEE9HOhJIrXwez"];
+        const date = item["260318173545fwnM7nEE9HOhJIrXwez"]; //日期
         if (!groups.has(date)) groups.set(date, []);
         groups.get(date).push(item);
       });
       const sortedDates = Array.from(groups.keys()).sort();
       const result = [];
       for (let date of sortedDates) {
-        result.push({ groupKey: date, records: groups.get(date) });
+        result.push({
+          groupKey: date,
+          records: groups.get(date),
+          isfold: false,
+        });
       }
       return result;
     },
@@ -485,7 +582,7 @@ export default {
       this.isloading = true;
       this.defaultData = [];
       if (!this.moduleObject.env || this.moduleObject.env == "develop") {
-        const result = holidayListMock.data.dataList;
+        let result = holidayListMock.data || [];
         this.defaultData = result;
         this.refreshDisplay();
         this.$nextTick(() => {
@@ -805,6 +902,42 @@ export default {
       text-align: center;
       padding: 40px;
       color: #99b2c4;
+    }
+
+    .filter-area {
+      flex: 1;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+      .search-item {
+        display: flex;
+        align-items: center;
+        width: 300px;
+        max-width: 28%;
+        .tit {
+          width: 90px;
+          text-align: right;
+        }
+        .con {
+          flex: 1;
+        }
+      }
+      ::v-deep .ant-input {
+        height: 40px;
+      }
+      .btn-primary {
+        background: #0080ff;
+        border: none;
+        color: #fff;
+        padding: 10px 20px;
+        border-radius: 4px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+      .btn-primary:hover {
+        background: #0080ff;
+      }
     }
   }
 }
