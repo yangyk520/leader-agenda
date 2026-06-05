@@ -115,6 +115,13 @@
       "className": "IHolidayDutySchedule",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.honoremergency",
+      "comName": "荣誉紧急",
+      "className": "HonorEmergency",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }
