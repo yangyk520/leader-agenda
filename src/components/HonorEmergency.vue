@@ -210,25 +210,22 @@ export default {
       const honorClass = this.honorClassMap[this.activeMenu];
       const honorType = this.honorTypeMap[this.activeTab];
       const params = {
-        formId: "2606041006290ib0PgJ0qlLWXSeRjg8",
-        moduleId: "260525111043GGeJJGnmEPlRKpcs4AX",
-        honorClass: honorClass,
-        honorType: honorType,
         page: String(this.pagination.current),
         limit: String(this.pagination.pageSize),
       };
       if (this.searchVal.trim()) {
-        params.keyword = this.searchVal.trim();
+        params._content = this.searchVal.trim();
+        params.searchText = `检索内容：${this.searchVal.trim()}`;
       }
-      let url=`/ctrl/list/query?formId=${params.formId}&moduleId=${params.moduleId}&honorClass=${params.honorClass}&honorType=${params.honorType}`
+      let url=`/ctrl/list/query?formId=2606041006290ib0PgJ0qlLWXSeRjg8&moduleId=260525111043GGeJJGnmEPlRKpcs4AX&honorClass=${honorClass}&honorType=${honorType}`;
       IDM.http
-        .post(url, {page: params.page, limit: params.limit, keyword: params.keyword})
+        .post(url,params)
         .then((res) => {
           const resData = res.data || {};
           const list = resData.data || [];
           this.tableData = list.map((item) => ({
             time: item["C-HONOR-ARCHIVE-REGISTER-0006.value"] || "",
-            department: item["A0025.value"] || "",
+            department: (honorType=='1'?item["C-HONOR-ARCHIVE-REGISTER-0003.text"]:item["C-HONOR-ARCHIVE-REGISTER-0021.text"]) || "",
             content: item["B0001.value"] || "",
             pk: item["A0001"] || "",
           }));
