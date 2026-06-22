@@ -40,7 +40,6 @@
           >部门</span
         >
         <span
-          v-if="!isTsw"
           :class="{ active: timeViewType === 'person' }"
           @click="timeViewToggle('person')"
           >个人</span
