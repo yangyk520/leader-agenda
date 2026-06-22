@@ -5,7 +5,7 @@
     :idm-ctrl-id="moduleObject.id"
     class="idm-honor-emergency"
   >
-    <!-- Banner图 + 菜单导航（菜单叠在banner底部） -->
+    <!-- Banner图 -->
     <div class="honor-banner-wrap">
       <div class="honor-banner">
         <img :src="
@@ -17,35 +17,42 @@
               width="100%"
             />
       </div>
-      <div class="honor-menu-bar">
-        <div class="menu-inner">
-          <div class="menu-container">
-            <div
-              v-for="menu in menuList"
-              :key="menu.key"
-              :class="['menu-item', { active: activeMenu === menu.key }]"
-              @click="switchMenu(menu.key)"
-            >
-              {{ menu.name }}
-            </div>
-          </div>
-          <div class="search-container">
-            <a-input
-              v-model="searchVal"
-              @keyup.enter="handleSearch"
-              placeholder="搜索"
-              class="search-input"
-            >
-              <svg-icon slot="suffix" icon-class="search" />
-            </a-input>
-            <span class="search-btn" @click="handleSearch">搜索</span>
+      <div class="update-tip">持续更新中</div>
+    </div>
+
+    <!-- 菜单导航（放在 banner 下方） -->
+    <div class="honor-menu-bar">
+      <div class="menu-inner">
+        <div class="menu-container">
+          <div
+            v-for="menu in menuList"
+            :key="menu.key"
+            :class="['menu-item', { active: activeMenu === menu.key }]"
+            @click="switchMenu(menu.key)"
+          >
+            {{ menu.name }}
           </div>
         </div>
       </div>
     </div>
-    
+
     <!-- 内容区域 -->
     <div class="honor-content">
+      <!-- 搜索栏（列表上方右侧） -->
+      <div class="search-bar">
+        <div class="search-container">
+          <a-input
+            v-model="searchVal"
+            @keyup.enter="handleSearch"
+            placeholder="搜索"
+            class="search-input"
+          >
+            <svg-icon slot="suffix" icon-class="search" />
+          </a-input>
+          <span class="search-btn" @click="handleSearch">搜索</span>
+        </div>
+      </div>
+
       <!-- 个人/集体标签页 -->
       <div class="custom-tabs">
         <div class="tabs-header">
@@ -133,40 +140,6 @@ export default {
           this.fetchData();
         },
       },
-      // 表格列配置
-      columns: [
-        {
-          title: "序号",
-          dataIndex: "index",
-          key: "index",
-          width: 120,
-          align: "center",
-          customRender: (text, record, index) => {
-            return (this.pagination.current - 1) * this.pagination.pageSize + index + 1;
-          },
-        },
-        {
-          title: "时间",
-          dataIndex: "time",
-          key: "time",
-          width: 250,
-          align: "center",
-        },
-        {
-          title: "部门",
-          dataIndex: "department",
-          key: "department",
-          width: 250,
-          align: "center",
-        },
-        {
-          title: "内容",
-          dataIndex: "content",
-          key: "content",
-          align: "left",
-          ellipsis: true,
-        },
-      ],
       // 菜单key与honorClass参数映射
       honorClassMap: {
         honor: "1",
@@ -185,7 +158,101 @@ export default {
     };
   },
   props: {},
-  computed: {},
+  computed: {
+    // 根据当前标签页动态生成表格列
+    columns() {
+      if (this.activeTab === "personal") {
+        return [
+          {
+            title: "序号",
+            dataIndex: "index",
+            key: "index",
+            width: 100,
+            align: "center",
+            customRender: (_text, _record, index) => {
+              return (this.pagination.current - 1) * this.pagination.pageSize + index + 1;
+            },
+          },
+          {
+            title: "姓名",
+            dataIndex: "name",
+            key: "name",
+            width: 180,
+            align: "center",
+          },
+          {
+            title: "部门",
+            dataIndex: "department",
+            key: "department",
+            width: 220,
+            align: "center",
+          },
+          {
+            title: "荣誉名称",
+            dataIndex: "honorName",
+            key: "honorName",
+            align: "left",
+            ellipsis: true,
+          },
+          {
+            title: "奖励时间",
+            dataIndex: "awardTime",
+            key: "awardTime",
+            width: 180,
+            align: "center",
+          },
+          {
+            title: "奖励单位",
+            dataIndex: "awardUnit",
+            key: "awardUnit",
+            width: 220,
+            align: "center",
+          },
+        ];
+      } else {
+        return [
+          {
+            title: "序号",
+            dataIndex: "index",
+            key: "index",
+            width: 100,
+            align: "center",
+            customRender: (_text, _record, index) => {
+              return (this.pagination.current - 1) * this.pagination.pageSize + index + 1;
+            },
+          },
+          {
+            title: "部门",
+            dataIndex: "department",
+            key: "department",
+            width: 220,
+            align: "center",
+          },
+          {
+            title: "荣誉名称",
+            dataIndex: "honorName",
+            key: "honorName",
+            align: "left",
+            ellipsis: true,
+          },
+          {
+            title: "奖励时间",
+            dataIndex: "awardTime",
+            key: "awardTime",
+            width: 180,
+            align: "center",
+          },
+          {
+            title: "奖励单位",
+            dataIndex: "awardUnit",
+            key: "awardUnit",
+            width: 220,
+            align: "center",
+          },
+        ];
+      }
+    },
+  },
   watch: {
     activeTab() {
       this.pagination.current = 1;
@@ -224,9 +291,11 @@ export default {
           const resData = res.data || {};
           const list = resData.data || [];
           this.tableData = list.map((item) => ({
-            time: item["C-HONOR-ARCHIVE-REGISTER-0006.value"] || "",
+            name: item["C-HONOR-ARCHIVE-REGISTER-0002.text"] || "",
             department: (honorType=='1'?item["C-HONOR-ARCHIVE-REGISTER-0003.text"]:item["C-HONOR-ARCHIVE-REGISTER-0021.text"]) || "",
-            content: item["B0001.value"] || "",
+            honorName: item["B0001.value"] || "",
+            awardTime: item["C-HONOR-ARCHIVE-REGISTER-0006.value"] || "",
+            awardUnit: item["C-HONOR-ARCHIVE-REGISTER-0007.text"] || "",
             pk: item["A0001"] || "",
           }));
           this.pagination.total = resData.count || 0;
@@ -510,74 +579,78 @@ export default {
       height: 200px;
       overflow: hidden;
 
-      .banner-img {
+      img {
         width: 100%;
         height: 100%;
         object-fit: cover;
       }
     }
 
-    .honor-menu-bar {
+    .update-tip {
       position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background: rgba(0, 0, 0, 0.30);
+      top: 20px;
+      right: 30px;
+      padding: 8px 20px;
+      background: linear-gradient(135deg, #ff4d4f, #ff7875);
+      color: #fff;
+      font-size: 18px;
+      font-weight: bold;
+      border-radius: 20px;
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+      z-index: 10;
+      animation: pulse 2s infinite;
+    }
+  }
 
-      .menu-inner {
-        width: 1400px;
-        margin: 0 auto;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 0 30px;
-        box-sizing: border-box;
-      }
+  @keyframes pulse {
+    0% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+    }
+    50% {
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(255, 77, 79, 0.6);
+    }
+    100% {
+      transform: scale(1);
+      box-shadow: 0 4px 12px rgba(255, 77, 79, 0.4);
+    }
+  }
 
-      .menu-container {
-        display: flex;
+  .honor-menu-bar {
+    width: 100%;
+    background: #A60F00;
 
-        .menu-item {
-          padding: 15px 55px;
-          color: #fff;
-          font-size: 16px;
-          cursor: pointer;
-          transition: background-color 0.3s;
-          position: relative;
-          margin-right: 10px;
+    .menu-inner {
+      width: 1400px;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 0 30px;
+      box-sizing: border-box;
+      line-height: 1;
+    }
 
-          &:hover {
-            background: rgba(255, 255, 255, 0.15);
-          }
+    .menu-container {
+      display: flex;
 
-          &.active {
-            background: #e5a50a;
-            color: #333;
-          }
+      .menu-item {
+        padding: 18px 55px;
+        color: #fff;
+        font-size: 18px;
+        cursor: pointer;
+        transition: background-color 0.3s;
+        position: relative;
+        margin-right: 10px;
+
+        &:hover {
+          background: rgba(255, 255, 255, 0.15);
         }
-      }
 
-      .search-container {
-        display: flex;
-        align-items: center;
-
-        .search-input {
-          width: 200px;
-          margin-right: 10px;
-        }
-
-        .search-btn {
-          padding: 6px 20px;
+        &.active {
           background: #e5a50a;
           color: #333;
-          border-radius: 4px;
-          cursor: pointer;
-          font-size: 14px;
-          transition: background-color 0.3s;
-
-          &:hover {
-            background: #d49509;
-          }
         }
       }
     }
@@ -591,6 +664,37 @@ export default {
     flex-direction: column;
     align-items: center;
 
+    .search-bar {
+      width: 1400px;
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 15px;
+
+      .search-container {
+        display: flex;
+        align-items: center;
+
+        .search-input {
+          width: 240px;
+          margin-right: 10px;
+        }
+
+        .search-btn {
+          padding: 8px 24px;
+          background: #e5a50a;
+          color: #333;
+          border-radius: 4px;
+          cursor: pointer;
+          font-size: 16px;
+          transition: background-color 0.3s;
+
+          &:hover {
+            background: #d49509;
+          }
+        }
+      }
+    }
+
     .custom-tabs {
       width: 1400px;
       background: #fff;
@@ -600,6 +704,8 @@ export default {
       padding: 20px;
       box-sizing: border-box;
       flex: 1;
+      font-size: 16px;
+
       .tabs-header {
         display: flex;
         justify-content: center;
@@ -608,8 +714,8 @@ export default {
         margin-bottom: 20px;
 
         .tab-item {
-          padding: 10px 30px;
-          font-size: 16px;
+          padding: 12px 36px;
+          font-size: 18px;
           color: #909399;
           cursor: pointer;
           position: relative;
@@ -639,17 +745,25 @@ export default {
       }
 
       .tabs-content {
+        font-size: 16px;
+
         ::v-deep .ant-table-tbody > tr {
           cursor: pointer;
+          font-size: 16px;
         }
 
         ::v-deep .ant-table-thead > tr > th {
           text-align: center!important;
+          font-size: 17px;
         }
 
         ::v-deep .ant-table-thead > tr > th .ant-table-header-column {
           display: inline-block;
           text-align: center;
+        }
+
+        ::v-deep .ant-table-tbody > tr > td {
+          font-size: 16px;
         }
 
         ::v-deep .stripe-row {
@@ -664,6 +778,7 @@ export default {
 @media (max-width: 1400px) {
   .idm-honor-emergency {
     .honor-menu-bar .menu-inner,
+    .honor-content .search-bar,
     .honor-content .custom-tabs {
       width: 100%;
       min-width: 900px;
@@ -678,33 +793,28 @@ export default {
         height: 120px;
       }
 
-      .honor-menu-bar {
-        position: relative;
-        background: rgba(0, 0, 0, 0.30);
+      .update-tip {
+        top: 10px;
+        right: 10px;
+        padding: 6px 12px;
+        font-size: 14px;
+      }
+    }
 
-        .menu-inner {
-          flex-direction: column;
-          padding: 10px;
-          min-width: auto;
+    .honor-menu-bar {
+      background: rgba(0, 0, 0, 0.70);
 
-          .menu-container {
-            flex-wrap: wrap;
-            justify-content: center;
+      .menu-inner {
+        padding: 10px;
+        min-width: auto;
 
-            .menu-item {
-              padding: 8px 20px;
-              font-size: 14px;
-            }
-          }
+        .menu-container {
+          flex-wrap: wrap;
+          justify-content: center;
 
-          .search-container {
-            margin-top: 10px;
-            width: 100%;
-            justify-content: center;
-
-            .search-input {
-              width: 150px;
-            }
+          .menu-item {
+            padding: 10px 24px;
+            font-size: 16px;
           }
         }
       }
@@ -712,6 +822,20 @@ export default {
 
     .honor-content {
       padding: 10px;
+
+      .search-bar {
+        min-width: auto;
+        margin-bottom: 10px;
+
+        .search-container {
+          width: 100%;
+          justify-content: center;
+
+          .search-input {
+            width: 180px;
+          }
+        }
+      }
 
       .custom-tabs {
         min-width: auto;
@@ -724,11 +848,11 @@ export default {
 
 @media (max-width: 480px) {
   .idm-honor-emergency {
-    .honor-menu-wrap {
+    .honor-menu-bar {
       .menu-container {
         .menu-item {
-          padding: 6px 15px;
-          font-size: 12px;
+          padding: 8px 16px;
+          font-size: 14px;
         }
       }
     }
