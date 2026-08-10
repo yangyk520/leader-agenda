@@ -122,6 +122,13 @@
       "className": "HonorEmergency",
       "comType": "common",
       "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.imyscheduleskw",
+      "comName": "市科委我的日程",
+      "className": "IMyScheduleSkw",
+      "comType": "common",
+      "comLangue": "vue"
     }
   ]
 }

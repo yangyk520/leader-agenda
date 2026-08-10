@@ -38,15 +38,34 @@
       </div>
     </div>
     <div class="weekly-work-schedule-date">
-      <div
-        class="date"
-        v-for="item in dateArr"
-        :key="item"
-        :class="{ active: item.date == currentDate }"
-        @click="changeDate(item)"
-      >
-        <span>{{ item.dateWeek }}</span>
-      </div>
+      <template v-if="activeTab == 1">
+        <div
+          class="date"
+          v-for="item in dateArr"
+          :key="item"
+          :class="{ active: item.date == currentDate }"
+          @click="changeDate(item)"
+        >
+          <span>{{ item.dateWeek }}</span>
+        </div>
+      </template>
+      <template v-if="activeTab == 2">
+        <div class="tab prev" @click="tabWeek('prev')">
+          <svg-icon iconClass="left2"></svg-icon>
+        </div>
+        <div
+          class="date"
+          v-for="item in meetingDateArr"
+          :key="item"
+          :class="{ active: item.date == meetingCurrentDate }"
+          @click="changeDate(item,'meeting')"
+        >
+          <span>{{ item.dateWeek }}</span>
+        </div>
+        <div class="tab next" @click="tabWeek('next')">
+          <svg-icon iconClass="right2"></svg-icon>
+        </div>
+      </template>
     </div>
     <!-- 一周工作安排 -->
     <div class="weekly-work-schedule-content" v-show="activeTab == 1">
@@ -227,6 +246,8 @@ export default {
       fullData: [],
       meetingTableHeader: [],
       meetingData: [],
+      meetingDateArr: [],
+      meetingCurrentDate: "",
     };
   },
   props: {},
@@ -244,6 +265,35 @@ export default {
     //切换tab
     changeTab(key) {
       this.activeTab = key;
+    },
+    //切换周
+    tabWeek(type) {
+      let startTime = this.getWeekDateArr(type,this.meetingCurrentDate)[0];
+      let endTime = this.getWeekDateArr(type,this.meetingCurrentDate)[6];
+      var params = {
+        startTime: startTime,
+        endTime: endTime,
+      };
+      console.log(params);
+      IDM.http
+        .get("ctrl/skwWorkPlan/queryWorkPlan", params)
+        .done((res) => {
+          if (res.type == "success" && res.code == "200") {
+            var data = res.data.workPlanList || [];
+            this.meetingDateArr = data.map((item) => {
+              return {
+                date: item.date,
+                dateWeek: item.dateWeek,
+              };
+            });
+            this.meetingCurrentDate = this.meetingDateArr[0].date;
+            //获取会议数据
+            this.getMeetingData();
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
     },
     //申请会议室
     applyMeeting() {
@@ -347,8 +397,6 @@ export default {
       }
     },
     getData() {
-      // this.getMeetingData();
-
       var params = {
         startTime: this.startTime,
         endTime: this.endTime,
@@ -373,6 +421,9 @@ export default {
               }
             });
 
+            this.meetingDateArr = this.dateArr;
+            this.meetingCurrentDate = this.currentDate;
+
             //获取会议数据
             this.getMeetingData();
           }
@@ -380,13 +431,76 @@ export default {
         .catch((err) => {
           console.log(err);
         });
+
+      // var res = {
+      //   code: "200",
+      //   type: "success",
+      //   message: "操作成功",
+      //   metadata: null,
+      //   token: "",
+      //   data: {
+      //     workPlanList: [
+      //       {
+      //         date: "2026-06-29",
+      //         dateWeek: "6/29星期一",
+      //       },
+      //       {
+      //         date: "2026-06-30",
+      //         dateWeek: "6/30星期二",
+      //       },
+      //       {
+      //         date: "2026-07-01",
+      //         dateWeek: "7/01星期三",
+      //       },
+      //       {
+      //         date: "2026-07-02",
+      //         dateWeek: "7/02星期四",
+      //       },
+      //       {
+      //         date: "2026-07-03",
+      //         dateWeek: "7/03星期五",
+      //       },
+      //       {
+      //         date: "2026-07-04",
+      //         dateWeek: "7/04星期六",
+      //       },
+      //       {
+      //         date: "2026-07-05",
+      //         dateWeek: "7/05星期日",
+      //       },
+      //     ],
+      //     lastUpdateTime: "2026-05-12 19:42:40",
+      //   },
+      //   serverTime: "2026-06-29 15:52:24",
+      // };
+      // if (res.type == "success" && res.code == "200") {
+      //   var data = res.data.workPlanList || [];
+      //   this.updateTime = res.data.lastUpdateTime;
+      //   this.currentDate = res.serverTime.split(" ")[0];
+      //   this.fullData = data;
+      //   this.dateArr = data.map((item) => {
+      //     return {
+      //       date: item.date,
+      //       dateWeek: item.dateWeek,
+      //     };
+      //   });
+      //   this.meetingDateArr = this.dateArr;
+      //   this.fullData.filter((item) => {
+      //     if (item.date == this.currentDate) {
+      //       this.workPlan = item.workPlan || [];
+      //     }
+      //   });
+
+      //   //获取会议数据
+      //   this.getMeetingData();
+      // }
     },
     getMeetingData() {
       var params = {
         buildingType: "",
         siteType: "",
         rnrsValue: "",
-        showTime: this.currentDate,
+        showTime: this.meetingCurrentDate,
       };
       IDM.http
         .post("ctrl/meetingNoticeSjw/meetingReplyInfo", params)
@@ -573,16 +687,19 @@ export default {
       // }
     },
     //切换日期
-    changeDate(d) {
-      this.currentDate = d.date;
-      this.fullData.filter((item) => {
-        if (item.date == this.currentDate) {
-          this.workPlan = item.workPlan || [];
-        }
-      });
-
-      //获取会议数据
-      this.getMeetingData();
+    changeDate(d,type) {
+      if(type == 'meeting'){
+        this.meetingCurrentDate = d.date;
+        //获取会议数据
+        this.getMeetingData();
+      }else{
+        this.currentDate = d.date;
+        this.fullData.filter((item) => {
+          if (item.date == this.currentDate) {
+            this.workPlan = item.workPlan || [];
+          }
+        });
+      }
     },
     getCurrentWeekRange() {
       const today = new Date();
@@ -607,6 +724,33 @@ export default {
         start: this.formatDate(weekStart),
         end: this.formatDate(weekEnd),
       };
+    },
+    //获取前一周后一周日期数组
+    getWeekDateArr(type, targetDate = new Date()) {
+      const baseDate = new Date(targetDate);
+      const weekDay = baseDate.getDay(); // 0周日 1周一 ...6周六
+
+      // 算出基准日期所在周的周一
+      const thisMondayTime =
+        baseDate.getTime() - (weekDay === 0 ? 6 : weekDay - 1) * 86400000;
+      let startMonday;
+
+      if (type === "prev") {
+        // 前一周周一 = 本周一 -7天
+        startMonday = new Date(thisMondayTime - 7 * 86400000);
+      }
+      if (type === "next") {
+        // 后一周周一 = 本周一 +7天
+        startMonday = new Date(thisMondayTime + 7 * 86400000);
+      }
+
+      const result = [];
+      // 循环7天生成整周
+      for (let i = 0; i < 7; i++) {
+        const day = new Date(startMonday.getTime() + i * 86400000);
+        result.push(IDM.dateFormat(day, "Y-m-d"));
+      }
+      return result;
     },
     formatDate(date) {
       const year = date.getFullYear();
@@ -877,6 +1021,7 @@ export default {
     align-items: center;
     justify-content: space-around;
     font-size: 18px;
+    padding: 0 10px;
     .date {
       flex: 1;
       text-align: center;
@@ -894,6 +1039,10 @@ export default {
         background: #3389e0;
         color: #fff;
       }
+    }
+    .tab {
+      padding: 10px;
+      cursor: pointer;
     }
   }
   .weekly-work-schedule-content {

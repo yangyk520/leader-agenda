@@ -139,7 +139,7 @@
                             </div>
                           </div>
                           <div class="search-item">
-                            <label class="tit">值班手机：</label>
+                            <label class="tit">传真：</label>
                             <div class="con">
                               <a-input
                                 v-model="group.zbsj"
