@@ -53,6 +53,38 @@
         </div>
       </div>
 
+      <!-- 部门筛选面板 -->
+      <transition name="filter-overlay">
+        <div
+          v-if="deptFilterVisible"
+          class="dept-filter-overlay"
+          @click.self="handleDeptFilterClose"
+        >
+          <transition name="filter-panel" appear>
+            <div
+              v-if="deptFilterVisible"
+              class="dept-filter-panel"
+              :style="{ top: deptFilterPosition.top + 'px', left: deptFilterPosition.left + 'px' }"
+            >
+              <div class="dept-filter-header">
+                <span class="dept-filter-title">过滤条件-{{ deptFilterPanelTitle }}</span>
+                <span class="dept-filter-close" @click="handleDeptFilterClose">×</span>
+              </div>
+              <div class="dept-filter-body">
+                <a-input
+                  v-model="deptFilterInput"
+                  :placeholder="'请输入' + deptFilterPanelTitle"
+                  @keyup.enter="handleDeptFilterApply"
+                />
+              </div>
+              <div class="dept-filter-footer">
+                <a-button type="primary" class="filter-apply-btn" @click="handleDeptFilterApply">选择</a-button>
+              </div>
+            </div>
+          </transition>
+        </div>
+      </transition>
+
       <!-- 个人/集体标签页 -->
       <div class="custom-tabs">
         <div class="tabs-header">
@@ -153,6 +185,13 @@ export default {
         personal: "1",
         collective: "2",
       },
+      // 是否有荣耀应急（组织人事处）角色
+      hasRyRole: false,
+      // 部门筛选
+      deptFilterVisible: false,
+      deptFilterInput: '',
+      deptFilterValue: '',
+      deptFilterPosition: { top: 0, left: 0 },
       // 表格数据
       tableData: [],
     };
@@ -181,11 +220,12 @@ export default {
             align: "center",
           },
           {
-            title: "部门",
+            title: (h) => this.renderDeptColumnTitle(h),
             dataIndex: "department",
             key: "department",
             width: 220,
             align: "center",
+            customHeaderCell: () => ({ class: "dept-filter-header-cell" }),
           },
           {
             title: "荣誉名称",
@@ -222,11 +262,12 @@ export default {
             },
           },
           {
-            title: "部门",
+            title: (h) => this.renderDeptColumnTitle(h),
             dataIndex: "department",
             key: "department",
             width: 220,
             align: "center",
+            customHeaderCell: () => ({ class: "dept-filter-header-cell" }),
           },
           {
             title: "荣誉名称",
@@ -252,9 +293,14 @@ export default {
         ];
       }
     },
+    deptFilterPanelTitle() {
+      return this.activeTab === 'personal' ? '所属部门（个人荣誉）' : '参与部门/人员（集体荣誉）';
+    },
   },
   watch: {
     activeTab() {
+      this.deptFilterValue = '';
+      this.deptFilterVisible = false;
       this.pagination.current = 1;
       this.fetchData();
     },
@@ -266,6 +312,7 @@ export default {
   created() {
     this.moduleObject = this.$root.moduleObject;
     this.initAttrToModule();
+    this.checkRyRole();
     this.fetchData();
   },
   mounted() {},
@@ -284,6 +331,15 @@ export default {
         params._content = this.searchVal.trim();
         params.searchText = `检索内容：${this.searchVal.trim()}`;
       }
+      if (this.deptFilterValue) {
+        const prefix = honorType === '1' ? '所属部门（个人荣誉）' : '参与部门/人员（集体荣誉）';
+        const deptField = honorType === '1' ? 'C-HONOR-ARCHIVE-REGISTER-0003' : 'C-HONOR-ARCHIVE-REGISTER-0021';
+        params[`query_${deptField}`] = this.deptFilterValue;
+        const deptSearchText = `${prefix}：${this.deptFilterValue}`;
+        params.searchText = params.searchText
+          ? `${params.searchText}，${deptSearchText}`
+          : deptSearchText;
+      }
       let url=`/ctrl/list/query?formId=2606041006290ib0PgJ0qlLWXSeRjg8&moduleId=260525111043GGeJJGnmEPlRKpcs4AX&honorClass=${honorClass}&honorType=${honorType}`;
       IDM.http
         .post(url,params)
@@ -295,7 +351,7 @@ export default {
             department: (honorType=='1'?item["C-HONOR-ARCHIVE-REGISTER-0003.text"]:item["C-HONOR-ARCHIVE-REGISTER-0021.text"]) || "",
             honorName: item["B0001.value"] || "",
             awardTime: item["C-HONOR-ARCHIVE-REGISTER-0006.value"] || "",
-            awardUnit: item["C-HONOR-ARCHIVE-REGISTER-0007.text"] || "",
+            awardUnit: item["C-HONOR-ARCHIVE-REGISTER-0007.text"] ||item["C-HONOR-ARCHIVE-REGISTER-0007"]||"",
             pk: item["A0001"] || "",
           }));
           this.pagination.total = resData.count || 0;
@@ -307,9 +363,82 @@ export default {
           this.loading = false;
         });
     },
+    // 检查是否有荣耀应急（组织人事处）角色
+    checkRyRole() {
+      IDM.http.get("/ctrl/honorArchiveRegister/hasRyRole")
+        .then((res) => {
+          if (res && res.data !== undefined) {
+            this.hasRyRole = !!res.data;
+          }
+        })
+        .catch((err) => {
+          console.log("检查角色失败", err);
+          this.hasRyRole = false;
+        });
+    },
     // 切换菜单
     switchMenu(menuKey) {
       this.activeMenu = menuKey;
+    },
+    // 渲染部门列标题（带筛选图标）
+    renderDeptColumnTitle(h) {
+      const createElement = typeof h === 'function' ? h : this.$createElement;
+      const hasFilter = !!this.deptFilterValue;
+      return createElement('div', {
+        style: {
+          position: 'relative',
+          display: 'inline-flex',
+          alignItems: 'center',
+          width: '100%',
+          height: '100%'
+        }
+      }, [
+        createElement('span', '部门'),
+        createElement('span', {
+          class: 'dept-filter-icon' + (hasFilter ? ' active' : ''),
+          style: {
+            position: 'absolute',
+            right: '-93px',
+            bottom: '-22px',
+            cursor: 'pointer',
+            fontSize: '9px',
+            lineHeight: '1',
+            color: hasFilter ? '#409eff' : 'rgb(153, 153, 153)',
+            padding: '6px 6px',
+            borderRadius: '0',
+            transition: 'color 0.2s, background-color 0.2s',
+            borderTop: '1px solid #e8e8e8',
+            borderLeft: '1px solid #e8e8e8'
+          },
+          on: {
+            click: (e) => {
+              e.stopPropagation();
+              this.handleDeptFilterClick(e);
+            }
+          }
+        }, '▼')
+      ]);
+    },
+    // 点击筛选图标
+    handleDeptFilterClick(e) {
+      const rect = e.currentTarget.getBoundingClientRect();
+      this.deptFilterPosition = {
+        top: rect.bottom + window.scrollY + 6,
+        left: rect.left + window.scrollX - 150
+      };
+      this.deptFilterInput = this.deptFilterValue;
+      this.deptFilterVisible = true;
+    },
+    // 应用部门筛选
+    handleDeptFilterApply() {
+      this.deptFilterValue = this.deptFilterInput.trim();
+      this.deptFilterVisible = false;
+      this.pagination.current = 1;
+      this.fetchData();
+    },
+    // 关闭部门筛选面板
+    handleDeptFilterClose() {
+      this.deptFilterVisible = false;
     },
     // 切换标签页
     switchTab(tabKey) {
@@ -323,6 +452,7 @@ export default {
     // 行点击事件
     customRow(record) {
       return {
+        class: !this.hasRyRole ? "row-disabled" : "",
         on: {
           click: () => {
             this.handleRowClick(record);
@@ -332,6 +462,10 @@ export default {
     },
     // 点击行跳转表单页面
     handleRowClick(record) {
+      if (!this.hasRyRole) {
+        IDM.message.warning("您暂无荣耀应急（组织人事处）角色，无法查看详情");
+        return;
+      }
       var pk = record["pk"];
       let url = IDM.url.getWebPath(
         `ctrl/formControl/form?listId=260525111946RpP5mBDGoQkJSCpYagN&method=&moduleId=260525111043GGeJJGnmEPlRKpcs4AX&pk=${pk}&isView=1`
@@ -695,6 +829,126 @@ export default {
       }
     }
 
+    .dept-filter-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1000;
+      background: rgba(0, 0, 0, 0.3);
+    }
+
+    .filter-overlay-enter-active,
+    .filter-overlay-leave-active {
+      transition: opacity 0.2s ease;
+    }
+
+    .filter-overlay-enter,
+    .filter-overlay-leave-to {
+      opacity: 0;
+    }
+
+    .dept-filter-panel {
+      position: absolute;
+      width: 320px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      z-index: 1001;
+      transform-origin: center top;
+    }
+
+    .filter-panel-enter-active {
+      transition: opacity 0.25s ease, transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .filter-panel-leave-active {
+      transition: opacity 0.18s ease, transform 0.18s ease;
+    }
+
+    .filter-panel-enter {
+      opacity: 0;
+      transform: scale(0.92) translateY(8px);
+    }
+
+    .filter-panel-leave-to {
+      opacity: 0;
+      transform: scale(0.96) translateY(4px);
+    }
+
+    .dept-filter-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 14px 16px;
+      border-bottom: 1px solid #f0f0f0;
+      background: #fafafa;
+    }
+
+    .dept-filter-title {
+      font-size: 15px;
+      font-weight: 500;
+      color: #333;
+    }
+
+    .dept-filter-close {
+      font-size: 20px;
+      color: #999;
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+
+      &:hover {
+        color: #333;
+      }
+    }
+
+    .dept-filter-body {
+      padding: 16px;
+
+      ::v-deep .ant-input {
+        height: 36px;
+        border-radius: 4px;
+      }
+    }
+
+    .dept-filter-footer {
+      padding: 12px 16px;
+      border-top: 1px solid #f0f0f0;
+      display: flex;
+      justify-content: flex-end;
+
+      ::v-deep .filter-apply-btn {
+        min-width: 80px;
+        background-color: #A60F00;
+        border-color: #A60F00;
+        color: #fff;
+
+        &:hover,
+        &:focus {
+          background-color: #c41200;
+          border-color: #c41200;
+        }
+
+        &:active {
+          background-color: #8a0d00;
+          border-color: #8a0d00;
+        }
+      }
+    }
+
+    .dept-filter-icon {
+      &:hover {
+        color: #409eff !important;
+      }
+
+      &.active {
+        color: #409eff !important;
+      }
+    }
+
     .custom-tabs {
       width: 1400px;
       background: #fff;
@@ -752,9 +1006,23 @@ export default {
           font-size: 16px;
         }
 
+        ::v-deep .ant-table-tbody > tr.row-disabled {
+          cursor: not-allowed;
+          color: #bfbfbf;
+
+          &:hover > td {
+            background-color: #f5f5f5 !important;
+          }
+        }
+
         ::v-deep .ant-table-thead > tr > th {
           text-align: center!important;
           font-size: 17px;
+        }
+
+        ::v-deep .ant-table-thead > tr > th.dept-filter-header-cell {
+          padding: 8px 8px 24px 8px !important;
+          position: relative;
         }
 
         ::v-deep .ant-table-thead > tr > th .ant-table-header-column {
