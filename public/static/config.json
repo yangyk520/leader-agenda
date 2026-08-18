@@ -1,5 +1,5 @@
 {
-  "version": "1.0.0",
+  "version": "1.0.1",
   "lasttime": "2022-07-22 15:31:39",
   "author": "yangyk",
   "className": "leaderAgenda",
@@ -127,6 +127,13 @@
       "classId": "idm.component.leaderAgenda.imyscheduleskw",
       "comName": "市科委我的日程",
       "className": "IMyScheduleSkw",
+      "comType": "common",
+      "comLangue": "vue"
+    },
+    {
+      "classId": "idm.component.leaderAgenda.isalarycheck",
+      "comName": "薪资查询",
+      "className": "ISalaryCheck",
       "comType": "common",
       "comLangue": "vue"
     }
