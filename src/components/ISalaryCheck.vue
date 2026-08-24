@@ -33,6 +33,10 @@
         重置
       </a-button>
     </div>
+    <div class="salary-total-bar">
+      <span class="salary-total-label">本次查询发放总额：</span>
+      <span class="salary-total-value">{{ formatMoney(totalAmount) }}</span>
+    </div>
     <div class="salary-header">
       <div class="salary-tabs">
         <div
@@ -159,11 +163,13 @@ export default {
         // 优先取组件自身高度，未撑开时回退到视口高度
         const wrapperHeight = wrapper.clientHeight || window.innerHeight;
         const queryBar = wrapper.querySelector(".salary-query-bar");
+        const totalBar = wrapper.querySelector(".salary-total-bar");
         const header = wrapper.querySelector(".salary-header");
         const queryBarHeight = queryBar ? queryBar.offsetHeight : 40;
+        const totalBarHeight = totalBar ? totalBar.offsetHeight : 40;
         const headerHeight = header ? header.offsetHeight : 48;
-        // 留出 queryBar、header、padding(12*2)、margin 等空隙
-        const extraHeight = queryBarHeight + headerHeight + 60;
+        // 留出 queryBar、totalBar、header、padding(12*2)、margin 等空隙
+        const extraHeight = queryBarHeight + totalBarHeight + headerHeight + 72;
         const bodyHeight = Math.max(wrapperHeight - extraHeight, 200);
         this.tableHeight = bodyHeight;
         // 通过 CSS 变量让表格主体在数据不足时仍撑满剩余空间
@@ -457,14 +463,13 @@ export default {
       const url = this.propData.listDataUrl || "ctrl/mobilizationPayroll/getUserSalaryList";
       const params = {
         startTime: this.startTime ? this.startTime.format("YYYY-MM") : "",
-        endTime: this.endTime ? this.endTime.format("YYYY-MM") : "",
-        ...this.commonParam()
+        endTime: this.endTime ? this.endTime.format("YYYY-MM") : ""
       };
 
       this.loading = true;
       IDM.http
         .get(url, params)
-        .then(res => {
+        .done(res => {
           this.loading = false;
           if (res.code == "200" || res.type == "success") {
             const data = res.data || {};
@@ -639,6 +644,24 @@ export default {
     .reset-btn {
       color: #666666;
       border-color: #d9d9d9;
+    }
+  }
+
+  .salary-total-bar {
+    margin-bottom: 12px;
+    padding: 8px 12px;
+    // background: #f5f7fa;
+    border-radius: 4px;
+
+    .salary-total-label {
+      color: #333333;
+      font-size: 14px;
+    }
+
+    .salary-total-value {
+      color: #1890ff;
+      font-size: 16px;
+      font-weight: 600;
     }
   }
 
