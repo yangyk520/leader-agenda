@@ -87,7 +87,7 @@
 
       <!-- 个人/集体标签页 -->
       <div class="custom-tabs">
-        <div class="tabs-header">
+        <div class="tabs-header" v-if="activeMenu !== 'thankyou'">
           <div
             :class="['tab-item', { active: activeTab === 'personal' }]"
             @click="switchTab('personal')"
@@ -200,6 +200,34 @@ export default {
   computed: {
     // 根据当前标签页动态生成表格列
     columns() {
+      if (this.activeMenu === "thankyou") {
+        return [
+          {
+            title: "序号",
+            dataIndex: "index",
+            key: "index",
+            width: 100,
+            align: "center",
+            customRender: (_text, _record, index) => {
+              return (this.pagination.current - 1) * this.pagination.pageSize + index + 1;
+            },
+          },
+          {
+            title: "时间",
+            dataIndex: "awardTime",
+            key: "awardTime",
+            width: 180,
+            align: "center",
+          },
+          {
+            title: "文件名称",
+            dataIndex: "honorName",
+            key: "honorName",
+            align: "left",
+            ellipsis: true,
+          },
+        ];
+      }
       if (this.activeTab === "personal") {
         return [
           {
@@ -304,9 +332,13 @@ export default {
       this.pagination.current = 1;
       this.fetchData();
     },
-    activeMenu() {
+    activeMenu(newVal) {
       this.pagination.current = 1;
-      this.fetchData();
+      if (newVal === "thankyou" && this.activeTab !== "personal") {
+        this.activeTab = "personal";
+      } else {
+        this.fetchData();
+      }
     },
   },
   created() {
