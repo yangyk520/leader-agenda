@@ -304,8 +304,10 @@ export default {
     exportHandle() {
       var fid = IDM.url.queryString("zbmangeId");
       var customorder = this.sortMode == "date" ? "time" : "";
+      var type = this.sortMode == "date" ? "date" : "unit";
+      console.log("type: ", type);
       var url = IDM.url.getWebPath(
-        "ctrl/holidayduty/export?fid=" + fid + "&customorder=" + customorder
+        "ctrl/holidayduty/export?fid=" + fid + "&customorder=" + customorder + "&type=" + type
       );
       if (this.searchUnit) {
         url += "&query_260318173354Nuk3etlOXkyyUpXuIk3=" + this.searchUnit;
