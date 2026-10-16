@@ -78,9 +78,7 @@
         </div>
       </div>
       <div class="operation-btns">
-        <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview"
-          >新增</span
-        >
+        <span class="operation-btn primary" @click="handleAdd" v-if="!isPreview">{{iszgh ? '编辑' : '新增'}}</span>
         <span class="operation-btn" v-if="!isPreview" @click="handlePublic">发布</span>
         <span class="operation-btn" @click="handleExport">导出</span>
         <span class="operation-setting" @click="handleSetting"
@@ -151,6 +149,8 @@ export default {
       onlyView: false,
       // 领导列表
       leaderList: [],
+      userInfo: null,
+      iszgh: false,//是否是总工会
     };
   },
   watch: {
@@ -166,6 +166,8 @@ export default {
     },
   },
   created() {
+    this.userInfo = IDM.user.getCurrentUserInfo(); //获取当前用户信息
+    this.iszgh = this.userInfo && this.userInfo.unitInfo.unitId == "230426151628yVLY47Czm2Q6DicT2nN";//是否是总工会
     this.getLeaderList();
     this.initTime(moment());
   },

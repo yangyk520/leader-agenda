@@ -2,7 +2,7 @@
   <div class="agenda-table-horizontal">
     <table class="agenda-table-horizontal-main" cellspacing="0" ref="table">
       <colgroup>
-        <col :width="`${index === 0 ? '150' : thAuto ? 'auto' : '308'}`" v-for="(item, index) in header_list"
+        <col :width="`${index === 0 ? '80' : thAuto ? 'auto' : '175'}`" v-for="(item, index) in header_list"
           :key="index" />
       </colgroup>
       <thead>
@@ -270,8 +270,8 @@ export default {
     background-color: #e8e8e8;
   }
   &::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 10px;
+    height: 10px;
   }
   &::-webkit-scrollbar-thumb {
     border-radius: 10px;
