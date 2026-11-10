@@ -15,6 +15,26 @@ export default {
         }
     },
     methods: {
+        editTeacher(item){
+            let that = this;
+            IDM.layer.open({
+                type: 2,
+                title: ["单位领导活动", "font-size:18px;"],
+                area: ["1200px", "90%"],
+                content: IDM.url.getWebPath(
+                "ctrl/formControl/sysForm?moduleId=230707104025XyvXLw0OS2fq4YSag9r&formId=230707104026StmXGrEk5KQkiQQnytf&leaderId="+item.userId
+                ),
+                success: function (layero, index) {
+                    top.close = function () {
+                        IDM.layer.close(index);
+                        that.$emit('updateTableData')
+                    };
+                },
+                end: function () {
+                    that.$emit('updateTableData')
+                },
+            });
+        },
         editActive(item) {
             if ( !item.clickUrl ) {
                 return

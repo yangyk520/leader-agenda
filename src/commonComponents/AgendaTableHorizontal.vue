@@ -29,9 +29,9 @@
               <div>{{ time.name }}</div>
               <div v-if="time.week">({{ time.week }})</div>
             </td>
-            <td v-else :key="hi" class="active_block" :style="getDomBg(time)">
+            <td v-else :key="hi" class="active_block" :style="getDomBg(time)" @click.stop="editTeacher(header)">
               <div v-if=" time.data && time.data[header.userId] && time.data[header.userId].data && time.data[header.userId].data.length " class="block">
-                <div @click="editActive(todo)" v-for="(todo, index) in getActiveList( time.data[header.userId].data )" :key="index" class="active_list" :style="getStyleDataCancel(todo)">
+                <div @click.stop="editActive(todo)" v-for="(todo, index) in getActiveList( time.data[header.userId].data )" :key="index" class="active_list" :style="getStyleDataCancel(todo)">
                   <ActiveItem :item2="todo" :setting_data="setting_data"></ActiveItem>
                 </div>
               </div>
