@@ -280,15 +280,19 @@ export default {
         .get("ctrl/weeklyschedule/printdata", params)
         .done((res) => {
           if (res.code == "200") {
-            Public.officeEdit(
-              res.data.fileName,
-              "0",
-              "0",
-              res.data.fileId,
-              "260123171126HVw7nF6Spwv7eZMQIyl",
-              false,
-              {}
+            // Public.officeEdit(
+            //   res.data.fileName,
+            //   "0",
+            //   "0",
+            //   res.data.fileId,
+            //   "260123171126HVw7nF6Spwv7eZMQIyl",
+            //   false,
+            //   {}
+            // );
+            let url = IDM.url.getWebPath(
+              `ctrl/nsoOffice/wordEdit?fileId=${res.data.fileId}&moduleId=260123171126HVw7nF6Spwv7eZMQIyl&flow=0&node=0`
             );
+            window.open(url);
           }
         })
         .catch((err) => {
