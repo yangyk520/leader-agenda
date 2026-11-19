@@ -481,20 +481,103 @@ export default {
         );
       };
     },
-    //团市委重置数据
+    // 根据 YYYY-MM-DD HH:mm 判断属于上午(morning)还是下午(afternoon)
+    getPeriod(dateTimeStr) {
+      if (!dateTimeStr) return "morning";
+      const timeStr = dateTimeStr.split(" ")[1] || dateTimeStr;
+      const hour = Number(timeStr.split(":")[0]);
+      return hour < 12 ? "morning" : "afternoon";
+    },
+    // 根据完整起止日期判断是否跨天
+    isCrossDay(startDate, endDate) {
+      if (!startDate || !endDate) return false;
+      return startDate.slice(0, 10) !== endDate.slice(0, 10);
+    },
+    // 团市委重置数据（处理上下午跨时段 + 跨天展示）
     resetData(data) {
       let leaderSchedules = data || [];
-      // 分上下午
+
       leaderSchedules.forEach((leader) => {
+        const agendaMap = new Map();
+
+        // 后端可能已将跨天日程拆到多天，先按 id 合并，避免重复生成
         leader.weekly_schedule.forEach((item) => {
-          item.morningList = item.list.filter(
-            (inner) => inner.porid === "morning"
+          (item.list || []).forEach((agenda, index) => {
+            const hasFullDateTime = agenda.startDate && agenda.endDate;
+            const key =
+              hasFullDateTime && agenda.id
+                ? agenda.id
+                : `${item.date}-${index}`;
+            if (!agendaMap.has(key)) {
+              agendaMap.set(key, { agenda, originalDate: item.date });
+            }
+          });
+          item.list = [];
+        });
+
+        agendaMap.forEach(({ agenda, originalDate }) => {
+          // 兼容未返回完整日期时间的日程，仍放在原始日期
+          if (!agenda.startDate || !agenda.endDate) {
+            const originalSchedule = leader.weekly_schedule.find(
+              (item) => item.date === originalDate
+            );
+            if (originalSchedule) originalSchedule.list.push(agenda);
+            return;
+          }
+
+          const startDay = agenda.startDate.slice(0, 10);
+          const endDay = agenda.endDate.slice(0, 10);
+          const startPeriod = this.getPeriod(agenda.startDate);
+          const endPeriod = this.getPeriod(agenda.endDate);
+          const crossDay = this.isCrossDay(agenda.startDate, agenda.endDate);
+          const endTime = agenda.endDate.slice(11, 16);
+
+          leader.weekly_schedule.forEach((item) => {
+            // 只生成本周且位于日程起止日期内的条目
+            if (item.date < startDay || item.date > endDay) return;
+
+            const isStartDay = item.date === startDay;
+            const isEndDay = item.date === endDay;
+            const addAgenda = (porid, startTime) => {
+              item.list.push({
+                ...agenda,
+                porid,
+                startTime,
+                endTime,
+              });
+            };
+
+            if (isStartDay) {
+              // 开始日使用实际开始时间和时段
+              addAgenda(startPeriod, agenda.startDate.slice(11, 16));
+              // 上午开始且持续到下午或跨天，首日下午也要展示
+              if (
+                startPeriod === "morning" &&
+                (crossDay || endPeriod === "afternoon")
+              ) {
+                addAgenda("afternoon", "13:30");
+              }
+            } else if (isEndDay) {
+              // 结束日上午默认 09:00；结束在下午时，下午默认 13:30
+              addAgenda("morning", "09:00");
+              if (endPeriod === "afternoon") {
+                addAgenda("afternoon", "13:30");
+              }
+            } else {
+              // 跨多天时，中间日期上下午都展示
+              addAgenda("morning", "09:00");
+              addAgenda("afternoon", "13:30");
+            }
+          });
+        });
+
+        leader.weekly_schedule.forEach((item) => {
+          item.morningList = this.sortScheduleByStartTime(
+            item.list.filter((inner) => inner.porid === "morning")
           );
-          item.afternoonList = item.list.filter(
-            (inner) => inner.porid === "afternoon"
+          item.afternoonList = this.sortScheduleByStartTime(
+            item.list.filter((inner) => inner.porid === "afternoon")
           );
-          item.morningList = this.sortScheduleByStartTime(item.morningList);
-          item.afternoonList = this.sortScheduleByStartTime(item.afternoonList);
         });
       });
 

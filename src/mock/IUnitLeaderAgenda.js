@@ -3529,447 +3529,409 @@ export const agendaListMock = {
         }
     ],
     "data2":[
-        {
-            "leader_name": "上官剑",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": [
-                        {
-                            "sourceId": "260205103458a192hsFAkvzrrggpcsg",
-                            "leader": "上官剑,徐豪",
-                            "agendaType": "1",
-                            "relateUnit": "",
-                            "attendantsText": "",
-                            "userName": "徐豪",
-                            "userId": "250313095750k2gkLRINszoxQauHb4q",
-                            "url": "",
-                            "remoteId": "",
-                            "porid": "morning",
-                            "bt": "测试0210",
-                            "sourceModuleId": "",
-                            "agendaTypeText": "普通日程",
-                            "startTime": "11:00",
-                            "id": "260205103540oVHwThGvtB3HxSyU3qg",
-                            "endTime": "12:00",
-                            "place": "测试0210",
-                            "mobileUrl": "",
-                            "sourceInfoId": ""
-                        }
-                    ]
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": [
-                        {
-                            "sourceId": "260205103458a192hsFAkvzrrggpcsg",
-                            "leader": "上官剑,徐豪",
-                            "agendaType": "1",
-                            "relateUnit": "",
-                            "attendantsText": "",
-                            "userName": "徐豪",
-                            "userId": "250313095750k2gkLRINszoxQauHb4q",
-                            "url": "",
-                            "remoteId": "",
-                            "porid": "morning",
-                            "bt": "测试0210",
-                            "sourceModuleId": "",
-                            "agendaTypeText": "普通日程",
-                            "startTime": "09:00",
-                            "id": "260205103540oVHwThGvtB3HxSyU3qg",
-                            "endTime": "12:00",
-                            "place": "测试0210",
-                            "mobileUrl": "",
-                            "sourceInfoId": ""
-                        }
-                    ]
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "邬斌",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": [
-                        {
-                            "sourceId": "260205103411E6FZnGz51rhPcSLoJ13",
-                            "leader": "邬斌",
-                            "agendaType": "1",
-                            "relateUnit": "",
-                            "attendantsText": "",
-                            "userName": "邬斌",
-                            "userId": "250313095737WYyRohvcvRN0idsRWVl",
-                            "url": "",
-                            "remoteId": "",
-                            "porid": "morning",
-                            "bt": "测试0209",
-                            "sourceModuleId": "",
-                            "agendaTypeText": "普通日程",
-                            "startTime": "09:00",
-                            "id": "260205103439mNKl5jhNyWQI9aHgSug",
-                            "endTime": "10:00",
-                            "place": "123",
-                            "mobileUrl": "",
-                            "sourceInfoId": ""
-                        }
-                    ]
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "徐豪",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": [
-                        {
-                            "sourceId": "260205103458a192hsFAkvzrrggpcsg",
-                            "leader": "上官剑,徐豪",
-                            "agendaType": "1",
-                            "relateUnit": "",
-                            "attendantsText": "",
-                            "userName": "徐豪",
-                            "userId": "250313095750k2gkLRINszoxQauHb4q",
-                            "url": "",
-                            "remoteId": "",
-                            "porid": "morning",
-                            "bt": "测试0210",
-                            "sourceModuleId": "",
-                            "agendaTypeText": "普通日程",
-                            "startTime": "11:00",
-                            "id": "260205103540oVHwThGvtB3HxSyU3qg",
-                            "endTime": "12:00",
-                            "place": "测试0210",
-                            "mobileUrl": "",
-                            "sourceInfoId": ""
-                        }
-                    ]
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": [
-                        {
-                            "sourceId": "260205103458a192hsFAkvzrrggpcsg",
-                            "leader": "上官剑,徐豪",
-                            "agendaType": "1",
-                            "relateUnit": "",
-                            "attendantsText": "",
-                            "userName": "徐豪",
-                            "userId": "250313095750k2gkLRINszoxQauHb4q",
-                            "url": "",
-                            "remoteId": "",
-                            "porid": "morning",
-                            "bt": "测试0210",
-                            "sourceModuleId": "",
-                            "agendaTypeText": "普通日程",
-                            "startTime": "09:00",
-                            "id": "260205103540oVHwThGvtB3HxSyU3qg",
-                            "endTime": "12:00",
-                            "place": "测试0210",
-                            "mobileUrl": "",
-                            "sourceInfoId": ""
-                        }
-                    ]
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "王江",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "赵国强",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "杨杨",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "唐志宇",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "钟天使",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "朱珉迕",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        },
-        {
-            "leader_name": "刘真",
-            "weekly_schedule": [
-                {
-                    "date": "2026-02-09",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-10",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-11",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-12",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-13",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-14",
-                    "list": []
-                },
-                {
-                    "date": "2026-02-15",
-                    "list": []
-                }
-            ]
-        }
-    ],
+    {
+        "leader_name": "上官剑",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": [
+                    {
+                        "sourceId": "261118155122qbG95cGDB8pHelOrZaD",
+                        "leader": "上官剑",
+                        "agendaType": "1",
+                        "relateUnit": "",
+                        "endDate": "2026-11-19 11:30",
+                        "attendantsText": "",
+                        "userName": "上官剑",
+                        "userId": "250313095714FtfXnnqt6JgxMoi3lzp",
+                        "url": "",
+                        "remoteId": "",
+                        "porid": "morning",
+                        "bt": "日程1",
+                        "sourceModuleId": "",
+                        "agendaTypeText": "普通日程",
+                        "startTime": "08:30",
+                        "id": "261118155146QhfU1LlKL7iiC4t4nkr",
+                        "endTime": "11:30",
+                        "place": "11111111",
+                        "mobileUrl": "",
+                        "startDate": "2026-11-18 08:30",
+                        "sourceInfoId": ""
+                    }
+                ]
+            },
+            {
+                "date": "2026-11-19",
+                "list": [
+                    {
+                        "sourceId": "261118155122qbG95cGDB8pHelOrZaD",
+                        "leader": "上官剑",
+                        "agendaType": "1",
+                        "relateUnit": "",
+                        "endDate": "2026-11-19 11:30",
+                        "attendantsText": "",
+                        "userName": "上官剑",
+                        "userId": "250313095714FtfXnnqt6JgxMoi3lzp",
+                        "url": "",
+                        "remoteId": "",
+                        "porid": "morning",
+                        "bt": "日程1",
+                        "sourceModuleId": "",
+                        "agendaTypeText": "普通日程",
+                        "startTime": "09:00",
+                        "id": "261118155146QhfU1LlKL7iiC4t4nkr",
+                        "endTime": "11:30",
+                        "place": "11111111",
+                        "mobileUrl": "",
+                        "startDate": "2026-11-18 08:30",
+                        "sourceInfoId": ""
+                    }
+                ]
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "邬斌",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "徐豪",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "王江",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": [
+                    {
+                        "sourceId": "2611181641360tGlDBn3AnGxqYyuv4f",
+                        "leader": "王江",
+                        "agendaType": "1",
+                        "relateUnit": "",
+                        "endDate": "2026-11-19 17:00",
+                        "attendantsText": "",
+                        "userName": "王江",
+                        "userId": "250313095801vIHpfO6HwdxOi45GWwV",
+                        "url": "",
+                        "remoteId": "",
+                        "porid": "morning",
+                        "bt": "日程2",
+                        "sourceModuleId": "",
+                        "agendaTypeText": "普通日程",
+                        "startTime": "09:00",
+                        "id": "261118164227QkVmPD9XXkfjdekG6rp",
+                        "endTime": "17:00",
+                        "place": "2222222222",
+                        "mobileUrl": "",
+                        "startDate": "2026-11-19 09:00",
+                        "sourceInfoId": ""
+                    }
+                ]
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "赵国强",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "杨杨",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "唐志宇",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "钟天使",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "朱珉迕",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    },
+    {
+        "leader_name": "刘真",
+        "weekly_schedule": [
+            {
+                "date": "2026-11-16",
+                "list": []
+            },
+            {
+                "date": "2026-11-17",
+                "list": []
+            },
+            {
+                "date": "2026-11-18",
+                "list": []
+            },
+            {
+                "date": "2026-11-19",
+                "list": []
+            },
+            {
+                "date": "2026-11-20",
+                "list": []
+            },
+            {
+                "date": "2026-11-21",
+                "list": []
+            },
+            {
+                "date": "2026-11-22",
+                "list": []
+            }
+        ]
+    }
+],
     "serverTime": "2026-01-21 10:35:27"
 }
 
