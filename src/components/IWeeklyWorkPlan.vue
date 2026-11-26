@@ -73,7 +73,7 @@
                 <th>内容</th>
                 <th width="200">地点</th>
                 <th width="150">主持</th>
-                <th width="200">参加</th>
+                <th width="25%">参加</th>
               </tr>
             </thead>
           </table>
@@ -87,7 +87,7 @@
                 <td></td>
                 <td width="200"></td>
                 <td width="150"></td>
-                <td width="200"></td>
+                <td width="25%"></td>
               </tr>
               <template v-for="item in tableData">
                 <tr
@@ -184,12 +184,13 @@ export default {
   mounted() {},
   destroyed() {},
   methods: {
-    // 初始化时间数据
+    // 初始化时间数据（周日为每周第一天，完全绕过 locale）
     initTime(today) {
       // 天数据
       this.curDate = today.format("YYYY-MM-DD");
-      // 周数据
-      const weekStart = today.startOf("isoWeek");
+      // 周数据：以周日为起始日（手动按 getDay() 偏移，dow 0=周日 ... 6=周六）
+      const dow = today.day();
+      const weekStart = today.clone().subtract(dow, "days");
       this.weekList = [];
       for (var i = 0; i <= 6; i++) {
         const day = moment(weekStart).add(i, "days");
@@ -198,20 +199,19 @@ export default {
           monthAndDay: day.format("MM月DD日"),
         });
       }
-      this.weeksInYear = weekStart.isoWeeks();
+      // 计算当年第几周：以周日为每周起始的周数
+      const yearStart = moment({ year: weekStart.year(), month: 0, day: 1 });
+      const yearStartDow = yearStart.day();
+      const diff = weekStart.diff(yearStart, "days");
+      this.weeksInYear = Math.floor((diff + yearStartDow) / 7) + 1;
       this.weekStart = weekStart.format("YYYY-MM-DD");
     },
     //日历切换
     calendarToggle(type) {
-      if (type === "left") {
-        this.initTime(
-          moment(this.weekStart, "YYYY-MM-DD").subtract(1, "isoWeek")
-        );
-      } else {
-        this.initTime(
-          moment(this.weekStart, "YYYY-MM-DD").subtract(-1, "isoWeek")
-        );
-      }
+      const direction = type === "left" ? -1 : 1;
+      this.initTime(
+        moment(this.weekStart, "YYYY-MM-DD").add(direction * 7, "days")
+      );
       this.initData();
     },
     //今天、本周切换
@@ -346,6 +346,17 @@ export default {
           $(".agenda-main .table-body table").width()
         );
       };
+    },
+    // 滚动定位到当天所在行
+    scrollToToday() {
+      const $todayRow = $(".agenda-main .table-body tr.istoday").first();
+      if ($todayRow.length > 0) {
+        const $scrollContainer = $(".agenda-main .table-body");
+        const containerTop = $scrollContainer.offset().top;
+        const rowTop = $todayRow.offset().top;
+        const offset = rowTop - containerTop + $scrollContainer.scrollTop();
+        $scrollContainer.animate({ scrollTop: offset }, 300);
+      }
     },
     groupByDate(list) {
       const result = {};
@@ -544,6 +555,7 @@ export default {
         this.tableData = groupedData;
         this.$nextTick(() => {
           this.changeTableWidth();
+          this.scrollToToday();
         });
       } else {
         const params = {
@@ -563,6 +575,7 @@ export default {
             }
             this.$nextTick(() => {
               this.changeTableWidth();
+              this.scrollToToday();
             });
           })
           .catch((err) => {
